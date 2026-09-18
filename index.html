@@ -78,22 +78,16 @@
             font-weight: bold;
         }
 
-        /* --- Animaciones del SVG (Multitónica / Giant Steps) --- */
+        /* --- Animaciones del SVG (Coltrane) --- */
         .coltrane-node .ii-v-bg {
-            fill: #f8fafc;
-            stroke: #cbd5e1;
-            stroke-width: 2px;
+            fill: transparent;
             rx: 6px;
             transition: all 0.2s ease;
-        }
-        .dark .coltrane-node .ii-v-bg {
-            fill: #1e293b;
-            stroke: #334155;
         }
         .coltrane-node.active-node .ii-v-bg {
             fill: #fef08a !important;
             stroke: #eab308 !important;
-            filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.4));
+            stroke-width: 2px;
         }
         .dark .coltrane-node.active-node .ii-v-bg {
             fill: #713f12 !important;
@@ -144,6 +138,7 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
         
+        /* Layout responsivo estricto para compases */
         @media (max-width: 640px) {
             .measure-box { min-height: 80px; padding: 0.25rem; }
             .section-label { font-size: 8px; padding: 2px 4px; }
@@ -204,13 +199,13 @@
                 </div>
 
                 <div class="flex flex-col w-full sm:w-20 justify-center mt-1">
-                    <label class="flex items-center gap-2 cursor-pointer group" title="Mostrar en Cifrado Funcional (Números Romanos)">
+                    <label class="flex items-center gap-2 cursor-pointer group" title="Mostrar en Cifrado de Weber (I, IIm7, V7...)">
                         <div class="relative">
                             <input type="checkbox" id="romanToggle" class="sr-only">
                             <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
                             <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Romano</span>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
                     </label>
                 </div>
                 
@@ -240,12 +235,12 @@
         </div>
 
         <div class="bg-blue-50 dark:bg-slate-800/80 px-4 md:px-6 py-2 border-b border-blue-100 dark:border-slate-700 flex items-center justify-between text-xs text-blue-700 dark:text-blue-400 font-medium z-10 relative shrink-0">
-            <span class="truncate pr-2"><i class="fa-solid fa-circle-info mr-1"></i> Haz clic en cualquier compás para iniciar la reproducción.</span>
+            <span class="truncate pr-2"><i class="fa-solid fa-circle-info mr-1"></i> Haz clic en cualquier compás para iniciar la reproducción desde ese punto.</span>
             <span id="startMeasureIndicator" class="font-bold whitespace-nowrap">Inicio: Compás 1</span>
         </div>
 
         <div id="coltraneGraphicContainer" class="hidden px-2 pt-6 pb-2 w-full flex justify-center overflow-visible shrink-0 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700">
-            <div id="coltrane-graphic" class="w-full max-w-[420px]"></div>
+            <div id="coltrane-graphic" class="w-full max-w-[500px]"></div>
         </div>
 
         <div class="p-2 md:p-8 flex-grow overflow-y-auto custom-scrollbar relative">
@@ -419,73 +414,103 @@
             if (chordStr === "NC" || chordStr === "-") return chordStr;
             const progIndex = progressionSelect.value;
             const progData = progressionLibrary[progIndex];
-            
-            // Excepción funcional: Blues versiones 2 y 3 sin análisis romano
-            if (progData.id === "blues" && variationSelect.value !== "0") {
-                return chordStr;
+
+            // Excepción para Multitónica (Coltrane): no se analiza
+            if (progData.id === "multitonic-coltrane") {
+                return chordStr.replace('_SUB', '').replace(/_T\d|_V\d|_II\d/g, '');
             }
 
-            // Excepción funcional: Blues versión 1 no analiza secundarios I7 IV7 V7
-            if (progData.id === "blues" && variationSelect.value === "0") {
-                const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
-                if (!match) return chordStr;
-                const root = match[1];
-                let quality = match[2].split('/')[0];
-                const { stOffset } = getTranspositionOffsets(keyStr, root);
-                if ((stOffset === 0 || stOffset === 5 || stOffset === 7) && quality === "7") {
-                    const romans = {0:"I", 5:"IV", 7:"V"};
-                    return romans[stOffset] + quality;
+            const isSubbed = chordStr.includes('_SUB');
+            let cleanStr = chordStr.replace('_SUB', '').replace(/_T\d|_V\d|_II\d/g, '');
+
+            // Excepción funcional: Blues
+            if (progData.id === "blues") {
+                if (variationSelect.value !== "0") {
+                    return cleanStr; // Blues 2 y 3 no se analizan funcionalmente
+                } else {
+                    const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
+                    if (!match) return cleanStr;
+                    const root = match[1];
+                    let q = match[2].split('/')[0];
+                    const { stOffset } = getTranspositionOffsets(keyStr, root);
+                    
+                    if ((stOffset === 0 || stOffset === 5 || stOffset === 7) && q.startsWith("7") && !isSubbed) {
+                        const romans = {0:"I", 5:"IV", 7:"V"};
+                        return romans[stOffset] + q;
+                    }
+                    return cleanStr;
                 }
             }
 
-            const romanNumerals = ["I", "bII", "II", "bIII", "III", "IV", "bV", "V", "bVI", "VI", "bVII", "VII"];
-            const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
-            if (!match) return chordStr;
+            // Excepción funcional: II-V-I Cíclicos
+            if (progData.id === "251-maj-all" || progData.id === "251-min-all") {
+                const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
+                if (!match) return cleanStr;
+                let cleanQ = match[2].split('/')[0];
+                
+                if (cleanQ === "m7" || cleanQ === "m7(b5)" || cleanQ === "m9") {
+                    return progData.id === "251-maj-all" ? "IIm7" : "IIm7(b5)";
+                }
+                if (cleanQ.startsWith("7") || cleanQ.startsWith("9") || cleanQ.startsWith("13")) {
+                    let tension = cleanQ.replace('7', '');
+                    if (tension === "9" || tension === "13") tension = "";
+                    return (isSubbed ? "subV7" : "V7") + tension;
+                }
+                if (cleanQ.startsWith("maj7") || cleanQ.startsWith("6")) return "Imaj7";
+                if (cleanQ.startsWith("m6") || cleanQ === "m") return "Im7";
+                return cleanStr;
+            }
+
+            const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
+            if (!match) return cleanStr;
             const root = match[1];
             let quality = match[2];
-            
-            const isSubbed = quality.includes('_SUB');
-            quality = quality.replace('_SUB', '').replace(/_T\d|_V\d|_II\d/g, '');
+            let cleanQual = quality.split('/')[0];
 
             let { stOffset } = getTranspositionOffsets(keyStr, root);
-            if (isSubbed) stOffset = (stOffset + 6) % 12;
+            let originalOffset = stOffset;
+            
+            // Revertir el offset si es un sustituto tritonal para saber su función original
+            if (isSubbed) {
+                originalOffset = (stOffset + 6) % 12;
+            }
 
-            let cleanQual = quality.split('/')[0];
             let isDominantChord = (cleanQual.startsWith('7') || cleanQual.startsWith('9') || cleanQual.startsWith('13')) 
                 && !cleanQual.includes('maj') && !cleanQual.includes('m') && !cleanQual.includes('dim') && !cleanQual.includes('o');
 
             let isDim = cleanQual.includes('dim') || cleanQual.includes('o');
 
-            if (isDim && stOffset === 6) return "#IV" + quality;
+            if (isDim && originalOffset === 6) return "#IVdim7";
 
-            let romanRoot = "";
-            
+            const romanNumerals = ["I", "bII", "II", "bIII", "III", "IV", "bV", "V", "bVI", "VI", "bVII", "VII"];
+
             if (isDominantChord) {
-                if (stOffset === 0) romanRoot = "V/IV";
-                else if (stOffset === 2) romanRoot = "V/V";
-                else if (stOffset === 4) romanRoot = "V/VI";
-                else if (stOffset === 9) romanRoot = "V/II";
-                else if (stOffset === 11) romanRoot = "V/III";
-                else romanRoot = romanNumerals[stOffset];
+                let romanRoot = "";
+                let tension = cleanQual.replace('7', '');
+                if (tension === "9" || tension === "13") tension = ""; 
                 
+                // Mapeo explícito a la ruta original (Dominantes Secundarios)
+                if (originalOffset === 0) romanRoot = "V7/IV";
+                else if (originalOffset === 2) romanRoot = "V7/V";
+                else if (originalOffset === 4) romanRoot = "V7/VI";
+                else if (originalOffset === 9) romanRoot = "V7/II";
+                else if (originalOffset === 11) romanRoot = "V7/III";
+                else if (originalOffset === 7) romanRoot = "V7";
+                else romanRoot = romanNumerals[originalOffset] + "7";
+
+                // Agregar "sub" si el Tritono lo modificó
                 if (isSubbed) {
-                    if (romanRoot.startsWith("V/")) {
-                        romanRoot = "sub" + romanRoot;
-                    } else {
-                        romanRoot = "subV7";
-                    }
+                    romanRoot = romanRoot.replace("V7", "subV7");
                 }
-            } else {
-                romanRoot = romanNumerals[stOffset];
+                
+                // Agregar tensiones si las había (ej. b9)
+                if (tension) {
+                    romanRoot = romanRoot.replace("7", "7" + tension);
+                }
+                return romanRoot;
             }
 
-            // Inyectar el número romano y mantener la tensión (ej. V7(b9)/II)
-            if (romanRoot.includes('/')) {
-                let parts = romanRoot.split('/');
-                return parts[0] + (cleanQual.replace('7', '')) + "/" + parts[1];
-            }
-
-            return romanRoot + quality;
+            return romanNumerals[stOffset] + quality;
         }
 
         const midiToNoteName = (midi) => {
@@ -556,10 +581,12 @@
             const graphicContainer = document.getElementById('coltrane-graphic');
             if (!graphicContainer) return;
             
+            // Tónicas
             const t1 = Tone.Frequency(key + "4").toNote().replace(/[0-9]/g, '');
             const t2 = Tone.Frequency(t1 + "4").transpose(-4).toNote().replace(/[0-9]/g, ''); 
             const t3 = Tone.Frequency(t2 + "4").transpose(-4).toNote().replace(/[0-9]/g, '');
 
+            // Calcular Dominantes (V) y Menores (II)
             let v1 = Tone.Frequency(t1 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             const ii1 = Tone.Frequency(v1 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             
@@ -569,98 +596,97 @@
             let v3 = Tone.Frequency(t3 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             const ii3 = Tone.Frequency(v3 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
 
+            // Si está activado el tritono, aplicamos la sustitución matemática a las variables
             if (globalTritone) {
                 v1 = tritoneRootMap[v1] || v1;
                 v2 = tritoneRootMap[v2] || v2;
                 v3 = tritoneRootMap[v3] || v3;
             }
 
-            // Coordenadas Triángulo Central
-            const p1 = { x: 200, y: 120 };  // T1 Centro Arriba
-            const p2 = { x: 130, y: 220 };  // T2 Abajo Izq
-            const p3 = { x: 270, y: 220 };  // T3 Abajo Der
+            // Coordenadas Centro Tonal (Triángulo central)
+            const cx = 250, cy = 160;
+            const r = 55; 
+            const p1 = { x: cx, y: cy - r }; 
+            const p2 = { x: cx - r * Math.cos(Math.PI/6), y: cy + r * Math.sin(Math.PI/6) }; 
+            const p3 = { x: cx + r * Math.cos(Math.PI/6), y: cy + r * Math.sin(Math.PI/6) }; 
 
-            // T1 (Arriba): II -> V horizontal apuntando hacia abajo a T1
-            const posV1 = { x: 200, y: 40 };
-            const posII1 = { x: 120, y: 40 };
+            // Posiciones Exactas para II-V
+            // T1 (Arriba): II -> V en horizontal apuntando abajo
+            const posV1 = { x: p1.x, y: p1.y - 70 };
+            const posII1 = { x: posV1.x - 70, y: posV1.y };
 
-            // T2 (Abajo Izq): V apunta recto (horizontal) hacia la derecha a T2. II viene de abajo en diagonal.
-            const posV2 = { x: 50, y: 220 };
-            const posII2 = { x: 20, y: 290 };
+            // T2 (Abajo Izq): V en horizontal apuntando a T2, II en diagonal desde abajo
+            const posV2 = { x: p2.x - 70, y: p2.y };
+            const posII2 = { x: posV2.x - 40, y: posV2.y + 70 };
 
-            // T3 (Abajo Der): V apunta recto (horizontal) hacia la izquierda a T3. II viene de abajo en diagonal.
-            const posV3 = { x: 350, y: 220 };
-            const posII3 = { x: 380, y: 290 };
+            // T3 (Abajo Der): V en horizontal apuntando a T3, II en diagonal desde abajo
+            const posV3 = { x: p3.x + 70, y: p3.y };
+            const posII3 = { x: posV3.x + 40, y: posV3.y + 70 };
 
             graphicContainer.innerHTML = `
-                <svg viewBox="0 0 400 320" class="w-full h-full text-slate-800 dark:text-slate-200 font-bold overflow-visible">
+                <svg viewBox="0 0 500 350" class="w-full h-full text-slate-800 dark:text-slate-200 font-bold">
                     <defs>
-                        <marker id="arrow-solid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" class="text-slate-500 dark:text-slate-400"/>
+                        <!-- Flechas de Dirección -->
+                        <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <polygon points="0 0, 6 3, 0 6" fill="currentColor" class="text-slate-400" />
                         </marker>
-                        <marker id="arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" class="text-slate-500 dark:text-slate-400"/>
+                        <marker id="arrowhead-dashed" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                            <polygon points="0 0, 6 3, 0 6" fill="currentColor" class="text-slate-600" />
                         </marker>
                     </defs>
 
                     <!-- Triángulo central -->
-                    <polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}" fill="none" stroke="currentColor" stroke-width="2" class="opacity-30"/>
+                    <polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}" fill="none" stroke="currentColor" stroke-width="2" class="opacity-40"/>
                     
-                    <!-- Líneas V -> I (Sólidas con flecha) -->
-                    <!-- V1 a T1 (Baja vertical) -->
-                    <line x1="${posV1.x}" y1="${posV1.y + 16}" x2="${p1.x}" y2="${p1.y - 28}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
-                    <!-- V2 a T2 (Va horizontal a la derecha) -->
-                    <line x1="${posV2.x + 24}" y1="${posV2.y}" x2="${p2.x - 28}" y2="${p2.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
-                    <!-- V3 a T3 (Va horizontal a la izquierda) -->
-                    <line x1="${posV3.x - 24}" y1="${posV3.y}" x2="${p3.x + 28}" y2="${p3.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- Líneas Continuas: V -> I -->
+                    <line x1="${posV1.x}" y1="${posV1.y + 15}" x2="${p1.x}" y2="${p1.y - 25}" stroke="currentColor" stroke-width="2" class="opacity-60" marker-end="url(#arrowhead)"/>
+                    <line x1="${posV2.x + 20}" y1="${posV2.y}" x2="${p2.x - 25}" y2="${p2.y}" stroke="currentColor" stroke-width="2" class="opacity-60" marker-end="url(#arrowhead)"/>
+                    <line x1="${posV3.x - 20}" y1="${posV3.y}" x2="${p3.x + 25}" y2="${p3.y}" stroke="currentColor" stroke-width="2" class="opacity-60" marker-end="url(#arrowhead)"/>
                     
-                    <!-- Líneas II -> V (Punteadas con flecha) -->
-                    <!-- II1 a V1 (Va horizontal a la derecha) -->
-                    <line x1="${posII1.x + 28}" y1="${posII1.y}" x2="${posV1.x - 24}" y2="${posV1.y}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
-                    <!-- II2 a V2 (Sube en diagonal derecha) -->
-                    <line x1="${posII2.x + 16}" y1="${posII2.y - 18}" x2="${posV2.x - 12}" y2="${posV2.y + 14}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
-                    <!-- II3 a V3 (Sube en diagonal izquierda) -->
-                    <line x1="${posII3.x - 16}" y1="${posII3.y - 18}" x2="${posV3.x + 12}" y2="${posV3.y + 14}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- Líneas Punteadas: II -> V -->
+                    <line x1="${posII1.x + 25}" y1="${posII1.y}" x2="${posV1.x - 20}" y2="${posV1.y}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowhead-dashed)"/>
+                    <line x1="${posII2.x + 15}" y1="${posII2.y - 15}" x2="${posV2.x - 15}" y2="${posV2.y + 15}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowhead-dashed)"/>
+                    <line x1="${posII3.x - 15}" y1="${posII3.y - 15}" x2="${posV3.x + 15}" y2="${posV3.y + 15}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrowhead-dashed)"/>
 
-                    <!-- Bloques II y V -->
+                    <!-- Cajas Dinámicas de II y V -->
                     <g id="svg-node-ii1" class="coltrane-node">
-                        <rect x="${posII1.x - 26}" y="${posII1.y - 14}" width="52" height="28" class="ii-v-bg" />
-                        <text x="${posII1.x}" y="${posII1.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii1}-7</text>
+                        <rect x="${posII1.x - 25}" y="${posII1.y - 15}" width="50" height="30" class="ii-v-bg" />
+                        <text x="${posII1.x}" y="${posII1.y + 5}" text-anchor="middle" class="ii-v-text">${ii1}-7</text>
                     </g>
                     <g id="svg-node-v1" class="coltrane-node">
-                        <rect x="${posV1.x - 22}" y="${posV1.y - 14}" width="44" height="28" class="ii-v-bg" />
-                        <text x="${posV1.x}" y="${posV1.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v1}7</text>
+                        <rect x="${posV1.x - 20}" y="${posV1.y - 15}" width="40" height="30" class="ii-v-bg" />
+                        <text x="${posV1.x}" y="${posV1.y + 5}" text-anchor="middle" class="ii-v-text">${v1}7</text>
                     </g>
                     
                     <g id="svg-node-ii2" class="coltrane-node">
-                        <rect x="${posII2.x - 26}" y="${posII2.y - 14}" width="52" height="28" class="ii-v-bg" />
-                        <text x="${posII2.x}" y="${posII2.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii2}-7</text>
+                        <rect x="${posII2.x - 25}" y="${posII2.y - 15}" width="50" height="30" class="ii-v-bg" />
+                        <text x="${posII2.x}" y="${posII2.y + 5}" text-anchor="middle" class="ii-v-text">${ii2}-7</text>
                     </g>
                     <g id="svg-node-v2" class="coltrane-node">
-                        <rect x="${posV2.x - 22}" y="${posV2.y - 14}" width="44" height="28" class="ii-v-bg" />
-                        <text x="${posV2.x}" y="${posV2.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v2}7</text>
+                        <rect x="${posV2.x - 20}" y="${posV2.y - 15}" width="40" height="30" class="ii-v-bg" />
+                        <text x="${posV2.x}" y="${posV2.y + 5}" text-anchor="middle" class="ii-v-text">${v2}7</text>
                     </g>
                     
                     <g id="svg-node-ii3" class="coltrane-node">
-                        <rect x="${posII3.x - 26}" y="${posII3.y - 14}" width="52" height="28" class="ii-v-bg" />
-                        <text x="${posII3.x}" y="${posII3.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii3}-7</text>
+                        <rect x="${posII3.x - 25}" y="${posII3.y - 15}" width="50" height="30" class="ii-v-bg" />
+                        <text x="${posII3.x}" y="${posII3.y + 5}" text-anchor="middle" class="ii-v-text">${ii3}-7</text>
                     </g>
                     <g id="svg-node-v3" class="coltrane-node">
-                        <rect x="${posV3.x - 22}" y="${posV3.y - 14}" width="44" height="28" class="ii-v-bg" />
-                        <text x="${posV3.x}" y="${posV3.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v3}7</text>
+                        <rect x="${posV3.x - 20}" y="${posV3.y - 15}" width="40" height="30" class="ii-v-bg" />
+                        <text x="${posV3.x}" y="${posV3.y + 5}" text-anchor="middle" class="ii-v-text">${v3}7</text>
                     </g>
 
                     <!-- Tónicas Maj7 (Círculos) -->
                     <g id="svg-node-t1" class="coltrane-node">
-                        <circle cx="${p1.x}" cy="${p1.y}" r="24" fill="white" stroke="#3b82f6" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p1.x}" cy="${p1.y}" r="26" fill="white" stroke="#3b82f6" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p1.x}" y="${p1.y + 5}" text-anchor="middle" fill="#3b82f6" class="tonic-text">${t1}Δ7</text>
                     </g>
                     <g id="svg-node-t2" class="coltrane-node">
-                        <circle cx="${p2.x}" cy="${p2.y}" r="24" fill="white" stroke="#ef4444" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p2.x}" cy="${p2.y}" r="26" fill="white" stroke="#ef4444" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p2.x}" y="${p2.y + 5}" text-anchor="middle" fill="#ef4444" class="tonic-text">${t2}Δ7</text>
                     </g>
                     <g id="svg-node-t3" class="coltrane-node">
-                        <circle cx="${p3.x}" cy="${p3.y}" r="24" fill="white" stroke="#eab308" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p3.x}" cy="${p3.y}" r="26" fill="white" stroke="#eab308" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p3.x}" y="${p3.y + 5}" text-anchor="middle" fill="#eab308" class="tonic-text">${t3}Δ7</text>
                     </g>
                 </svg>
@@ -783,8 +809,8 @@
                     let chordsInMeasure = measureChords.length;
                     
                     let svgNodeId = null;
-                    let tagMatch = chord.match(/_(T\d|V\d|II\d)/i); // Extrae T1, V1, II1 etc
-                    if (tagMatch) svgNodeId = tagMatch[1].toLowerCase(); // Convierte a t1, v1, ii1
+                    let tagMatch = chord.match(/_(T\d|V\d|II\d)/i);
+                    if (tagMatch) svgNodeId = tagMatch[1].toLowerCase();
 
                     let notesData = computeNextVoicing(chord, prevMidiNotes);
                     prevMidiNotes = notesData.midi; 
@@ -837,35 +863,28 @@
 
                 const processChord = (c, sizeClass, chordIdx, vMeasureId) => {
                     let color = "text-slate-800 dark:text-slate-100";
-                    let text = c;
-                    let isSubbed = false;
-                    let isDom = false;
+                    let isSubbed = c.endsWith('_SUB');
+                    let isT1 = c.includes('_T1'), isT2 = c.includes('_T2'), isT3 = c.includes('_T3');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d/g, '').replace('_SUB', '');
+                    let isDom = isSubbed || isDominant(cleanC);
 
-                    let isT1 = text.includes('_T1'), isT2 = text.includes('_T2'), isT3 = text.includes('_T3');
-                    text = text.replace(/_V\d|_II\d/g, '');
+                    let text = cleanC;
 
-                    if (text.endsWith('_SUB')) {
-                        isSubbed = true;
-                        text = text.replace('_SUB', '');
-                        isDom = true;
-                    } else if (isDominant(text)) {
-                        isDom = true;
+                    // IMPORTANTE: Se envía 'c' crudo al analizador para que detecte el _SUB
+                    if (romanMode && !isColtrane) {
+                        text = convertToRoman(c, keySelect.value);
                     }
 
                     if (isSubbed) {
                         color = "text-amber-500 dark:text-amber-400 font-bold border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
                     } else if (isT1) { 
-                        color = "text-blue-500 font-black"; text = text.replace('_T1', ''); 
+                        color = "text-blue-500 font-black"; 
                     } else if (isT2) { 
-                        color = "text-red-500 font-black"; text = text.replace('_T2', ''); 
+                        color = "text-red-500 font-black"; 
                     } else if (isT3) { 
-                        color = "text-amber-500 font-black"; text = text.replace('_T3', ''); 
+                        color = "text-amber-500 font-black"; 
                     } else if (isDom) {
                         color += " is-dominant";
-                    }
-                    
-                    if (romanMode && !isColtrane) {
-                        text = convertToRoman(text, keySelect.value);
                     }
 
                     let interactiveClasses = "pointer-events-auto ";
@@ -879,9 +898,10 @@
                 };
 
                 let displayHtml = '';
-                const size1 = "text-2xl sm:text-3xl md:text-4xl lg:text-5xl tracking-tighter";
-                const size2 = "text-xl sm:text-2xl md:text-3xl lg:text-4xl tracking-tighter";
-                const size3 = "text-sm sm:text-base md:text-lg lg:text-xl tracking-tighter";
+                // Tamaños dinámicos responsivos adaptados al contenedor
+                const size1 = "text-3xl sm:text-4xl lg:text-5xl tracking-tighter";
+                const size2 = "text-2xl sm:text-3xl lg:text-4xl tracking-tighter";
+                const size3 = "text-sm sm:text-lg lg:text-xl tracking-tighter";
                 
                 if(vMeasure.chords.length === 1) {
                     displayHtml = processChord(vMeasure.chords[0], size1, 0, index);
@@ -894,7 +914,7 @@
                 measureDiv.innerHTML = `
                     <span class="measure-number absolute top-1 left-2 text-[10px] md:text-xs text-slate-400 font-mono z-10">${index + 1}</span>
                     ${sectionLabelHtml}
-                    <div class="flex flex-wrap items-center justify-center w-full h-full pointer-events-none gap-x-1 gap-y-1">${displayHtml}</div>
+                    <div class="flex flex-wrap items-center justify-center w-full h-full pointer-events-none gap-x-1 gap-y-1 px-1">${displayHtml}</div>
                 `;
                 
                 measureDiv.dataset.index = index;
