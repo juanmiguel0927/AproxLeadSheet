@@ -560,96 +560,107 @@
             const t2 = Tone.Frequency(t1 + "4").transpose(-4).toNote().replace(/[0-9]/g, ''); 
             const t3 = Tone.Frequency(t2 + "4").transpose(-4).toNote().replace(/[0-9]/g, '');
 
-            const v1 = Tone.Frequency(t1 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
+            let v1 = Tone.Frequency(t1 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             const ii1 = Tone.Frequency(v1 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             
-            const v2 = Tone.Frequency(t2 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
+            let v2 = Tone.Frequency(t2 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             const ii2 = Tone.Frequency(v2 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             
-            const v3 = Tone.Frequency(t3 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
+            let v3 = Tone.Frequency(t3 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
             const ii3 = Tone.Frequency(v3 + "4").transpose(7).toNote().replace(/[0-9]/g, '');
 
-            // Coordenadas Exactas basadas en la imagen conceptual
-            const p1 = { x: 200, y: 110 };  // T1 Centro Arriba
-            const p2 = { x: 140, y: 210 };  // T2 Abajo Izq
-            const p3 = { x: 260, y: 210 };  // T3 Abajo Der
+            if (globalTritone) {
+                v1 = tritoneRootMap[v1] || v1;
+                v2 = tritoneRootMap[v2] || v2;
+                v3 = tritoneRootMap[v3] || v3;
+            }
 
-            // V1 e II1 (Horizontales, apuntando abajo a T1)
-            const posV1 = { x: 200, y: 35 };
-            const posII1 = { x: 110, y: 35 };
+            // Coordenadas Triángulo Central
+            const p1 = { x: 200, y: 120 };  // T1 Centro Arriba
+            const p2 = { x: 130, y: 220 };  // T2 Abajo Izq
+            const p3 = { x: 270, y: 220 };  // T3 Abajo Der
 
-            // V2 e II2 (Diagonal, apuntando derecha a T2)
-            const posV2 = { x: 60, y: 210 };
-            const posII2 = { x: 20, y: 270 };
+            // T1 (Arriba): II -> V horizontal apuntando hacia abajo a T1
+            const posV1 = { x: 200, y: 40 };
+            const posII1 = { x: 120, y: 40 };
 
-            // V3 e II3 (Diagonal, apuntando izquierda a T3)
-            const posV3 = { x: 340, y: 210 };
-            const posII3 = { x: 380, y: 270 };
+            // T2 (Abajo Izq): V apunta recto (horizontal) hacia la derecha a T2. II viene de abajo en diagonal.
+            const posV2 = { x: 50, y: 220 };
+            const posII2 = { x: 20, y: 290 };
+
+            // T3 (Abajo Der): V apunta recto (horizontal) hacia la izquierda a T3. II viene de abajo en diagonal.
+            const posV3 = { x: 350, y: 220 };
+            const posII3 = { x: 380, y: 290 };
 
             graphicContainer.innerHTML = `
                 <svg viewBox="0 0 400 320" class="w-full h-full text-slate-800 dark:text-slate-200 font-bold overflow-visible">
                     <defs>
-                        <marker id="arrow-solid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" class="text-slate-600 dark:text-slate-400"/>
+                        <marker id="arrow-solid" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" class="text-slate-500 dark:text-slate-400"/>
                         </marker>
-                        <marker id="arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                        <marker id="arrow-dashed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                             <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" class="text-slate-500 dark:text-slate-400"/>
                         </marker>
                     </defs>
 
                     <!-- Triángulo central -->
-                    <polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}" fill="none" stroke="currentColor" stroke-width="2" class="opacity-40"/>
+                    <polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}" fill="none" stroke="currentColor" stroke-width="2" class="opacity-30"/>
                     
                     <!-- Líneas V -> I (Sólidas con flecha) -->
-                    <line x1="${posV1.x}" y1="${posV1.y + 14}" x2="${p1.x}" y2="${p1.y - 25}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-600 dark:text-slate-400"/>
-                    <line x1="${posV2.x + 22}" y1="${posV2.y}" x2="${p2.x - 25}" y2="${p2.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-600 dark:text-slate-400"/>
-                    <line x1="${posV3.x - 22}" y1="${posV3.y}" x2="${p3.x + 25}" y2="${p3.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-600 dark:text-slate-400"/>
+                    <!-- V1 a T1 (Baja vertical) -->
+                    <line x1="${posV1.x}" y1="${posV1.y + 16}" x2="${p1.x}" y2="${p1.y - 28}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- V2 a T2 (Va horizontal a la derecha) -->
+                    <line x1="${posV2.x + 24}" y1="${posV2.y}" x2="${p2.x - 28}" y2="${p2.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- V3 a T3 (Va horizontal a la izquierda) -->
+                    <line x1="${posV3.x - 24}" y1="${posV3.y}" x2="${p3.x + 28}" y2="${p3.y}" stroke="currentColor" stroke-width="2" marker-end="url(#arrow-solid)" class="text-slate-500 dark:text-slate-400"/>
                     
                     <!-- Líneas II -> V (Punteadas con flecha) -->
-                    <line x1="${posII1.x + 24}" y1="${posII1.y}" x2="${posV1.x - 22}" y2="${posV1.y}" stroke="currentColor" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
-                    <line x1="${posII2.x + 12}" y1="${posII2.y - 12}" x2="${posV2.x - 12}" y2="${posV2.y + 12}" stroke="currentColor" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
-                    <line x1="${posII3.x - 12}" y1="${posII3.y - 12}" x2="${posV3.x + 12}" y2="${posV3.y + 12}" stroke="currentColor" stroke-width="2" stroke-dasharray="4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- II1 a V1 (Va horizontal a la derecha) -->
+                    <line x1="${posII1.x + 28}" y1="${posII1.y}" x2="${posV1.x - 24}" y2="${posV1.y}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- II2 a V2 (Sube en diagonal derecha) -->
+                    <line x1="${posII2.x + 16}" y1="${posII2.y - 18}" x2="${posV2.x - 12}" y2="${posV2.y + 14}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
+                    <!-- II3 a V3 (Sube en diagonal izquierda) -->
+                    <line x1="${posII3.x - 16}" y1="${posII3.y - 18}" x2="${posV3.x + 12}" y2="${posV3.y + 14}" stroke="currentColor" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow-dashed)" class="text-slate-500 dark:text-slate-400"/>
 
                     <!-- Bloques II y V -->
-                    <!-- NOTA IMPORTANTE: Los IDs son estáticos (svg-node-ii1) para coincidir con el motor de audio -->
                     <g id="svg-node-ii1" class="coltrane-node">
-                        <rect x="${posII1.x - 24}" y="${posII1.y - 14}" width="48" height="28" class="ii-v-bg" />
+                        <rect x="${posII1.x - 26}" y="${posII1.y - 14}" width="52" height="28" class="ii-v-bg" />
                         <text x="${posII1.x}" y="${posII1.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii1}-7</text>
                     </g>
                     <g id="svg-node-v1" class="coltrane-node">
-                        <rect x="${posV1.x - 20}" y="${posV1.y - 14}" width="40" height="28" class="ii-v-bg" />
+                        <rect x="${posV1.x - 22}" y="${posV1.y - 14}" width="44" height="28" class="ii-v-bg" />
                         <text x="${posV1.x}" y="${posV1.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v1}7</text>
                     </g>
                     
                     <g id="svg-node-ii2" class="coltrane-node">
-                        <rect x="${posII2.x - 24}" y="${posII2.y - 14}" width="48" height="28" class="ii-v-bg" />
+                        <rect x="${posII2.x - 26}" y="${posII2.y - 14}" width="52" height="28" class="ii-v-bg" />
                         <text x="${posII2.x}" y="${posII2.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii2}-7</text>
                     </g>
                     <g id="svg-node-v2" class="coltrane-node">
-                        <rect x="${posV2.x - 20}" y="${posV2.y - 14}" width="40" height="28" class="ii-v-bg" />
+                        <rect x="${posV2.x - 22}" y="${posV2.y - 14}" width="44" height="28" class="ii-v-bg" />
                         <text x="${posV2.x}" y="${posV2.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v2}7</text>
                     </g>
                     
                     <g id="svg-node-ii3" class="coltrane-node">
-                        <rect x="${posII3.x - 24}" y="${posII3.y - 14}" width="48" height="28" class="ii-v-bg" />
+                        <rect x="${posII3.x - 26}" y="${posII3.y - 14}" width="52" height="28" class="ii-v-bg" />
                         <text x="${posII3.x}" y="${posII3.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${ii3}-7</text>
                     </g>
                     <g id="svg-node-v3" class="coltrane-node">
-                        <rect x="${posV3.x - 20}" y="${posV3.y - 14}" width="40" height="28" class="ii-v-bg" />
+                        <rect x="${posV3.x - 22}" y="${posV3.y - 14}" width="44" height="28" class="ii-v-bg" />
                         <text x="${posV3.x}" y="${posV3.y + 4}" text-anchor="middle" class="ii-v-text text-[13px]">${v3}7</text>
                     </g>
 
                     <!-- Tónicas Maj7 (Círculos) -->
                     <g id="svg-node-t1" class="coltrane-node">
-                        <circle cx="${p1.x}" cy="${p1.y}" r="22" fill="white" stroke="#3b82f6" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p1.x}" cy="${p1.y}" r="24" fill="white" stroke="#3b82f6" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p1.x}" y="${p1.y + 5}" text-anchor="middle" fill="#3b82f6" class="tonic-text">${t1}Δ7</text>
                     </g>
                     <g id="svg-node-t2" class="coltrane-node">
-                        <circle cx="${p2.x}" cy="${p2.y}" r="22" fill="white" stroke="#ef4444" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p2.x}" cy="${p2.y}" r="24" fill="white" stroke="#ef4444" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p2.x}" y="${p2.y + 5}" text-anchor="middle" fill="#ef4444" class="tonic-text">${t2}Δ7</text>
                     </g>
                     <g id="svg-node-t3" class="coltrane-node">
-                        <circle cx="${p3.x}" cy="${p3.y}" r="22" fill="white" stroke="#eab308" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
+                        <circle cx="${p3.x}" cy="${p3.y}" r="24" fill="white" stroke="#eab308" stroke-width="3" class="dark:fill-slate-800 tonic-circle"/>
                         <text x="${p3.x}" y="${p3.y + 5}" text-anchor="middle" fill="#eab308" class="tonic-text">${t3}Δ7</text>
                     </g>
                 </svg>
