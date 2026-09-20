@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,13 +47,9 @@
         .chord-text { font-family: 'Courier New', Courier, monospace; white-space: nowrap !important; line-height: 1.1;}
 
         .bracket-container {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: center;
-            align-items: baseline;
-            padding-bottom: 2px;
-            position: relative;
+            display: flex; flex-direction: row; flex-wrap: nowrap;
+            justify-content: center; align-items: baseline;
+            padding-bottom: 2px; position: relative;
         }
 
         .ii-v-bracket::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 5px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
@@ -298,7 +295,7 @@
                 </div>
             </div>
 
-            <!-- Editor de Progresión Global (Sólo visible en Personalizada) -->
+            <!-- Editor de Progresión Global -->
             <div id="customInputContainer" class="hidden w-full mt-1 sm:mt-2 pt-1 sm:pt-2 border-t border-slate-200 dark:border-slate-700 pb-0.5 sm:pb-1">
                 <div class="flex gap-1.5 sm:gap-2">
                     <input type="text" id="customProgInput" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm font-mono p-1.5 sm:p-2 rounded-lg border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 outline-none shadow-inner" placeholder="Ej: Cmaj7 |: Dm7 | G7 :| Cmaj7">
@@ -331,7 +328,7 @@
         </div>
 
         <!-- Contenedor del Gráfico Coltrane -->
-        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink min-h-[110px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
+        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink min-h-[90px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
             <div id="coltrane-graphic" class="w-full h-full flex justify-center items-center"></div>
         </div>
 
@@ -489,6 +486,7 @@
             const isSubbed = chordStr.includes('_SUB');
             const isDimmed = chordStr.includes('_DIM');
             
+            // Bloqueo estricto del análisis en Multitónica y Blues alterados
             if (progData && progData.id === "multitonic-coltrane") return cleanStr;
             if (progData && progData.id === "blues" && selectedVar !== 0) return cleanStr;
 
@@ -977,10 +975,12 @@
                 if (totalRows <= 2) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`;
                     grid.style.alignContent = 'start';
-                } else if (totalRows >= 8) {
+                } else if (totalRows <= 8 && totalRows > 4) {
+                    // Magia elástica SOLO para Rhythm Changes (8 filas)
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
                     grid.style.alignContent = 'stretch';
                 } else {
+                    // Multitónica y demás (3, 4 filas) mantienen un tamaño fijo holgado
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`;
                     grid.style.alignContent = 'start';
                 }
@@ -1026,31 +1026,33 @@
                 if (hasBrackets) totalChars += 2; 
                 if (vMeasure.chords.length > 1) totalChars += 1; 
 
+                // Lógica de escalado quirúrgica
                 let textSizeClass = "";
-                
                 if (totalRows >= 8) { 
                     if (totalChars > 17) textSizeClass = "text-[0.45rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 15) textSizeClass = "text-[0.5rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 12) textSizeClass = "text-[0.55rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 8) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tight";
-                    else if (totalChars > 5) textSizeClass = "text-[0.75rem] sm:text-base";
-                    else textSizeClass = "text-[0.85rem] sm:text-lg";
+                    else if (totalChars > 14) textSizeClass = "text-[0.55rem] sm:text-[0.65rem] tracking-tighter";
+                    else if (totalChars > 11) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[0.75rem] sm:text-base tracking-tighter";
+                    else if (totalChars > 4) textSizeClass = "text-[0.85rem] sm:text-lg tracking-tight";
+                    else textSizeClass = "text-[0.95rem] sm:text-xl";
                 } else if (totalRows >= 4) { 
                     if (totalChars > 17) textSizeClass = "text-[0.5rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 15) textSizeClass = "text-[0.55rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 12) textSizeClass = "text-[0.6rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 8) textSizeClass = "text-[0.7rem] sm:text-base tracking-tight";
-                    else if (totalChars > 5) textSizeClass = "text-[0.85rem] sm:text-lg";
-                    else textSizeClass = "text-[1rem] sm:text-xl md:text-3xl";
+                    else if (totalChars > 14) textSizeClass = "text-[0.6rem] sm:text-[0.65rem] tracking-tighter";
+                    else if (totalChars > 12) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
+                    else if (totalChars > 10) textSizeClass = "text-[0.75rem] sm:text-base tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[0.85rem] sm:text-xl md:text-3xl tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[0.95rem] sm:text-2xl md:text-4xl";
+                    else textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl";
                 } else { 
-                    if (totalChars > 17) textSizeClass = "text-[0.55rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 15) textSizeClass = "text-[0.6rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 12) textSizeClass = "text-[0.6rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 8) textSizeClass = "text-[0.75rem] sm:text-lg tracking-tight";
-                    else if (totalChars > 5) textSizeClass = "text-[0.95rem] sm:text-xl md:text-3xl lg:text-4xl";
+                    if (totalChars > 17) textSizeClass = "text-[0.6rem] sm:text-xs tracking-tighter";
+                    else if (totalChars > 14) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
+                    else if (totalChars > 12) textSizeClass = "text-[0.75rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
+                    else if (totalChars > 9) textSizeClass = "text-[0.85rem] sm:text-lg md:text-2xl lg:text-3xl tracking-tight";
+                    else if (totalChars > 6) textSizeClass = "text-[1.1rem] sm:text-2xl md:text-4xl lg:text-5xl";
                     else textSizeClass = "text-[1.3rem] sm:text-3xl md:text-5xl lg:text-6xl";
                 }
 
+                // Asegurar siempre un gap mínimo entre acordes
                 let adaptiveGapClass = "gap-0.5 sm:gap-2"; 
                 if (totalChars <= 8) adaptiveGapClass = "gap-1 sm:gap-2";
 
@@ -1082,7 +1084,8 @@
                     
                     if (isBkt && !inBracket) {
                         let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        let bktPadClass = "px-1 sm:px-2";
+                        // Corchete protector
+                        let bktPadClass = "px-[3px] sm:px-2";
                         measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} ${bktPadClass} ${adaptiveGapClass}">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
@@ -1114,12 +1117,14 @@
             if (activeEl) {
                 activeEl.classList.add('measure-active');
                 try {
+                    // Auto-Scroll inteligente durante la reproducción
                     const container = document.getElementById('gridScrollContainer');
-                    const rect = activeEl.getBoundingClientRect();
-                    const containerRect = container.getBoundingClientRect();
-                    
-                    if (rect.bottom > containerRect.bottom || rect.top < containerRect.top) {
-                        activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    if (container) {
+                        const rect = activeEl.getBoundingClientRect();
+                        const containerRect = container.getBoundingClientRect();
+                        if (rect.bottom > containerRect.bottom || rect.top < containerRect.top) {
+                            activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
                     }
                 } catch(e) {
                     activeEl.scrollIntoView();
