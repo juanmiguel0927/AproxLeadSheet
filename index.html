@@ -30,7 +30,7 @@
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
 
         .measure-box {
-            transition: all 0.15s ease-in-out; min-height: 50px; height: 100%; /* Reducido para evitar scroll */
+            transition: all 0.15s ease-in-out; min-height: 50px; height: 100%;
             cursor: pointer; display: flex; flex-direction: column; justify-content: center;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
@@ -43,6 +43,10 @@
         .repeat-end::after { content: ':'; font-weight: bold; font-size: 20px; line-height: 1; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #3b82f6; opacity: 0.8; font-family: serif; }
 
         .chord-text { font-family: 'Courier New', Courier, monospace; }
+
+        .ii-v-bracket { position: relative; margin-bottom: 2px; }
+        .ii-v-bracket::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+        .dark .ii-v-bracket::after { border-color: #94a3b8; }
 
         /* Estilos Metrónomo Visual */
         .metronome-dot { transition: all 0.05s ease-out; }
@@ -61,7 +65,6 @@
         .coltrane-node .ii-v-bg { fill: transparent; rx: 6px; transition: all 0.15s ease; }
         .ii-v-text { fill: currentColor; transition: fill 0.15s ease; }
         
-        /* Corregido: Colores de los nodos al activarse en modo oscuro */
         .coltrane-node.active-node .ii-v-bg { fill: #fef08a !important; stroke: #eab308 !important; stroke-width: 2px; }
         .dark .coltrane-node.active-node .ii-v-bg { fill: #fef08a !important; stroke: #ca8a04 !important; }
         
@@ -71,7 +74,7 @@
         .coltrane-node .tonic-circle { transition: all 0.2s ease; }
         .coltrane-node.active-node .tonic-circle { fill: currentColor !important; stroke-width: 4px; filter: drop-shadow(0 0 10px currentColor); }
         .coltrane-node.active-node .tonic-text { fill: white !important; font-weight: 900; }
-        .dark .coltrane-node.active-node .tonic-text { fill: #0f172a !important; } /* Texto oscuro sobre circulo brillante en dark mode */
+        .dark .coltrane-node.active-node .tonic-text { fill: #0f172a !important; }
 
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #3b82f6; cursor: pointer; margin-top: -6px; }
@@ -82,8 +85,11 @@
         input#globalTritoneToggle:checked ~ .toggle-dot { background-color: #f59e0b; }
         input:checked ~ .toggle-track { background-color: #dbeafe; }
         input#globalTritoneToggle:checked ~ .toggle-track { background-color: #fef3c7; }
+        input#relacionToggle:checked ~ .toggle-dot, input#relacionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #10b981; }
+        input#relacionToggle:checked ~ .toggle-track, input#relacionToggleMobile:checked ~ .toggle-track { background-color: #d1fae5; }
         .dark input:checked ~ .toggle-track { background-color: #1e3a8a; }
         .dark input#globalTritoneToggle:checked ~ .toggle-track { background-color: #78350f; }
+        .dark input#relacionToggle:checked ~ .toggle-track, .dark input#relacionToggleMobile:checked ~ .toggle-track { background-color: #064e3b; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
@@ -92,7 +98,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
         
         @media (max-width: 640px) {
-            .measure-box { min-height: 45px; padding: 0.1rem; } /* Más ajustado para móviles */
+            .measure-box { min-height: 45px; padding: 0.1rem; } 
             .section-label { font-size: 8px; padding: 1px 3px; }
             .measure-number { font-size: 8px; top: 2px; left: 4px; }
             .repeat-start::after, .repeat-end::after { font-size: 14px; left: 4px; right: 4px;}
@@ -101,16 +107,21 @@
             .controls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; width: 100%; }
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
-            /* Ajuste de fuente para evitar rupturas */
             .chord-text { font-size: 0.85rem !important; }
+            
+            /* DENSIDAD DINAMICA PARA PROGRESIONES LARGAS (Mobile) */
+            .dense-grid .measure-box { min-height: 28px !important; }
+            .dense-grid .chord-text { font-size: 0.7rem !important; line-height: 1; }
+            .dense-grid .measure-number { font-size: 7px; top: 1px; left: 2px; }
+            .dense-grid { gap: 2px !important; padding-bottom: 0.5rem !important; }
         }
     </style>
 </head>
 
-<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-0 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-2 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
     <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700">
         
-        <!-- Header / Controles reducidos en padding para ganar espacio -->
+        <!-- Header / Controles -->
         <div class="bg-slate-100 dark:bg-slate-800/80 p-1.5 border-b border-slate-200 dark:border-slate-700 flex flex-col relative z-20 shrink-0">
             
             <div class="flex items-center justify-between w-full mb-1 px-1">
@@ -171,6 +182,15 @@
                             <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
                         </div>
                         <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">Tritono</span>
+                    </label>
+
+                    <label class="flex items-center gap-2 cursor-pointer group" title="Activar Relación II-V para Dominantes Secundarios">
+                        <div class="relative">
+                            <input type="checkbox" id="relacionToggle" class="sr-only">
+                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">II-V</span>
                     </label>
 
                     <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-3 ml-1">
@@ -238,6 +258,14 @@
                             </div>
                             <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Tritono</span>
                         </label>
+                        <label class="flex items-center gap-1 cursor-pointer group">
+                            <div class="relative">
+                                <input type="checkbox" id="relacionToggleMobile" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">II-V</span>
+                        </label>
                     </div>
 
                     <div class="flex gap-1 ml-1">
@@ -256,13 +284,13 @@
                 </div>
             </div>
 
-            <!-- Input Progresión Personalizada CON BOTON DE PLECA -->
-            <div id="customInputContainer" class="hidden w-full mt-2 pt-2 border-t border-slate-200 dark:border-slate-700">
-                <div class="flex gap-2">
-                    <input type="text" id="customProgInput" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-sm font-mono p-2 rounded-lg border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 outline-none shadow-inner placeholder-slate-400" placeholder="Ej: Cmaj7 | A7 | Dm7 | G7" value="Cmaj7 | A7 | Dm7 | G7">
-                    <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900 dark:hover:bg-blue-800 dark:text-blue-300 px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200 dark:border-blue-700" title="Insertar Separador de Compás">|</button>
+            <!-- Input Progresión Personalizada -->
+            <div id="customInputContainer" class="hidden w-full mt-1 sm:mt-2 pt-1 sm:pt-2 border-t border-slate-200 dark:border-slate-700 pb-0.5 sm:pb-1">
+                <div class="flex gap-1.5 sm:gap-2">
+                    <input type="text" id="customProgInput" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm font-mono p-1.5 sm:p-2 rounded-lg border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 outline-none shadow-inner placeholder-slate-400" placeholder="Ej: Cmaj7 | A7 | Dm7 | G7" value="Cmaj7 | A7 | Dm7 | G7">
+                    <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900 dark:hover:bg-blue-800 dark:text-blue-300 px-2 sm:px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200 dark:border-blue-700 shrink-0" title="Insertar Separador de Compás">|</button>
                 </div>
-                <p class="text-[9px] text-slate-500 mt-1 pl-1">Separa cada compás con el símbolo de barra vertical ( | ) usando el botón derecho. Usa notación estándar.</p>
+                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Separa cada compás con barra vertical ( | ).</p>
             </div>
         </div>
 
@@ -280,8 +308,8 @@
             <span id="startMeasureIndicator" class="font-bold whitespace-nowrap">Inicio: 1</span>
         </div>
 
-        <!-- Contenedor del Gráfico AMPLIADO (max-height: 200px) -->
-        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink-0 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden" style="max-height: 200px;">
+        <!-- Contenedor del Gráfico -->
+        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink-0 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
             <div id="coltrane-graphic" class="w-full h-full flex justify-center items-center"></div>
         </div>
 
@@ -295,11 +323,40 @@
             { id: "custom", name: "✏️ Prog. Personalizada...", baseKey: "C", sections: [{ type: "A", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "Cmaj7 | A7 | Dm7 | G7" }] },
             { id: "251-maj-all", name: "II-V-I Mayor (Todos los Tonos)", baseKey: "C", sections: [{ type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7 | G7 | Cmaj7 | Cmaj7 | Cm7 | F7 | Bbmaj7 | Bbmaj7 | Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Abm7 | Db7 | Gbmaj7 | Gbmaj7 | F#m7 | B7 | Emaj7 | Emaj7 | Em7 | A7 | Dmaj7 | Dmaj7 | Dm7 | G7 | Cmaj7 | Cmaj7" }] },
             { id: "251-min-all", name: "II-V-I Menor (Todos los Tonos)", baseKey: "C", sections: [{ type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7(b5) | G7 | Cm7 | Cm7 | Cm7(b5) | F7 | Bbm7 | Bbm7 | Bbm7(b5) | Eb7 | Abm7 | Abm7 | Abm7(b5) | Db7 | Gbm7 | Gbm7 | F#m7(b5) | B7 | Em7 | Em7 | Em7(b5) | A7 | Dm7 | Dm7 | Dm7(b5) | G7 | Cm7 | Cm7" }] },
-            { id: "turnarounds", name: "Turnarounds (Ciclos)", baseKey: "C", variations: [[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | Am7 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7 | Dm7 | G7 | Cmaj7 | A7 | Dm7 | G7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Em7 | A7 | Dm7 | G7 | Em7 | A7 | Dm7 | G7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cm7 | Am7(b5) | Dm7(b5) | G7 | Cm7 | Am7(b5) | Dm7(b5) | G7" } ]], sections: [] },
-            { id: "secondary-dominants", name: "Dominantes Secundarios", baseKey: "C", variations: [[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | A7 | Dm7 | D7 | G7 | G7 | Cmaj7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | Em7(b5) A7 | Dm7 | Am7 D7 | G7 | G7 | Cmaj7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | C7 | Fmaj7 | E7 | Am7 | A7 | Dm7 G7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | C7 | Fmaj7 | B7 | Emaj7 | A7 | Dm7 G7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | C7 | Fmaj7 | B7 | Emaj7 | A7 | Dm7 | G7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | C7 | Fmaj7 | E7 | Am7 | A7 | Dm7 | G7 | Cmaj7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | C7 | Fmaj7 | E7 | Am7 | A7 | Dm7 | G7 | Cmaj7" } ]], sections: [] },
-            // Giant Steps - Matched exactly to the 16-measure form provided in the sheet music
+            { id: "turnarounds", name: "Turnarounds (Ciclos)", baseKey: "C", variations: [
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | Am7 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7 | Dm7 | G7 | Cmaj7 | A7 | Dm7 | G7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Em7 | A7 | Dm7 | G7 | Em7 | A7 | Dm7 | G7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cm7 | Am7(b5) | Dm7(b5) | G7 | Cm7 | Am7(b5) | Dm7(b5) | G7" } ]
+            ], sections: [] },
+            { id: "secondary-dominants", name: "Dominantes Secundarios", baseKey: "C", variations: [
+                [ { type: "V7/II", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],
+                [ { type: "V7/III", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | B7_SEC3 | Em7 | A7 | Dm7 | G7 | Cmaj7 | G7" } ],
+                [ { type: "V7/IV", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 Bb7 | Cmaj7 | A7 | Dm7 | G7" } ],
+                [ { type: "V7/V", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | D7_SEC5 | G7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],
+                [ { type: "V7/VI", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | E7_SEC6 | Am7 | D7 | Dm7 | G7 | Cmaj7 | G7" } ],
+                [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7 | Dm7 | G7" } ]
+            ], sections: [] },
             { id: "multitonic-coltrane", name: "Multitónica (Coltrane)", baseKey: "B", sections: [{ type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" }] },
-            { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],[ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 C7 | F7 D7 | Gm7 C7 | F7 | C7" } ]], sections: [] }
+            { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Bb7 | Fmaj7 | Cm7 F7 | Bb7 | Bo7 | Fmaj7 | Am7 D7 | Gm7 | C7 | Fmaj7 D7 | Gm7 C7" } ],
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
+            ], sections: [] },
+            { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
+                [ 
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 G7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
+                    { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 G7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
+                ],
+                [ 
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
+                    { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
+                ]
+            ], sections: [] }
         ];
 
         const noteLetters = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
@@ -316,7 +373,6 @@
 
         function getDisplayNote(noteStr, nodeId) {
             let n = noteStr.replace(/[0-9]/g, '');
-            // Forzamos que D# se lea como Eb y A# como Bb por defecto para Coltrane.
             if (n === 'D#') n = 'Eb'; if (n === 'A#') n = 'Bb'; if (n === 'G#') n = 'Ab';
             if (window.svgEnharmonicOverrides && window.svgEnharmonicOverrides[nodeId]) {
                 return enharmonicPairs[n] || n;
@@ -380,11 +436,20 @@
             const progData = progressionLibrary[progIndex];
             const selectedVar = variationSelect ? variationSelect.value : "0";
 
-            if (progData.id === "custom") return chordStr;
-            if (progData.id === "multitonic-coltrane") return chordStr.replace('_SUB', '').replace(/_T\d|_V\d|_II\d/g, '');
+            if (progData.id === "custom") return chordStr.replace(/_SUB|_BKT/g, '');
+            if (progData.id === "multitonic-coltrane") return chordStr.replace(/_SUB|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            if (progData.id === "blues" && selectedVar !== "0") return chordStr.replace(/_SUB|_BKT/g, '');
 
             const isSubbed = chordStr.includes('_SUB');
-            let cleanStr = chordStr.replace('_SUB', '').replace(/_T\d|_V\d|_II\d/g, '');
+            
+            if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
+            if (chordStr.includes('_SEC2')) return isSubbed ? "subV7/II" : "V7/II";
+            if (chordStr.includes('_SEC3')) return isSubbed ? "subV7/III" : "V7/III";
+            if (chordStr.includes('_SEC4')) return isSubbed ? "subV7/IV" : "V7/IV";
+            if (chordStr.includes('_SEC5')) return isSubbed ? "subV7/V" : "V7/V";
+            if (chordStr.includes('_SEC6')) return isSubbed ? "subV7/VI" : "V7/VI";
+
+            let cleanStr = chordStr.replace(/_SUB|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
             
@@ -395,16 +460,6 @@
             let { stOffset } = getTranspositionOffsets(keyStr, root);
             let originalOffset = isSubbed ? (stOffset + 6) % 12 : stOffset;
 
-            // --- Lógica estricta para el Blues ---
-            if (progData.id === "blues") {
-                if (selectedVar !== "0") return cleanStr;
-                if ((stOffset === 0 || stOffset === 5 || stOffset === 7) && cleanQual.startsWith("7") && !isSubbed) {
-                    const romans = {0:"I7", 5:"IV7", 7:"V7"}; return romans[stOffset];
-                }
-                return cleanStr;
-            }
-
-            // --- Lógica estricta para II-V-I Mayor (Cíclico) ---
             if (progData.id === "251-maj-all") {
                 if (cleanQual === "m7" || cleanQual === "m9") return "IIm7";
                 if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : "V7";
@@ -412,7 +467,6 @@
                 return cleanStr;
             }
 
-            // --- Lógica estricta para II-V-I Menor (Cíclico) ---
             if (progData.id === "251-min-all") {
                 if (cleanQual === "m7(b5)") return "IIm7(b5)";
                 if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : "V7";
@@ -420,7 +474,6 @@
                 return cleanStr;
             }
 
-            // --- Lógica Universal para Secundarios (Weber) ---
             let isDominantChord = (cleanQual.startsWith('7') || cleanQual.startsWith('9') || cleanQual.startsWith('13')) 
                 && !cleanQual.includes('maj') && !cleanQual.includes('m') && !cleanQual.includes('dim') && !cleanQual.includes('o');
 
@@ -432,7 +485,6 @@
                 else if (originalOffset === 9) targetRoman = "II";
                 else if (originalOffset === 11) targetRoman = "III";
                 else if (originalOffset === 7) {
-                    // Es el V7 dominante de la tonalidad
                     let tension = cleanQual.replace('7', '');
                     if (tension === "9" || tension === "13") tension = "";
                     return isSubbed ? `subV7${tension}` : `V7${tension}`;
@@ -446,7 +498,14 @@
             }
 
             const romanNumerals = ["I", "bII", "II", "bIII", "III", "IV", "bV", "V", "bVI", "VI", "bVII", "VII"];
-            return romanNumerals[stOffset] + quality;
+            let baseRoman = romanNumerals[stOffset];
+            
+            // Lógica para forzar #IV en disminuidos ubicados a un tritono de la tónica
+            if (stOffset === 6 && (cleanQual.includes('dim') || cleanQual.includes('o'))) {
+                baseRoman = "#IV";
+            }
+            
+            return baseRoman + quality;
         }
 
         const midiToNoteName = (midi) => {
@@ -456,7 +515,7 @@
         };
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
-            let cleanChord = chordStr.replace(/_SUB|_T\d|_V\d|_II\d/g, '');
+            let cleanChord = chordStr.replace(/_SUB|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
             
@@ -493,6 +552,7 @@
         let totalSteps = 0;
         let selectedStartMeasure = 0;
         let globalTritone = false;
+        let relacionIIVActive = false;
         let tritoneOverrides = {}; 
         let manualKeyChange = false;
         
@@ -520,9 +580,8 @@
             const posV2 = { x: p2.x - 65, y: p2.y }, posII2 = { x: posV2.x - 15, y: posV2.y + 60 };
             const posV3 = { x: p3.x + 65, y: p3.y }, posII3 = { x: posV3.x + 15, y: posV3.y + 60 };
 
-            // INCREMENTADO: viewBox altura de 190 a 240, ajustado Y min a -30 para centrar mejor
             graphicContainer.innerHTML = `
-                <svg viewBox="20 -30 360 240" preserveAspectRatio="xMidYMid meet" class="w-full h-full text-slate-800 dark:text-slate-200 font-bold">
+                <svg viewBox="20 -30 360 220" preserveAspectRatio="xMidYMid meet" class="w-full h-full text-slate-800 dark:text-slate-200 font-bold">
                     <defs>
                         <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#64748b" /></marker>
                         <marker id="arrowhead-dashed" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><polygon points="0 0, 6 3, 0 6" fill="#94a3b8" /></marker>
@@ -584,7 +643,7 @@
             if (chordStr === "NC" || chordStr === "-") return false;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return false;
-            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d/g, '').replace('_SUB', '');
+            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_BKT/g, '');
             return (mainQuality.startsWith('7') || mainQuality.startsWith('9') || mainQuality.startsWith('13')) 
                 && !mainQuality.includes('maj') && !mainQuality.includes('m') && !mainQuality.includes('dim') && !mainQuality.includes('o');
         }
@@ -618,8 +677,10 @@
                     if (vSelect && vSelect.dataset.progId !== progData.id) {
                         vSelect.innerHTML = ''; if(vSelectMobile) vSelectMobile.innerHTML = '';
                         progData.variations.forEach((v, idx) => {
-                            const opt = document.createElement('option'); opt.value = idx; opt.textContent = (idx + 1).toString(); vSelect.appendChild(opt);
-                            if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = (idx + 1).toString(); vSelectMobile.appendChild(optM); }
+                            let label = (idx + 1).toString();
+                            if (v[0].type && v[0].type !== "A" && v[0].type !== "B") label = v[0].type;
+                            const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
+                            if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
                         if (vSelect) { vSelect.dataset.progId = progData.id; vSelect.value = 0; }
                         if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = 0; }
@@ -643,6 +704,18 @@
             
             visualMeasures = []; audioTimeline = [];
             
+            let activeSections = JSON.parse(JSON.stringify(progData.sections));
+            
+            if (progData.id === "secondary-dominants" && relacionIIVActive) {
+                activeSections.forEach(sec => {
+                    sec.data = sec.data.replace(/A7_SEC2/g, 'Em7(b5)_BKT_IIV A7_BKT_SEC2')
+                                       .replace(/B7_SEC3/g, 'F#m7(b5)_BKT_IIV B7_BKT_SEC3')
+                                       .replace(/C7_SEC4/g, 'Gm7_BKT_IIV C7_BKT_SEC4')
+                                       .replace(/D7_SEC5/g, 'Am7_BKT_IIV D7_BKT_SEC5')
+                                       .replace(/E7_SEC6/g, 'Bm7(b5)_BKT_IIV E7_BKT_SEC6');
+                });
+            }
+
             const coltraneContainer = document.getElementById('coltraneGraphicContainer');
             if (progData.id === "multitonic-coltrane") {
                 if (coltraneContainer) coltraneContainer.classList.remove('hidden');
@@ -653,7 +726,7 @@
 
             let audioUnrolledMeasures = []; let visualMap = []; let currentVisualIndex = 0;
 
-            progData.sections.forEach(sec => {
+            activeSections.forEach(sec => {
                 const rawMeasures = sec.data.split('|').map(m => m.trim()).filter(m => m.length > 0);
                 const transposedMeasures = rawMeasures.map((mStr, mIdx) => {
                     return mStr.split(/\s+/).map((c, cIdx) => {
@@ -689,7 +762,6 @@
                     if (chord === "NC" || chord === "-") return;
                     let chordsInMeasure = measureChords.length;
                     
-                    // Extraer nodo específico de ESTE acorde
                     let specificNodeMatch = chord.match(/_(T\d|V\d|II\d)/i);
                     let specificNodeId = specificNodeMatch ? specificNodeMatch[1].toLowerCase() : null;
                     
@@ -703,7 +775,7 @@
                     audioTimeline[measureStartStep + stepOffset] = {
                         notes: notesData.toneNames, bass: notesData.bassNote, duration: trimDuration > 0 ? trimDuration : duration,
                         visualId: visualMap[measureIndex], 
-                        svgNodeIds: specificNodeId ? [specificNodeId] : [] // Iluminar solo EL ACORDE ACTUAL
+                        svgNodeIds: specificNodeId ? [specificNodeId] : []
                     };
                     if (chordsInMeasure === 2 && chordIdx === 0) audioTimeline[measureStartStep + 4] = null;
                 });
@@ -718,6 +790,12 @@
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
             const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
             
+            if (visualMeasures.length >= 16) {
+                grid.classList.add('dense-grid');
+            } else {
+                grid.classList.remove('dense-grid');
+            }
+
             visualMeasures.forEach((vMeasure, index) => {
                 const measureDiv = document.createElement('div'); measureDiv.id = `measure-${vMeasure.id}`;
                 let classNames = `measure-box ${vMeasure.colorClass} border border-slate-300 dark:border-slate-600 sm:rounded-xl rounded relative overflow-hidden`;
@@ -727,11 +805,11 @@
                 measureDiv.className = classNames;
                 
                 let rehearsalMarkHTML = '';
-                if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-1 right-1 sm:right-2 text-[10px] font-bold text-blue-600 bg-blue-100 dark:bg-blue-900/60 px-1 rounded shadow-sm z-10">${vMeasure.sectionName}</div>`;
+                if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-0 left-0 text-[10px] sm:text-[11px] font-bold text-white bg-blue-500 px-1.5 py-0.5 rounded-br-lg shadow-sm z-10 tracking-wider">${vMeasure.sectionName}</div>`;
 
                 const processChord = (c, chordIdx, vMeasureId) => {
                     let color = "text-slate-800 dark:text-slate-100"; let isSubbed = c.includes('_SUB');
-                    let rawChord = c; let cleanC = c.replace(/_T\d|_V\d|_II\d/g, '').replace('_SUB', '');
+                    let rawChord = c; let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_BKT/g, '');
                     let isDom = isSubbed || isDominant(cleanC);
                     let text = romanMode ? convertToRoman(rawChord, targetKey) : cleanC;
 
@@ -746,12 +824,27 @@
                     return `<span class="chord-text text-sm sm:text-base md:text-xl lg:text-3xl font-bold tracking-tight ${color} ${intClasses}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${text}</span>`;
                 };
 
-                let measureChordsHTML = vMeasure.chords.map((c, i) => processChord(c, i, index)).join('');
+                let measureChordsHTML = '';
+                let inBracket = false;
+                vMeasure.chords.forEach((c, i) => {
+                    let isBkt = c.includes('_BKT');
+                    if (isBkt && !inBracket) {
+                        measureChordsHTML += `<div class="ii-v-bracket flex items-center justify-center gap-1 sm:gap-2 px-1">`;
+                        inBracket = true;
+                    } else if (!isBkt && inBracket) {
+                        measureChordsHTML += `</div>`;
+                        inBracket = false;
+                    }
+                    measureChordsHTML += processChord(c, i, index);
+                    if (isBkt && i === vMeasure.chords.length - 1) {
+                        measureChordsHTML += `</div>`;
+                    }
+                });
                 
                 measureDiv.innerHTML = `
-                    <div class="absolute top-1 left-2 text-xs text-slate-400 font-mono z-10">${index + 1}</div>
+                    <div class="absolute top-0 right-1 text-[9px] sm:text-[10px] text-slate-400 font-mono z-10">${index + 1}</div>
                     ${rehearsalMarkHTML}
-                    <div class="flex flex-row items-center justify-center gap-3 w-full h-full whitespace-nowrap px-1">
+                    <div class="flex flex-row items-center justify-center gap-2 sm:gap-3 w-full h-full whitespace-nowrap px-1 pt-4 pb-1">
                         ${measureChordsHTML}
                     </div>
                 `;
@@ -909,12 +1002,25 @@
             syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
+        ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            syncSelects('variationSelect', 'variationSelectMobile', e.target.value); 
+            const was = isPlaying; 
+            stopProgression(); 
+            selectedStartMeasure = 0; 
+            loadAndCompileProgression(); 
+            if(was) setTimeout(() => playProgression(), 50);
+        }));
+
         ['keySelect', 'keySelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
             syncSelects('keySelect', 'keySelectMobile', e.target.value); manualKeyChange = true; const was = isPlaying; stopProgression(); loadAndCompileProgression(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
             globalTritone = e.target.checked; document.getElementById('globalTritoneToggle').checked = globalTritone; document.getElementById('globalTritoneToggleMobile').checked = globalTritone; loadAndCompileProgression(true);
+        }));
+
+        ['relacionToggle', 'relacionToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            relacionIIVActive = e.target.checked; document.getElementById('relacionToggle').checked = relacionIIVActive; if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = relacionIIVActive; loadAndCompileProgression(true);
         }));
 
         ['romanToggle', 'romanToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
