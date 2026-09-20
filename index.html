@@ -33,7 +33,7 @@
         .measure-box {
             transition: all 0.15s ease-in-out; min-height: 50px; height: 100%;
             cursor: pointer; display: flex; flex-direction: column; justify-content: center;
-            position: relative;
+            position: relative; overflow: hidden;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
         .measure-active { background-color: #eff6ff !important; border-color: #60a5fa !important; transform: scale(1.02); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2); z-index: 10; }
@@ -44,9 +44,20 @@
         .repeat-end::before { content: ''; position: absolute; right: 4px; top: 15%; bottom: 15%; width: 4px; border-right: 3px solid #3b82f6; border-left: 1px solid #3b82f6; opacity: 0.8; }
         .repeat-end::after { content: ':'; font-weight: bold; font-size: 20px; line-height: 1; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #3b82f6; opacity: 0.8; font-family: serif; }
 
-        .chord-text { font-family: 'Courier New', Courier, monospace; }
+        .chord-text { font-family: 'Courier New', Courier, monospace; white-space: nowrap !important; line-height: 1.1;}
 
-        .ii-v-bracket { position: relative; margin-bottom: 2px; }
+        .bracket-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: baseline;
+            padding-bottom: 2px;
+            padding-left: 6px; 
+            padding-right: 6px; 
+            position: relative;
+        }
+
         .ii-v-bracket::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
         .dark .ii-v-bracket::after { border-color: #94a3b8; }
         
@@ -103,19 +114,10 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.2); border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
-        
-        .bracket-container {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: nowrap;
-            justify-content: center;
-            align-items: baseline;
-            padding-bottom: 2px;
-        }
 
-        /* Fluid Typography and dynamic sizing based on screen width */
+        /* Mobile Adjustments */
         @media (max-width: 640px) {
-            .measure-box { min-height: 45px; padding: 1px; padding-top: 1.2rem; } 
+            .measure-box { min-height: 45px; padding: 1px; padding-top: 1.5rem; } 
             .section-label { font-size: 8px; padding: 1px 3px; }
             .measure-number { font-size: 8px; top: 2px; right: 4px; }
             .repeat-start::after, .repeat-end::after { font-size: 14px; left: 4px; right: 4px;}
@@ -125,18 +127,13 @@
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
             
-            .chord-text { 
-                white-space: nowrap !important;
-                letter-spacing: -0.05em; 
-                line-height: 1.1;
-            }
-            .dense-grid .measure-box { min-height: 38px !important; padding-top: 0.8rem; padding-bottom: 0.2rem;}
+            .dense-grid .measure-box { min-height: 38px !important; padding-top: 1.2rem; padding-bottom: 0.2rem;}
             .dense-grid .measure-number { font-size: 7px; top: 1px; right: 2px; }
             .dense-grid { gap: 2px !important; padding-bottom: 0.5rem !important; }
         }
     </style>
 </head>
-<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-1 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-2 sm:px-3 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
     
     <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700">
         
@@ -155,183 +152,178 @@
             
             <!-- Controles Desktop -->
             <div class="hidden sm:flex items-center gap-3 w-full flex-wrap lg:flex-nowrap justify-between">
-                <div class="flex flex-col flex-1 max-w-[220px]">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Progresión</label>
+                <div class="flex flex-col flex-1 max-w-[200px]">
+                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between w-full">
+                        <span>Progresión</span>
+                    </label>
                     <select id="progressionSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
                 </div>
 
-                <div id="variationContainer" class="hidden flex-col min-w-[120px]">
+                <div id="variationContainer" class="flex-col min-w-[120px]">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                     <select id="variationSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                 </div>
 
-                <div class="flex flex-col w-20">
+                <div class="flex flex-col w-14 shrink-0">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Tono</label>
                     <select id="keySelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                 </div>
 
-                <div class="flex flex-col w-24">
+                <div class="flex flex-col w-14 shrink-0">
+                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ciclos</label>
+                    <input type="number" id="loopInput" placeholder="∞" min="1" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm">
+                </div>
+
+                <div class="flex flex-col w-20">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
                         <span>Tempo</span><span id="tempoValue" class="text-blue-600 font-bold">120</span>
                     </label>
                     <input type="range" id="tempoSlider" min="60" max="240" value="120" class="mt-1">
                 </div>
 
-                <div class="flex flex-col w-24">
+                <div class="flex flex-col w-20">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
                         <span>Vol.</span><span id="volumeValue" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
                     </label>
                     <input type="range" id="volumeSlider" min="-30" max="0" value="-6" step="1" class="mt-1">
                 </div>
 
-                <div class="flex items-center gap-3 ml-auto">
-                    <label class="flex items-center gap-2 cursor-pointer group" title="Cifrado de Weber (Análisis Funcional)">
+                <div class="flex items-center gap-2 ml-auto">
+                    <label class="flex items-center gap-1 cursor-pointer group" title="Cifrado Funcional (Weber)">
                         <div class="relative">
                             <input type="checkbox" id="romanToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
                     </label>
                     
-                    <label class="flex items-center gap-2 cursor-pointer group" title="Sustituto Tritonal a todos los dominantes">
+                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal">
                         <div class="relative">
                             <input type="checkbox" id="globalTritoneToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">Tritono</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 transition-colors">Tritono</span>
                     </label>
 
-                    <label class="flex items-center gap-2 cursor-pointer group" title="Sustituto Disminuido a todos los dominantes">
+                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Disminuido">
                         <div class="relative">
                             <input type="checkbox" id="globalDimToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-pink-500 dark:group-hover:text-pink-400 transition-colors">DIM</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-pink-500 transition-colors">DIM</span>
                     </label>
 
-                    <label id="iivToggleContainer" class="hidden items-center gap-2 cursor-pointer group" title="Activar Relación II-V para Dominantes Secundarios">
+                    <label id="iivToggleContainer" class="hidden items-center gap-1 cursor-pointer group" title="Relación II-V">
                         <div class="relative">
                             <input type="checkbox" id="relacionToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                         </div>
-                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors">II-V</span>
+                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 transition-colors">II-V</span>
                     </label>
 
-                    <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-3 ml-1">
-                        <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 hover:bg-blue-200 h-8 px-2 rounded font-bold text-[10px] transition-all flex items-center gap-1" title="Mute Piano"><i class="fa-solid fa-keyboard"></i> Piano</button>
-                        <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 hover:bg-blue-200 h-8 px-2 rounded font-bold text-[10px] transition-all flex items-center gap-1" title="Mute Bajo"><i class="fa-solid fa-guitar"></i> Bajo</button>
+                    <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-2 ml-1">
+                        <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-keyboard"></i></button>
+                        <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-guitar"></i></button>
                     </div>
 
-                    <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-3">
-                        <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 text-white h-9 w-9 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-blue-500/30">
-                            <i class="fa-solid fa-play ml-0.5"></i>
-                        </button>
-                        <button id="stopBtn" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 h-9 w-9 rounded-full flex items-center justify-center transition-colors">
-                            <i class="fa-solid fa-stop"></i>
-                        </button>
+                    <div class="flex items-center gap-1 ml-1">
+                        <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 text-white h-8 w-8 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-blue-500/30"><i class="fa-solid fa-play text-xs ml-0.5"></i></button>
+                        <button id="stopBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-600 h-8 w-8 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-stop text-xs"></i></button>
                     </div>
                 </div>
             </div>
 
             <!-- Controles Mobile -->
             <div class="sm:hidden controls-grid">
-                <div class="controls-full-width flex gap-1">
+                <div class="controls-full-width flex gap-1 items-end">
                     <div class="flex-1">
-                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Progresión</label>
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                            <span>Progresión</span>
+                        </label>
                         <select id="progressionSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
                     </div>
-                    <div id="variationContainerMobile" class="hidden flex-col min-w-[90px]">
+                    <div id="variationContainerMobile" class="flex-col min-w-[90px]">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                         <select id="variationSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                     </div>
-                    <div class="flex-col w-14 shrink-0">
+                    <div class="flex-col w-12 shrink-0">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Tono</label>
                         <select id="keySelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                     </div>
                 </div>
 
-                <div class="flex flex-col">
-                    <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                        <span>Tempo</span><span id="tempoValueMobile" class="text-blue-600 font-bold">120</span>
-                    </label>
-                    <input type="range" id="tempoSliderMobile" min="60" max="240" value="120" class="mt-0.5">
-                </div>
-
-                <div class="flex flex-col">
-                    <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                        <span>Vol.</span><span id="volumeValueMobile" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
-                    </label>
-                    <input type="range" id="volumeSliderMobile" min="-30" max="0" value="-6" step="1" class="mt-0.5">
+                <div class="controls-full-width flex justify-between items-end gap-2 mt-1">
+                    <div class="flex flex-col w-12 shrink-0">
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ciclos</label>
+                        <input type="number" id="loopInputMobile" placeholder="∞" min="1" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm">
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                            <span>Tempo</span><span id="tempoValueMobile" class="text-blue-600 font-bold">120</span>
+                        </label>
+                        <input type="range" id="tempoSliderMobile" min="60" max="240" value="120" class="mt-0.5">
+                    </div>
+                    <div class="flex flex-col flex-1">
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                            <span>Vol.</span><span id="volumeValueMobile" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
+                        </label>
+                        <input type="range" id="volumeSliderMobile" min="-30" max="0" value="-6" step="1" class="mt-0.5">
+                    </div>
                 </div>
 
                 <div class="toggles-row">
                     <div class="flex gap-2">
                         <label class="flex items-center gap-1 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" id="romanToggleMobile" class="sr-only">
-                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
-                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
-                            </div>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Weber</span>
+                            <div class="relative"><input type="checkbox" id="romanToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Weber</span>
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" id="globalTritoneToggleMobile" class="sr-only">
-                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
-                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
-                            </div>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Tritono</span>
+                            <div class="relative"><input type="checkbox" id="globalTritoneToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Tritono</span>
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" id="globalDimToggleMobile" class="sr-only">
-                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
-                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
-                            </div>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">DIM</span>
+                            <div class="relative"><input type="checkbox" id="globalDimToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">DIM</span>
                         </label>
                         <label id="iivToggleContainerMobile" class="hidden items-center gap-1 cursor-pointer group">
-                            <div class="relative">
-                                <input type="checkbox" id="relacionToggleMobile" class="sr-only">
-                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
-                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
-                            </div>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">II-V</span>
+                            <div class="relative"><input type="checkbox" id="relacionToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">II-V</span>
                         </label>
                     </div>
 
-                    <div class="flex gap-1 ml-1">
-                        <button id="mutePianoBtnMobile" class="mute-btn bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-keyboard"></i></button>
-                        <button id="muteBassBtnMobile" class="mute-btn bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-guitar"></i></button>
+                    <div class="flex gap-1 ml-1 border-l border-slate-300 pl-2">
+                        <button id="mutePianoBtnMobile" class="mute-btn bg-blue-100 text-blue-700 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-keyboard"></i></button>
+                        <button id="muteBassBtnMobile" class="mute-btn bg-blue-100 text-blue-700 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-guitar"></i></button>
                     </div>
 
                     <div class="flex items-center gap-1 ml-auto">
-                        <button id="playBtnMobile" class="bg-blue-600 hover:bg-blue-500 text-white h-7 w-7 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-blue-500/30">
-                            <i class="fa-solid fa-play text-xs ml-0.5"></i>
-                        </button>
-                        <button id="stopBtnMobile" class="bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 h-7 w-7 rounded-full flex items-center justify-center transition-colors">
-                            <i class="fa-solid fa-stop text-xs"></i>
-                        </button>
+                        <button id="playBtnMobile" class="bg-blue-600 text-white h-7 w-7 rounded-full flex items-center justify-center shadow-lg"><i class="fa-solid fa-play text-xs ml-0.5"></i></button>
+                        <button id="stopBtnMobile" class="bg-slate-200 text-slate-600 h-7 w-7 rounded-full flex items-center justify-center"><i class="fa-solid fa-stop text-xs"></i></button>
                     </div>
                 </div>
             </div>
 
-            <!-- Input Progresión Personalizada -->
+            <!-- Editor de Progresión Global (Sólo visible en Personalizada) -->
             <div id="customInputContainer" class="hidden w-full mt-1 sm:mt-2 pt-1 sm:pt-2 border-t border-slate-200 dark:border-slate-700 pb-0.5 sm:pb-1">
                 <div class="flex gap-1.5 sm:gap-2">
-                    <input type="text" id="customProgInput" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm font-mono p-1.5 sm:p-2 rounded-lg border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 outline-none shadow-inner placeholder-slate-400" placeholder="Ej: Cmaj7 | A7 | Dm7 | G7" value="Cmaj7 | A7 | Dm7 | G7">
-                    <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 dark:bg-blue-900 dark:hover:bg-blue-800 dark:text-blue-300 px-2 sm:px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200 dark:border-blue-700 shrink-0" title="Insertar Separador de Compás">|</button>
+                    <input type="text" id="customProgInput" class="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs sm:text-sm font-mono p-1.5 sm:p-2 rounded-lg border border-blue-300 dark:border-blue-600 focus:ring-2 focus:ring-blue-500 outline-none shadow-inner" placeholder="Ej: Cmaj7 |: Dm7 | G7 :| Cmaj7">
+                    <div class="flex gap-1 shrink-0">
+                        <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 sm:px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200" title="Nuevo Compás">|</button>
+                    </div>
                 </div>
-                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Separa cada compás con el símbolo de barra vertical ( | ). Usa notación estándar.</p>
+                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|". Los botones amarillos de arriba añaden repeticiones.</p>
             </div>
         </div>
 
+        <!-- Barra Azul - Repeticiones e Indicadores -->
         <div class="bg-blue-50 dark:bg-slate-800/80 px-2 py-1 border-b border-blue-100 dark:border-slate-700 flex items-center justify-between text-[10px] text-blue-700 dark:text-blue-400 font-medium z-10 relative shrink-0">
-            <span class="truncate"><i class="fa-solid fa-circle-info mr-1"></i> Clic para iniciar.</span>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span class="truncate text-[9px] sm:text-[10px] flex items-center"><i class="fa-solid fa-circle-info mr-1"></i> Selecciona un compás:</span>
+                <div class="flex gap-1">
+                    <button id="addRepeatStartBtn" class="bg-amber-100 hover:bg-amber-200 text-amber-700 h-5 sm:h-6 px-1.5 sm:px-2 rounded text-[9px] sm:text-[10px] font-bold font-mono transition-colors border border-amber-200 flex items-center" title="Añadir Inicio de Repetición al compás seleccionado">|:</button>
+                    <button id="addRepeatEndBtn" class="bg-amber-100 hover:bg-amber-200 text-amber-700 h-5 sm:h-6 px-1.5 sm:px-2 rounded text-[9px] sm:text-[10px] font-bold font-mono transition-colors border border-amber-200 flex items-center" title="Añadir Fin de Repetición al compás seleccionado">:|</button>
+                </div>
+            </div>
             
             <div class="flex items-center gap-2 mx-2">
                 <div id="metronome-0" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
@@ -340,7 +332,7 @@
                 <div id="metronome-3" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
             </div>
 
-            <span id="startMeasureIndicator" class="font-bold whitespace-nowrap">Inicio: 1</span>
+            <span id="startMeasureIndicator" class="font-bold whitespace-nowrap bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px]">Sel: 1</span>
         </div>
 
         <!-- Contenedor del Gráfico Coltrane -->
@@ -356,9 +348,6 @@
 
     <script>
         const progressionLibrary = [
-            { id: "custom", name: "✏️ Prog. Personalizada...", baseKey: "C", variations: [
-                [ { type: "A", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "Cmaj7 | A7 | Dm7 | G7" } ]
-            ]},
             { id: "251-maj-all", name: "II-V-I Mayor (Todos los Tonos)", baseKey: "C", variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7 | G7 | Cmaj7 | Cmaj7 | Cm7 | F7 | Bbmaj7 | Bbmaj7 | Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Abm7 | Db7 | Gbmaj7 | Gbmaj7 | F#m7 | B7 | Emaj7 | Emaj7 | Em7 | A7 | Dmaj7 | Dmaj7 | Dm7 | G7 | Cmaj7 | Cmaj7" } ]
             ]},
@@ -377,7 +366,7 @@
                 { name: "V7/IV", data: "Cmaj7 | C7_SEC4 | Fmaj7 | G7 | Cmaj7 | Cmaj7 | Dm7 | G7", repeat: true },
                 { name: "V7/V", data: "Cmaj7 | D7_SEC5 | G7 | Cmaj7 | Cmaj7 | D7_SEC5 | Dm7 | G7", repeat: true },
                 { name: "V7/VI", data: "Cmaj7 | E7_SEC6 | Am7 | G7 | Cmaj7 | E7_SEC6 | Dm7 | G7", repeat: true }
-            ].map(v => [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: v.repeat, data: v.data, name: v.name } ])},
+            ].map(v => [ { type: "A", name: v.name, color: "bg-white dark:bg-slate-800", repeat: v.repeat, data: v.data } ])},
             { id: "modal-interchange", name: "Intercambio Modal & #IVdim7", baseKey: "C", variations: [
                 [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
                 [ { type: "IVm7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 | Cmaj7 | Am7 | Dm7 | G7" } ],
@@ -386,27 +375,30 @@
                 [ { type: "bVImaj7 a bVII7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Abmaj7 Bb7 | Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "bIImaj7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Dbmaj7 | Cmaj7 | Am7 | Dm7 | G7" } ]
             ]},
-            { id: "multitonic-coltrane", name: "Multitónica (Coltrane)", baseKey: "B", variations: [
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" } ]
-            ]},
             { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
                 [ { type: "1 (Básico)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
                 [ { type: "2", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
-                [ { type: "3", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "3 (Bebop)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#dim7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
                 [ { type: "4", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Bb7 | Fmaj7 | Cm7 F7 | Bb7 | Bdim7 | Fmaj7 | Am7 D7 | Gm7 | C7 | Fmaj7 D7 | Gm7 C7" } ],
                 [ { type: "5 (Menor)", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
             ]},
             { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
                 [ 
-                    { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
+                    { name: "1 (Tradicional)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
-                    { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
                 ],
                 [ 
-                    { type: "A (Bebop)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
+                    { name: "2 (Bebop)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
-                    { type: "A (Bebop)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
+                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
                 ]
+            ]},
+            { id: "multitonic-coltrane", name: "Multitónica (Coltrane)", baseKey: "B", variations: [
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" } ]
+            ]},
+            { id: "custom", name: "✎ Prog. Personalizada...", baseKey: "C", variations: [
+                [ { type: "Libre", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | Dm7 | G7 | Cmaj7" } ]
             ]}
         ];
 
@@ -418,6 +410,8 @@
         const enharmonicPairs = { 'C#': 'Db', 'Db': 'C#', 'D#': 'Eb', 'Eb': 'D#', 'E#': 'F', 'F': 'E#', 'F#': 'Gb', 'Gb': 'F#', 'G#': 'Ab', 'Ab': 'G#', 'A#': 'Bb', 'Bb': 'A#', 'Cb': 'B', 'B': 'Cb' };
         window.svgEnharmonicOverrides = {};
 
+        let currentActiveSections = []; 
+
         function toggleSvgEnharmonic(nodeId) {
             window.svgEnharmonicOverrides[nodeId] = !window.svgEnharmonicOverrides[nodeId];
             renderColtraneGraphic(keySelect.value);
@@ -426,24 +420,20 @@
         function getDisplayNote(noteStr, nodeId) {
             let n = noteStr.replace(/[0-9]/g, '');
             if (n === 'D#') n = 'Eb'; if (n === 'A#') n = 'Bb'; if (n === 'G#') n = 'Ab';
-            if (window.svgEnharmonicOverrides && window.svgEnharmonicOverrides[nodeId]) {
-                return enharmonicPairs[n] || n;
-            }
+            if (window.svgEnharmonicOverrides && window.svgEnharmonicOverrides[nodeId]) return enharmonicPairs[n] || n;
             return n;
         }
 
         const cualidades = {
-            "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10], "7": [0, 4, 7, 10],
-            "7(b9)": [0, 4, 7, 10, 13], "m7(b5)": [0, 3, 6, 10], "dim7": [0, 3, 6, 9],
-            "o7": [0, 3, 6, 9], "maj": [0, 4, 7], "m": [0, 3, 7], "6": [0, 4, 7, 9], "m6": [0, 3, 7, 9], "aug": [0, 4, 8]
+            "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10], "7": [0, 4, 7, 10], "7(b9)": [0, 4, 7, 10, 13], 
+            "m7(b5)": [0, 3, 6, 10], "dim7": [0, 3, 6, 9], "o7": [0, 3, 6, 9], "maj": [0, 4, 7], 
+            "m": [0, 3, 7], "6": [0, 4, 7, 9], "m6": [0, 3, 7, 9], "aug": [0, 4, 8]
         };
 
         function parseNoteObj(noteStr) {
-            const letter = noteStr.charAt(0);
-            let accidental = 0;
+            const letter = noteStr.charAt(0); let accidental = 0;
             for (let i = 1; i < noteStr.length; i++) {
-                if (noteStr[i] === '#') accidental++;
-                if (noteStr[i] === 'b') accidental--;
+                if (noteStr[i] === '#') accidental++; if (noteStr[i] === 'b') accidental--;
             }
             return { letter, accidental, semitone: (baseSemitones[letter] + accidental + 12) % 12 };
         }
@@ -484,43 +474,39 @@
         function convertToRoman(chordStr, keyStr) {
             if (chordStr === "NC" || chordStr === "-") return chordStr;
             
-            const progSelect = document.getElementById('progressionSelect');
-            let progIndex = progSelect ? progSelect.value : 0;
-            if (!progSelect && document.getElementById('progressionSelectMobile')) progIndex = document.getElementById('progressionSelectMobile').value;
+            let progIndex = document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0;
             const progData = progressionLibrary[progIndex];
             
             let selectedVar = 0;
-            const vSelect = document.getElementById('variationSelect');
-            const vSelectMobile = document.getElementById('variationSelectMobile');
-            if (vSelect && vSelect.value !== "") selectedVar = parseInt(vSelect.value);
-            else if (vSelectMobile && vSelectMobile.value !== "") selectedVar = parseInt(vSelectMobile.value);
+            const vSel = document.getElementById('variationSelect');
+            const vSelMob = document.getElementById('variationSelectMobile');
+            if (vSel && vSel.value !== "" && vSel.value !== undefined && vSel.value !== "undefined") {
+                selectedVar = parseInt(vSel.value);
+            } else if (vSelMob && vSelMob.value !== "" && vSelMob.value !== undefined && vSelMob.value !== "undefined") {
+                selectedVar = parseInt(vSelMob.value);
+            }
             if (isNaN(selectedVar)) selectedVar = 0;
 
             let cleanStr = chordStr.replace(/_SUB|_DIM|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const isSubbed = chordStr.includes('_SUB');
             const isDimmed = chordStr.includes('_DIM');
             
-            if (progData && progData.id === "custom") return cleanStr;
             if (progData && progData.id === "multitonic-coltrane") return cleanStr;
 
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
             
-            const root = match[1];
-            let quality = match[2];
-            let cleanQual = quality.split('/')[0];
-
+            const root = match[1]; let quality = match[2]; let cleanQual = quality.split('/')[0];
             let { stOffset } = getTranspositionOffsets(keyStr, root);
             let originalOffset = isSubbed ? (stOffset + 6) % 12 : (isDimmed ? (stOffset + 8) % 12 : stOffset);
 
-            // ---- EXCEPCIÓN DEL BLUES (Sólo Versión 1) ----
             if (progData && progData.id === "blues") {
-                if (selectedVar === 0) { 
-                    if (originalOffset === 0) return isSubbed ? `subV7` : (isDimmed ? `VIIo7` : `I7`);
-                    if (originalOffset === 5) return isSubbed ? `subV7/V` : (isDimmed ? `IIIo7` : `IV7`);
-                    if (originalOffset === 7) return isSubbed ? `subV7/I` : (isDimmed ? `Vo7` : `V7`);
+                if (selectedVar === 0) {
+                    if (originalOffset === 0 && cleanQual.startsWith('7')) return isSubbed ? `subV7` : (isDimmed ? `VIIo7` : `I7`);
+                    if (originalOffset === 5 && cleanQual.startsWith('7')) return isSubbed ? `subV7/V` : (isDimmed ? `IIIo7` : `IV7`);
+                    if (originalOffset === 7 && cleanQual.startsWith('7')) return isSubbed ? `subV7/I` : (isDimmed ? `Vo7` : `V7`);
                 }
-                return cleanStr; 
+                return cleanStr; // Retorna el acorde literal sin analizar para las variaciones 2, 3, 4 y 5
             }
 
             if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
@@ -576,9 +562,7 @@
             else if (originalOffset === 3) baseRoman = "bIII";
             else if (originalOffset === 4) baseRoman = "III";
             else if (originalOffset === 5) baseRoman = "IV";
-            else if (originalOffset === 6) {
-                baseRoman = (cleanQual.includes('dim') || cleanQual.includes('o')) ? "#IV" : "bV";
-            }
+            else if (originalOffset === 6) baseRoman = (cleanQual.includes('dim') || cleanQual.includes('o')) ? "#IV" : "bV";
             else if (originalOffset === 7) baseRoman = "V";
             else if (originalOffset === 8) baseRoman = "bVI";
             else if (originalOffset === 9) baseRoman = "VI";
@@ -636,9 +620,9 @@
         let relacionIIVActive = false;
         let mutationOverrides = {}; 
         let manualKeyChange = false;
-        
         let isPianoMuted = false;
         let isBassMuted = false;
+        let currentLoopCount = 0;
 
         function renderColtraneGraphic(key) {
             const graphicContainer = document.getElementById('coltrane-graphic');
@@ -734,74 +718,119 @@
         }
 
         function extractTags(chordStr) {
-            let tags = "";
-            let clean = chordStr;
-            const idx = chordStr.indexOf('_');
-            if (idx !== -1) {
-                tags = chordStr.substring(idx);
-                clean = chordStr.substring(0, idx);
-            }
+            let tags = ""; let clean = chordStr;
+            const match = chordStr.match(/(_[A-Z0-9]+)+$/);
+            if (match) { tags = match[0]; clean = chordStr.substring(0, chordStr.length - tags.length); }
             return { clean, tags };
         }
 
         function applyTritoneSub(chordStr) {
             let { clean, tags } = extractTags(chordStr);
+            
+            let extraTags = "";
+            if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
+            
             const match = clean.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1]; let quality = match[2];
             if (quality.includes('/')) quality = quality.split('/')[0]; 
-            return (tritoneRootMap[root] || root) + quality + tags;
+            return (tritoneRootMap[root] || root) + quality + tags + extraTags + "_SUB";
         }
 
         function applyDimSub(chordStr) {
             let { clean, tags } = extractTags(chordStr);
+            
+            let extraTags = "";
+            if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
+            
             const match = clean.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1];
             let newRoot = dimRootMap[root] || root;
-            return newRoot + "dim7" + tags;
+            return newRoot + "dim7" + tags + extraTags + "_DIM";
         }
 
-        function loadAndCompileProgression(preserveOverrides = false) {
-            if (!preserveOverrides) mutationOverrides = {};
+        function toggleRepeatSymbol(type) {
+            if (!currentActiveSections || currentActiveSections.length === 0) return;
+            
+            let currentVisualIndex = 0;
+            let found = false;
+
+            for (let s = 0; s < currentActiveSections.length; s++) {
+                let sec = currentActiveSections[s];
+                let blocks = sec.data.split('|').map(m => m.trim()).filter(m => m.length > 0);
+                
+                for (let b = 0; b < blocks.length; b++) {
+                    if (currentVisualIndex === selectedStartMeasure) {
+                        let block = blocks[b];
+                        if (type === 'start') {
+                            if (block.startsWith(':')) block = block.replace(/^:\s*/, '');
+                            else block = ':' + block;
+                        } else if (type === 'end') {
+                            if (block.endsWith(':')) block = block.replace(/\s*:$/, '');
+                            else block = block + ':';
+                        }
+                        blocks[b] = block;
+                        sec.data = blocks.join(' | ');
+                        found = true;
+                        break;
+                    }
+                    currentVisualIndex++;
+                }
+                if (found) break;
+            }
+
+            if (found) {
+                let pSelectVal = progressionSelect.value || progressionSelectMobile.value || 0;
+                const progData = progressionLibrary[pSelectVal];
+                if (progData.id === 'custom') {
+                    const customProgInput = document.getElementById('customProgInput');
+                    if (customProgInput) customProgInput.value = currentActiveSections.map(s => s.data).join(' | ');
+                }
+                const wasPlaying = isPlaying;
+                if (wasPlaying) stopProgression();
+                loadAndCompileProgression(true);
+                if (wasPlaying) setTimeout(() => playProgression(), 50);
+            }
+        }
+
+        function loadAndCompileProgression(preserveState = false) {
+            if (!preserveState) mutationOverrides = {};
             
             let pSelectVal = progressionSelect.value;
-            if (!pSelectVal && document.getElementById('progressionSelectMobile')) pSelectVal = document.getElementById('progressionSelectMobile').value;
-            const progIndex = pSelectVal || 0;
+            if (!pSelectVal && progressionSelectMobile) pSelectVal = progressionSelectMobile.value;
+            let progIndex = pSelectVal || 0;
+            
+            if (isNaN(parseInt(progIndex))) progIndex = 0;
+            if (progIndex >= progressionLibrary.length) progIndex = 0;
+            
+            const progData = progressionLibrary[progIndex] || progressionLibrary[0];
             
             let tSelectVal = keySelect.value;
-            if (!tSelectVal && document.getElementById('keySelectMobile')) tSelectVal = document.getElementById('keySelectMobile').value;
+            if (!tSelectVal && keySelectMobile) tSelectVal = keySelectMobile.value;
             const targetKey = tSelectVal || "C";
-            
-            const progData = progressionLibrary[progIndex];
-            if (!progData) return; 
             
             const vContainer = document.getElementById('variationContainer'); const vSelect = document.getElementById('variationSelect');
             const vContainerMobile = document.getElementById('variationContainerMobile'); const vSelectMobile = document.getElementById('variationSelectMobile');
-            const customInputCont = document.getElementById('customInputContainer');
-
-            const iivContainer = document.getElementById('iivToggleContainer');
-            const iivContainerMobile = document.getElementById('iivToggleContainerMobile');
-
-            if (progData.id === "secondary-dominants") {
-                if (iivContainer) { iivContainer.classList.remove('hidden'); iivContainer.classList.add('flex'); }
-                if (iivContainerMobile) { iivContainerMobile.classList.remove('hidden'); iivContainerMobile.classList.add('flex'); }
-            } else {
-                if (iivContainer) { iivContainer.classList.add('hidden'); iivContainer.classList.remove('flex'); }
-                if (iivContainerMobile) { iivContainerMobile.classList.add('hidden'); iivContainerMobile.classList.remove('flex'); }
-                relacionIIVActive = false;
-                if(document.getElementById('relacionToggle')) document.getElementById('relacionToggle').checked = false;
-                if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = false;
-            }
+            const customInputContainer = document.getElementById('customInputContainer');
 
             if (progData.id === "custom") {
-                if (vContainer) vContainer.classList.add('hidden'); if (vContainerMobile) vContainerMobile.classList.add('hidden');
-                customInputCont.classList.remove('hidden'); customInputCont.classList.add('block');
+                if (customInputContainer) customInputContainer.classList.remove('hidden');
+                if (vContainer) { vContainer.classList.add('hidden'); vContainer.classList.remove('flex'); }
+                if (vContainerMobile) { vContainerMobile.classList.add('hidden'); vContainerMobile.classList.remove('flex'); }
+                
+                const customProgInput = document.getElementById('customProgInput');
+                let val = customProgInput.value.trim() === "" ? "Cmaj7 | Dm7 | G7 | Cmaj7" : customProgInput.value;
+                if (!preserveState) {
+                    currentActiveSections = [{ type: "Libre", color: "bg-white dark:bg-slate-800", repeat: false, data: val }];
+                }
             } else {
-                customInputCont.classList.add('hidden'); customInputCont.classList.remove('block');
+                if (customInputContainer) customInputContainer.classList.add('hidden');
+                
                 if (progData.variations) {
                     if (vContainer) { vContainer.classList.remove('hidden'); vContainer.classList.add('flex'); }
                     if (vContainerMobile) { vContainerMobile.classList.remove('hidden'); vContainerMobile.classList.add('flex'); }
+                    
                     if (vSelect && vSelect.dataset.progId !== progData.id) {
                         vSelect.innerHTML = ''; if(vSelectMobile) vSelectMobile.innerHTML = '';
                         progData.variations.forEach((v, idx) => {
@@ -815,43 +844,57 @@
                         if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = 0; }
                     }
                 }
+                
+                if (!preserveState) {
+                    let selectedVar = 0;
+                    if (vSelect && vSelect.value !== "" && vSelect.value !== undefined && vSelect.value !== "undefined") selectedVar = parseInt(vSelect.value);
+                    else if (vSelectMobile && vSelectMobile.value !== "" && vSelectMobile.value !== undefined && vSelectMobile.value !== "undefined") selectedVar = parseInt(vSelectMobile.value);
+                    if (isNaN(selectedVar) || !progData.variations || selectedVar >= progData.variations.length) selectedVar = 0;
+                    
+                    let variationData = progData.variations[selectedVar] || progData.variations[0];
+                    currentActiveSections = JSON.parse(JSON.stringify(variationData));
+                    
+                    currentActiveSections.forEach(sec => {
+                        if (sec.repeat) {
+                            let blocks = sec.data.split('|').map(m => m.trim());
+                            if (blocks.length > 0) {
+                                if (!blocks[0].startsWith(':')) blocks[0] = ':' + blocks[0];
+                                if (!blocks[blocks.length - 1].endsWith(':')) blocks[blocks.length - 1] = blocks[blocks.length - 1] + ':';
+                            }
+                            sec.data = blocks.join(' | ');
+                            sec.repeat = false; 
+                        }
+                    });
+                }
+            }
+
+            const iivContainer = document.getElementById('iivToggleContainer');
+            const iivContainerMobile = document.getElementById('iivToggleContainerMobile');
+            
+            if (progData.id === "secondary-dominants") {
+                if (iivContainer) { iivContainer.classList.remove('hidden'); iivContainer.classList.add('flex'); }
+                if (iivContainerMobile) { iivContainerMobile.classList.remove('hidden'); iivContainerMobile.classList.add('flex'); }
+            } else {
+                if (iivContainer) { iivContainer.classList.add('hidden'); iivContainer.classList.remove('flex'); }
+                if (iivContainerMobile) { iivContainerMobile.classList.add('hidden'); iivContainerMobile.classList.remove('flex'); }
+                relacionIIVActive = false;
+                if(document.getElementById('relacionToggle')) document.getElementById('relacionToggle').checked = false;
+                if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = false;
             }
 
             if (!manualKeyChange) {
                 if (keySelect) keySelect.value = progData.baseKey;
-                if (document.getElementById('keySelectMobile')) document.getElementById('keySelectMobile').value = progData.baseKey;
+                if (keySelectMobile) keySelectMobile.value = progData.baseKey;
             }
             manualKeyChange = false; 
 
-            const currentKey = keySelect ? keySelect.value : (document.getElementById('keySelectMobile') ? document.getElementById('keySelectMobile').value : "C");
+            const currentKey = keySelect ? keySelect.value : (keySelectMobile ? keySelectMobile.value : "C");
             const { stOffset, letterOffset } = getTranspositionOffsets(progData.baseKey, currentKey);
-            
-            let selectedVar = 0;
-            if (vSelect && vSelect.value !== "") selectedVar = parseInt(vSelect.value);
-            else if (vSelectMobile && vSelectMobile.value !== "") selectedVar = parseInt(vSelectMobile.value);
-            if (isNaN(selectedVar) || !progData.variations || selectedVar >= progData.variations.length) selectedVar = 0;
             
             visualMeasures = []; audioTimeline = [];
             
-            let variationData = [];
-            if (progData.variations && progData.variations.length > 0) {
-                variationData = progData.variations[selectedVar] || progData.variations[0];
-            }
-            
-            let activeSections = JSON.parse(JSON.stringify(variationData));
-            
-            if (progData.id === "secondary-dominants" && relacionIIVActive) {
-                activeSections.forEach(sec => {
-                    sec.data = sec.data.replace(/A7_SEC2/g, 'Em7(b5)_BKT_IIV A7_BKT_SEC2')
-                                       .replace(/B7_SEC3/g, 'F#m7(b5)_BKT_IIV B7_BKT_SEC3')
-                                       .replace(/C7_SEC4/g, 'Gm7_BKT_IIV C7_BKT_SEC4')
-                                       .replace(/D7_SEC5/g, 'Am7_BKT_IIV D7_BKT_SEC5')
-                                       .replace(/E7_SEC6/g, 'Bm7(b5)_BKT_IIV E7_BKT_SEC6');
-                });
-            }
-
             const coltraneContainer = document.getElementById('coltraneGraphicContainer');
-            if (progData.id === "multitonic-coltrane") {
+            if (progData.id === "multitonic-coltrane" && progData.id !== "custom") {
                 if (coltraneContainer) coltraneContainer.classList.remove('hidden');
                 renderColtraneGraphic(currentKey);
             } else {
@@ -860,38 +903,73 @@
 
             let audioUnrolledMeasures = []; let visualMap = []; let currentVisualIndex = 0;
 
-            activeSections.forEach(sec => {
-                const rawMeasures = sec.data.split('|').map(m => m.trim()).filter(m => m.length > 0);
-                const transposedMeasures = rawMeasures.map((mStr, mIdx) => {
-                    return mStr.split(/\s+/).map((c, cIdx) => {
+            let sectionsToProcess = JSON.parse(JSON.stringify(currentActiveSections));
+
+            sectionsToProcess.forEach(sec => {
+                const rawBlocks = sec.data.split('|').map(m => m.trim()).filter(m => m.length > 0);
+                let sectionVisualMeasures = [];
+
+                rawBlocks.forEach((b, mIdx) => {
+                    let hasRepeatStart = b.startsWith(':');
+                    let hasRepeatEnd = b.endsWith(':');
+                    let content = b.replace(/^:/, '').replace(/:$/, '').trim();
+                    
+                    if (progData.id === "secondary-dominants" && relacionIIVActive) {
+                        content = content.replace(/A7_SEC2/g, 'Em7(b5)_BKT_IIV A7_BKT_SEC2')
+                                         .replace(/B7_SEC3/g, 'F#m7(b5)_BKT_IIV B7_BKT_SEC3')
+                                         .replace(/C7_SEC4/g, 'Gm7_BKT_IIV C7_BKT_SEC4')
+                                         .replace(/D7_SEC5/g, 'Am7_BKT_IIV D7_BKT_SEC5')
+                                         .replace(/E7_SEC6/g, 'Bm7(b5)_BKT_IIV E7_BKT_SEC6');
+                    }
+
+                    let chords = content.split(/\s+/).map((c, cIdx) => {
                         let transposed = transposeChordName(c, stOffset, letterOffset);
                         let overrideKey = `${currentVisualIndex + mIdx}_${cIdx}`;
                         
                         let mutationState = 'normal';
                         if (globalTritone) mutationState = 'tritone';
                         if (globalDim) mutationState = 'dim';
-                        if (mutationOverrides[overrideKey] !== undefined) {
-                            mutationState = mutationOverrides[overrideKey];
-                        }
+                        if (mutationOverrides[overrideKey] !== undefined) mutationState = mutationOverrides[overrideKey];
 
                         if (isDominant(transposed)) {
-                            if (mutationState === 'tritone') {
-                                transposed = applyTritoneSub(transposed) + "_SUB";
-                            } else if (mutationState === 'dim') {
-                                transposed = applyDimSub(transposed) + "_DIM";
-                            }
+                            if (mutationState === 'tritone') transposed = applyTritoneSub(transposed);
+                            else if (mutationState === 'dim') transposed = applyDimSub(transposed);
                         }
                         return transposed;
                     });
+
+                    sectionVisualMeasures.push({
+                        id: currentVisualIndex + mIdx,
+                        chords: chords,
+                        colorClass: sec.color || 'bg-white dark:bg-slate-800',
+                        sectionName: mIdx === 0 && (sec.type === 'A' || sec.type === 'B' || sec.type === 'Libre') ? sec.type : null,
+                        hasRepeatStart: hasRepeatStart,
+                        hasRepeatEnd: hasRepeatEnd
+                    });
                 });
 
-                transposedMeasures.forEach((chords, mIdx) => {
-                    visualMeasures.push({ id: currentVisualIndex + mIdx, chords: chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: mIdx === 0 && (sec.type === 'A' || sec.type === 'B') ? sec.type : null, hasRepeatStart: sec.repeat && mIdx === 0, hasRepeatEnd: sec.repeat && mIdx === transposedMeasures.length - 1 });
-                });
+                visualMeasures.push(...sectionVisualMeasures);
 
-                transposedMeasures.forEach((chords, idx) => { audioUnrolledMeasures.push(chords); visualMap.push(currentVisualIndex + idx); });
-                if (sec.repeat) { transposedMeasures.forEach((chords, idx) => { audioUnrolledMeasures.push(chords); visualMap.push(currentVisualIndex + idx); }); }
-                currentVisualIndex += transposedMeasures.length;
+                let i = 0;
+                let repeatStartIdx = -1;
+                
+                while (i < sectionVisualMeasures.length) {
+                    let vm = sectionVisualMeasures[i];
+                    if (vm.hasRepeatStart) repeatStartIdx = i;
+                    
+                    audioUnrolledMeasures.push(vm.chords);
+                    visualMap.push(vm.id);
+                    
+                    if (vm.hasRepeatEnd && repeatStartIdx !== -1) {
+                        for (let r = repeatStartIdx; r <= i; r++) {
+                            audioUnrolledMeasures.push(sectionVisualMeasures[r].chords);
+                            visualMap.push(sectionVisualMeasures[r].id);
+                        }
+                        repeatStartIdx = -1;
+                    }
+                    i++;
+                }
+                currentVisualIndex += sectionVisualMeasures.length;
             });
 
             let prevMidiNotes = null;
@@ -936,11 +1014,8 @@
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
             const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
             
-            if (visualMeasures.length >= 16) {
-                grid.classList.add('dense-grid');
-            } else {
-                grid.classList.remove('dense-grid');
-            }
+            if (visualMeasures.length >= 16) grid.classList.add('dense-grid');
+            else grid.classList.remove('dense-grid');
 
             visualMeasures.forEach((vMeasure, index) => {
                 const measureDiv = document.createElement('div'); measureDiv.id = `measure-${vMeasure.id}`;
@@ -961,47 +1036,45 @@
                 let totalChars = renderedTexts.join("").length;
                 let hasBrackets = vMeasure.chords.some(ch => ch.includes('_BKT'));
                 
-                // Penalizaciones matemáticas para el tamaño (suaves para acordes cortos, severas para textos gigantes)
                 if (hasBrackets) totalChars += 2; 
                 if (vMeasure.chords.length > 1) totalChars += 1; 
 
                 let textSizeClass = "";
-                if (totalChars <= 4) {
+                let adaptiveBktGapClass = "gap-1 sm:gap-2 px-1 sm:px-2"; 
+                let adaptiveGapClass = "gap-1 sm:gap-2 px-1 sm:px-2";
+
+                // Escala de tamaños rediseñada para evitar recortes en textos de 10-14 letras
+                if (totalChars > 16) {
+                    textSizeClass = "text-[0.55rem] sm:text-xs tracking-tighter";
+                    adaptiveBktGapClass = "gap-0.5 sm:gap-1 px-0.5"; 
+                    adaptiveGapClass = "gap-0.5 sm:gap-1 px-0.5";
+                } else if (totalChars <= 4) {
                     textSizeClass = "text-[1.3rem] sm:text-3xl md:text-5xl lg:text-6xl";
-                } else if (totalChars <= 7) {
+                } else if (totalChars <= 6) {
                     textSizeClass = "text-[1.1rem] sm:text-2xl md:text-4xl lg:text-5xl";
+                } else if (totalChars <= 8) {
+                    textSizeClass = "text-[0.95rem] sm:text-xl md:text-3xl lg:text-4xl tracking-tight";
                 } else if (totalChars <= 11) {
-                    textSizeClass = "text-[1rem] sm:text-xl md:text-3xl lg:text-4xl";
+                    textSizeClass = "text-[0.75rem] sm:text-lg md:text-2xl lg:text-3xl tracking-tight";
                 } else if (totalChars <= 14) {
-                    textSizeClass = "text-[0.85rem] sm:text-lg md:text-2xl lg:text-3xl";
-                } else if (totalChars <= 17) {
-                    textSizeClass = "text-[0.7rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
-                } else if (totalChars <= 21) {
-                    // Escudo 1 para textos largos (ej. IIm7(b5) subV7)
-                    textSizeClass = "text-[0.55rem] sm:text-sm md:text-lg lg:text-xl tracking-tighter";
+                    textSizeClass = "text-[0.65rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
                 } else {
-                    // Escudo de emergencia para textos gigantes
-                    textSizeClass = "text-[0.45rem] sm:text-xs md:text-base lg:text-lg tracking-tighter";
+                    textSizeClass = "text-[0.6rem] sm:text-sm md:text-lg lg:text-xl tracking-tighter";
                 }
                 
                 if (visualMeasures.length >= 16) {
-                    if (totalChars <= 4) textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl lg:text-6xl";
-                    else if (totalChars <= 7) textSizeClass = "text-[0.95rem] sm:text-2xl md:text-4xl lg:text-5xl";
-                    else if (totalChars <= 11) textSizeClass = "text-[0.85rem] sm:text-xl md:text-3xl lg:text-4xl";
-                    else if (totalChars <= 14) textSizeClass = "text-[0.75rem] sm:text-lg md:text-2xl lg:text-3xl";
-                    else if (totalChars <= 17) textSizeClass = "text-[0.65rem] sm:text-sm md:text-lg lg:text-xl tracking-tighter";
-                    else if (totalChars <= 21) textSizeClass = "text-[0.5rem] sm:text-xs md:text-base lg:text-lg tracking-tighter";
-                    else textSizeClass = "text-[0.4rem] sm:text-[10px] md:text-sm lg:text-base tracking-tighter";
+                    if (totalChars > 16) { textSizeClass = "text-[0.55rem] sm:text-xs tracking-tighter"; adaptiveBktGapClass = "gap-0.5 px-0.5"; adaptiveGapClass = "gap-0.5 px-0.5"; }
+                    else if (totalChars <= 4) textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl lg:text-6xl";
+                    else if (totalChars <= 6) textSizeClass = "text-[0.95rem] sm:text-2xl md:text-4xl lg:text-5xl";
+                    else if (totalChars <= 8) textSizeClass = "text-[0.85rem] sm:text-xl md:text-3xl lg:text-4xl tracking-tight";
+                    else if (totalChars <= 11) textSizeClass = "text-[0.75rem] sm:text-lg md:text-2xl lg:text-3xl tracking-tight";
+                    else if (totalChars <= 14) textSizeClass = "text-[0.65rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
+                    else textSizeClass = "text-[0.6rem] sm:text-sm md:text-base lg:text-lg tracking-tighter";
                 }
-
-                // Ajuste de espacio dinámico. Menos espacio si el texto es muy largo.
-                let gapClass = totalChars > 15 ? "gap-0.5 sm:gap-2" : "gap-1 sm:gap-2";
-                let mainGapClass = totalChars > 15 ? "gap-0.5 sm:gap-2" : "gap-1.5 sm:gap-3";
 
                 const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
-                    let isSubbed = c.includes('_SUB');
-                    let isDimmed = c.includes('_DIM');
+                    let isSubbed = c.includes('_SUB'); let isDimmed = c.includes('_DIM');
                     let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
                     let isDom = isSubbed || isDimmed || isDominant(cleanC);
 
@@ -1013,7 +1086,7 @@
                     else if (isDom) color += " is-dominant";
 
                     let intClasses = "pointer-events-auto "; let tooltip = "";
-                    if (isDom) { intClasses += "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative z-20"; tooltip = 'title="Clic para cambiar variante de acorde"'; }
+                    if (isDom) { intClasses += "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative z-20"; tooltip = 'title="Clic para mutar acorde dominante"'; }
                     
                     return `<span class="chord-text font-bold ${color} ${intClasses} ${textSizeClass}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${textStr}</span>`;
                 };
@@ -1027,7 +1100,7 @@
                     
                     if (isBkt && !inBracket) {
                         let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} px-0 sm:px-1 ${gapClass}">`;
+                        measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} ${adaptiveBktGapClass}">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
                         measureChordsHTML += `</div>`;
@@ -1042,7 +1115,7 @@
                 measureDiv.innerHTML = `
                     <div class="absolute top-0 right-1 text-[8px] sm:text-[10px] text-slate-400 font-mono z-10">${index + 1}</div>
                     ${rehearsalMarkHTML}
-                    <div class="flex flex-row items-center justify-center w-full h-full px-0.5 sm:px-1 pb-1 flex-wrap content-center text-center overflow-hidden ${mainGapClass}">
+                    <div class="flex flex-row items-center justify-center w-full h-full pb-1 flex-nowrap content-center text-center overflow-hidden ${adaptiveGapClass}">
                         ${measureChordsHTML}
                     </div>
                 `;
@@ -1050,7 +1123,7 @@
             });
         }
 
-        function updateStartMeasureLabel() { const ind = document.getElementById('startMeasureIndicator'); if (ind) ind.textContent = `Inicio: ${selectedStartMeasure + 1}`; }
+        function updateStartMeasureLabel() { const ind = document.getElementById('startMeasureIndicator'); if (ind) ind.textContent = `Sel: ${selectedStartMeasure + 1}`; }
 
         function highlightMeasure(visualId) {
             document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
@@ -1093,8 +1166,27 @@
 
             Tone.Transport.scheduleRepeat((time) => {
                 const currentStep = step % totalSteps; 
-                const event = audioTimeline[currentStep];
                 
+                if (step > 0 && currentStep === 0) {
+                    currentLoopCount++;
+                    let lInput = document.getElementById('loopInput');
+                    let loopVal = lInput ? lInput.value : (document.getElementById('loopInputMobile')?.value || "");
+                    let maxLoops = (loopVal === "" || parseInt(loopVal) <= 0) ? Infinity : parseInt(loopVal);
+                    
+                    if (currentLoopCount >= maxLoops) {
+                        Tone.Transport.pause();
+                        isPlaying = false;
+                        updatePlayButtons(false);
+                        step = 0;
+                        currentLoopCount = 0;
+                        resetMetronome();
+                        document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
+                        highlightSvgNode([]);
+                        if (piano) piano.releaseAll(); if (bassSynth) bassSynth.triggerRelease(time);
+                        return; 
+                    }
+                }
+
                 if (currentStep % 2 === 0) {
                     let beatIdx = (currentStep % 8) / 2;
                     Tone.Draw.schedule(() => updateMetronome(beatIdx), time);
@@ -1105,6 +1197,7 @@
                     if (cMe) Tone.Draw.schedule(() => highlightMeasure(cMe.visualId), time);
                 }
 
+                const event = audioTimeline[currentStep];
                 if (event !== undefined) {
                     if (event && event.svgNodeIds) Tone.Draw.schedule(() => highlightSvgNode(event.svgNodeIds), time);
                     else if (event !== null) Tone.Draw.schedule(() => highlightSvgNode([]), time);
@@ -1148,25 +1241,25 @@
         document.querySelectorAll('#themeToggleBtn').forEach(btn => btn.addEventListener('click', toggleTheme));
 
         function updatePlayButtons(playing) {
-            const playHtml = '<i class="fa-solid fa-play ml-0.5"></i>'; const pauseHtml = '<i class="fa-solid fa-pause"></i>';
+            const playHtml = '<i class="fa-solid fa-play ml-0.5 text-xs"></i>'; const pauseHtml = '<i class="fa-solid fa-pause text-xs"></i>';
             const playClasses = ['bg-blue-600', 'hover:bg-blue-500']; const pauseClasses = ['bg-amber-500', 'hover:bg-amber-400'];
             [document.getElementById('playBtn'), document.getElementById('playBtnMobile')].forEach(btn => {
                 if(!btn) return;
                 if(playing) { btn.innerHTML = pauseHtml; btn.classList.remove(...playClasses); btn.classList.add(...pauseClasses); } 
-                else { btn.innerHTML = playHtml; btn.classList.remove(...pauseClasses); btn.classList.add(...playClasses); }
+                else { btn.innerHTML = playHtml; btn.classList.remove(...playClasses); btn.classList.add(...playClasses); }
             });
         }
 
         async function playProgression() {
             if (!audioInitialized) await initAudio();
             if (Tone.context.state !== 'running') await Tone.context.resume();
-            if (!isPlaying) { step = selectedStartMeasure * 8; Tone.Transport.position = 0; Tone.Transport.start(); isPlaying = true; updatePlayButtons(true); } 
+            if (!isPlaying) { currentLoopCount = 0; step = selectedStartMeasure * 8; Tone.Transport.position = 0; Tone.Transport.start(); isPlaying = true; updatePlayButtons(true); } 
             else { Tone.Transport.pause(); isPlaying = false; if (piano && piano.releaseAll) piano.releaseAll(); if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now()); updatePlayButtons(false); }
         }
 
         function stopProgression() {
             if (audioInitialized) { Tone.Transport.pause(); piano.releaseAll(); bassSynth.triggerRelease(Tone.now()); }
-            isPlaying = false; step = selectedStartMeasure * 8; resetMetronome();
+            isPlaying = false; step = selectedStartMeasure * 8; currentLoopCount = 0; resetMetronome();
             document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
             highlightSvgNode([]); updatePlayButtons(false);
         }
@@ -1184,7 +1277,10 @@
         ['mutePianoBtn', 'mutePianoBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', () => toggleMute('piano', 'mutePianoBtn', 'mutePianoBtnMobile')));
         ['muteBassBtn', 'muteBassBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', () => toggleMute('bass', 'muteBassBtn', 'muteBassBtnMobile')));
 
-        function syncSelects(id1, id2, value) { document.getElementById(id1).value = value; if(document.getElementById(id2)) document.getElementById(id2).value = value; }
+        function syncSelects(id1, id2, value) { 
+            let e1 = document.getElementById(id1); if(e1) e1.value = value; 
+            let e2 = document.getElementById(id2); if(e2) e2.value = value; 
+        }
         
         ['tempoSlider', 'tempoSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             document.getElementById('tempoValue').textContent = e.target.value; document.getElementById('tempoValueMobile').textContent = e.target.value;
@@ -1196,23 +1292,20 @@
             syncSelects('volumeSlider', 'volumeSliderMobile', e.target.value); if (audioInitialized) Tone.Destination.volume.value = parseFloat(e.target.value);
         }));
 
+        ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
+
         ['progressionSelect', 'progressionSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            let val = e.target.value;
-            if (val === "" || val === undefined) val = "0";
+            let val = e.target.value; if (val === "" || val === undefined || val === "undefined") val = "0";
             syncSelects('variationSelect', 'variationSelectMobile', val); 
-            const was = isPlaying; 
-            stopProgression(); 
-            selectedStartMeasure = 0; 
-            loadAndCompileProgression(); 
-            if(was) setTimeout(() => playProgression(), 50);
+            const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['keySelect', 'keySelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('keySelect', 'keySelectMobile', e.target.value); manualKeyChange = true; const was = isPlaying; stopProgression(); loadAndCompileProgression(); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('keySelect', 'keySelectMobile', e.target.value); manualKeyChange = true; const was = isPlaying; stopProgression(); loadAndCompileProgression(true); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
@@ -1235,34 +1328,33 @@
             romanMode = e.target.checked; document.getElementById('romanToggle').checked = romanMode; document.getElementById('romanToggleMobile').checked = romanMode; renderGrid(); 
         }));
 
+        document.getElementById('addRepeatStartBtn')?.addEventListener('click', () => toggleRepeatSymbol('start'));
+        document.getElementById('addRepeatEndBtn')?.addEventListener('click', () => toggleRepeatSymbol('end'));
+
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         const handleCustomInput = debounce((val) => {
-            const customProg = progressionLibrary.find(p => p.id === "custom");
-            customProg.variations[0][0].data = val.trim() === "" ? "Cmaj7" : val;
             const wasPlaying = isPlaying; if (wasPlaying) stopProgression();
-            selectedStartMeasure = 0; loadAndCompileProgression(); if (wasPlaying) setTimeout(() => playProgression(), 50);
+            selectedStartMeasure = 0; loadAndCompileProgression(false); if (wasPlaying) setTimeout(() => playProgression(), 50);
         }, 800);
+        
         document.getElementById('customProgInput')?.addEventListener('input', (e) => handleCustomInput(e.target.value));
 
-        document.getElementById('insertPipeBtn')?.addEventListener('click', () => {
-            const input = document.getElementById('customProgInput');
-            if (input) {
-                const start = input.selectionStart;
-                const end = input.selectionEnd;
-                const text = input.value;
-                const before = text.substring(0, start);
-                const after = text.substring(end);
-                
-                let insertText = "|";
-                if (before.length > 0 && !before.endsWith(" ")) insertText = " " + insertText;
-                if (!after.startsWith(" ")) insertText = insertText + " ";
-                
-                input.value = before + insertText + after;
-                input.selectionStart = input.selectionEnd = start + insertText.length;
-                input.focus();
-                handleCustomInput(input.value);
-            }
-        });
+        function insertTextAtCursor(inputId, textToInsert) {
+            const input = document.getElementById(inputId); if (!input) return;
+            const start = input.selectionStart; const end = input.selectionEnd; const text = input.value;
+            const before = text.substring(0, start); const after = text.substring(end);
+            
+            let insertStr = textToInsert;
+            if (before.length > 0 && !before.endsWith(" ")) insertStr = " " + insertStr;
+            if (after.length > 0 && !after.startsWith(" ")) insertStr = insertStr + " ";
+            
+            input.value = before + insertStr + after;
+            input.selectionStart = input.selectionEnd = start + insertStr.length;
+            input.focus(); 
+            handleCustomInput(input.value);
+        }
+        
+        document.getElementById('insertPipeBtn')?.addEventListener('click', () => insertTextAtCursor('customProgInput', '|'));
 
         document.getElementById('chordGrid')?.addEventListener('click', (e) => {
             const chordEl = e.target.closest('.chord-text');
@@ -1282,8 +1374,7 @@
             }
         });
 
-        // Initialize App
-        loadAndCompileProgression();
+        loadAndCompileProgression(false);
     </script>
 </body>
 </html>
