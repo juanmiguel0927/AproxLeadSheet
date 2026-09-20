@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,6 +33,7 @@
         .measure-box {
             transition: all 0.15s ease-in-out; min-height: 50px; height: 100%;
             cursor: pointer; display: flex; flex-direction: column; justify-content: center;
+            position: relative;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
         .measure-active { background-color: #eff6ff !important; border-color: #60a5fa !important; transform: scale(1.02); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2); z-index: 10; }
@@ -45,8 +47,12 @@
         .chord-text { font-family: 'Courier New', Courier, monospace; }
 
         .ii-v-bracket { position: relative; margin-bottom: 2px; }
-        .ii-v-bracket::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
+        .ii-v-bracket::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
         .dark .ii-v-bracket::after { border-color: #94a3b8; }
+        
+        /* Red styled bracket for DIM/VIIo7 analysis */
+        .ii-v-bracket-dim::after { border-color: #ec4899; border-style: dashed; }
+        .dark .ii-v-bracket-dim::after { border-color: #f472b6; }
 
         .metronome-dot { transition: all 0.05s ease-out; }
         .metronome-dot.active { background-color: #3b82f6 !important; transform: scale(1.5); box-shadow: 0 0 6px rgba(59,130,246,0.8); }
@@ -80,12 +86,16 @@
 
         input:checked ~ .toggle-dot { transform: translateX(100%); background-color: #3b82f6; }
         input#globalTritoneToggle:checked ~ .toggle-dot, input#globalTritoneToggleMobile:checked ~ .toggle-dot { background-color: #f59e0b; }
+        input#globalDimToggle:checked ~ .toggle-dot, input#globalDimToggleMobile:checked ~ .toggle-dot { background-color: #ec4899; }
+        input#relacionToggle:checked ~ .toggle-dot, input#relacionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #10b981; }
+
         input:checked ~ .toggle-track { background-color: #dbeafe; }
         input#globalTritoneToggle:checked ~ .toggle-track, input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #fef3c7; }
-        input#relacionToggle:checked ~ .toggle-dot, input#relacionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #10b981; }
+        input#globalDimToggle:checked ~ .toggle-track, input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #fce7f3; }
         input#relacionToggle:checked ~ .toggle-track, input#relacionToggleMobile:checked ~ .toggle-track { background-color: #d1fae5; }
         .dark input:checked ~ .toggle-track { background-color: #1e3a8a; }
         .dark input#globalTritoneToggle:checked ~ .toggle-track, .dark input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #78350f; }
+        .dark input#globalDimToggle:checked ~ .toggle-track, .dark input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #831843; }
         .dark input#relacionToggle:checked ~ .toggle-track, .dark input#relacionToggleMobile:checked ~ .toggle-track { background-color: #064e3b; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -94,27 +104,51 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
         
+        .bracket-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: baseline;
+            column-gap: 0.6rem; /* Incrementado para más separación */
+        }
+
+        /* Fluid Typography and dynamic sizing based on screen width */
         @media (max-width: 640px) {
-            .measure-box { min-height: 45px; padding: 0.1rem; } 
+            .measure-box { min-height: 45px; padding: 1px; padding-top: 1.2rem; } 
             .section-label { font-size: 8px; padding: 1px 3px; }
-            .measure-number { font-size: 8px; top: 2px; left: 4px; }
+            .measure-number { font-size: 8px; top: 2px; right: 4px; }
             .repeat-start::after, .repeat-end::after { font-size: 14px; left: 4px; right: 4px;}
             .repeat-start { padding-left: 0.6rem; }
             .repeat-end { padding-right: 0.6rem; }
             .controls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; width: 100%; }
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
-            .chord-text { font-size: 0.85rem !important; }
             
-            .dense-grid .measure-box { min-height: 28px !important; }
-            .dense-grid .chord-text { font-size: 0.7rem !important; line-height: 1; }
-            .dense-grid .measure-number { font-size: 7px; top: 1px; left: 2px; }
+            /* Solución Fluida Estricta para Celulares */
+            .chord-text { 
+                font-size: clamp(0.55rem, 2.5vw, 0.9rem) !important; 
+                white-space: nowrap !important; /* Fuerza a que no haya saltos de línea */
+                letter-spacing: -0.05em; 
+                line-height: 1.2;
+            }
+            .dense-grid .chord-text { 
+                font-size: clamp(0.45rem, 1.8vw, 0.75rem) !important; 
+            }
+            .bracket-container {
+                flex-direction: row !important; /* Nunca vertical */
+                flex-wrap: nowrap !important;
+                column-gap: 0.4rem; /* Separación en móvil */
+                padding-bottom: 2px;
+            }
+            .dense-grid .measure-box { min-height: 38px !important; padding-top: 0.8rem; padding-bottom: 0.2rem;}
+            .dense-grid .measure-number { font-size: 7px; top: 1px; right: 2px; }
             .dense-grid { gap: 2px !important; padding-bottom: 0.5rem !important; }
         }
     </style>
 </head>
-
-<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-2 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-3 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+    
     <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700">
         
         <!-- Header / Controles -->
@@ -137,7 +171,7 @@
                     <select id="progressionSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
                 </div>
 
-                <div id="variationContainer" class="hidden min-w-[90px] flex-col">
+                <div id="variationContainer" class="hidden flex-col min-w-[120px]">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                     <select id="variationSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                 </div>
@@ -180,6 +214,15 @@
                         <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors">Tritono</span>
                     </label>
 
+                    <label class="flex items-center gap-2 cursor-pointer group" title="Sustituto Disminuido a todos los dominantes">
+                        <div class="relative">
+                            <input type="checkbox" id="globalDimToggle" class="sr-only">
+                            <div class="toggle-track block bg-slate-300 w-8 h-5 rounded-full transition-colors dark:bg-slate-600"></div>
+                            <div class="toggle-dot absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition transform shadow-sm"></div>
+                        </div>
+                        <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-pink-500 dark:group-hover:text-pink-400 transition-colors">DIM</span>
+                    </label>
+
                     <label id="iivToggleContainer" class="hidden items-center gap-2 cursor-pointer group" title="Activar Relación II-V para Dominantes Secundarios">
                         <div class="relative">
                             <input type="checkbox" id="relacionToggle" class="sr-only">
@@ -205,13 +248,14 @@
                 </div>
             </div>
 
+            <!-- Controles Mobile -->
             <div class="sm:hidden controls-grid">
                 <div class="controls-full-width flex gap-1">
                     <div class="flex-1">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Progresión</label>
                         <select id="progressionSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
                     </div>
-                    <div id="variationContainerMobile" class="hidden flex-col min-w-[70px]">
+                    <div id="variationContainerMobile" class="hidden flex-col min-w-[100px]">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                         <select id="variationSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                     </div>
@@ -252,6 +296,14 @@
                                 <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
                             </div>
                             <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Tritono</span>
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer group">
+                            <div class="relative">
+                                <input type="checkbox" id="globalDimToggleMobile" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">DIM</span>
                         </label>
                         <label id="iivToggleContainerMobile" class="hidden items-center gap-1 cursor-pointer group">
                             <div class="relative">
@@ -302,7 +354,7 @@
             <span id="startMeasureIndicator" class="font-bold whitespace-nowrap">Inicio: 1</span>
         </div>
 
-        <!-- Contenedor del Gráfico -->
+        <!-- Contenedor del Gráfico Coltrane -->
         <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink-0 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
             <div id="coltrane-graphic" class="w-full h-full flex justify-center items-center"></div>
         </div>
@@ -331,14 +383,14 @@
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cm7 | Am7(b5) | Dm7(b5) | G7" } ]
             ]},
             { id: "secondary-dominants", name: "Dominantes Secundarios", baseKey: "C", variations: [
-                [ { type: "V7/II", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
-                [ { type: "V7/III", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | B7_SEC3 | Em7 | A7" } ],
-                [ { type: "V7/IV", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | G7" } ],
-                [ { type: "V7/V", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | D7_SEC5 | G7 | G7" } ],
-                [ { type: "V7/VI", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | E7_SEC6 | Am7 | G7" } ]
-            ]},
-            { id: "modal-interchange", name: "Intercambio Modal & Disminuidos", baseKey: "C", variations: [
-                [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7 | Dm7 | G7" } ],
+                { name: "V7/II", data: "Cmaj7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | A7_SEC2 | Dm7 | G7", repeat: true },
+                { name: "V7/III", data: "Cmaj7 | B7_SEC3 | Em7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | Cmaj7", repeat: true },
+                { name: "V7/IV", data: "Cmaj7 | C7_SEC4 | Fmaj7 | G7 | Cmaj7 | Cmaj7 | Dm7 | G7", repeat: true },
+                { name: "V7/V", data: "Cmaj7 | D7_SEC5 | G7 | Cmaj7 | Cmaj7 | D7_SEC5 | Dm7 | G7", repeat: true },
+                { name: "V7/VI", data: "Cmaj7 | E7_SEC6 | Am7 | G7 | Cmaj7 | E7_SEC6 | Dm7 | G7", repeat: true }
+            ].map(v => [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: v.repeat, data: v.data } ])},
+            { id: "modal-interchange", name: "Intercambio Modal & #IVdim7", baseKey: "C", variations: [
+                [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
                 [ { type: "IVm7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 | Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "IVm6", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm6 | Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "Backdoor (bVII7)", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 Bb7 | Cmaj7 | Am7 | Dm7 | G7" } ],
@@ -349,11 +401,11 @@
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" } ]
             ]},
             { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bo7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Bb7 | Fmaj7 | Cm7 F7 | Bb7 | Bo7 | Fmaj7 | Am7 D7 | Gm7 | C7 | Fmaj7 D7 | Gm7 C7" } ],
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
+                [ { type: "1 (Básico)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
+                [ { type: "2", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "3 (Bebop)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "4", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Bb7 | Fmaj7 | Cm7 F7 | Bb7 | Bdim7 | Fmaj7 | Am7 D7 | Gm7 | C7 | Fmaj7 D7 | Gm7 C7" } ],
+                [ { type: "5 (Menor)", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
             ]},
             { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
                 [ 
@@ -362,9 +414,9 @@
                     { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
                 ],
                 [ 
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
+                    { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
+                    { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
                 ]
             ]}
         ];
@@ -373,6 +425,7 @@
         const baseSemitones = {'C':0, 'D':2, 'E':4, 'F':5, 'G':7, 'A':9, 'B':11};
         const allKeys = ["C", "Db", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
         const tritoneRootMap = { 'C':'Gb', 'C#':'G', 'Db':'G', 'D':'Ab', 'D#':'A', 'Eb':'A', 'E':'Bb', 'F':'B', 'F#':'C', 'Gb':'C', 'G':'Db', 'G#':'D', 'Ab':'D', 'A':'Eb', 'A#':'E', 'Bb':'E', 'B':'F' };
+        const dimRootMap = { 'C':'E', 'C#':'F', 'Db':'F', 'D':'F#', 'D#':'G', 'Eb':'G', 'E':'G#', 'F':'A', 'F#':'A#', 'Gb':'Bb', 'G':'B', 'G#':'C', 'Ab':'C', 'A':'C#', 'A#':'D', 'Bb':'D', 'B':'D#' };
         const enharmonicPairs = { 'C#': 'Db', 'Db': 'C#', 'D#': 'Eb', 'Eb': 'D#', 'E#': 'F', 'F': 'E#', 'F#': 'Gb', 'Gb': 'F#', 'G#': 'Ab', 'Ab': 'G#', 'A#': 'Bb', 'Bb': 'A#', 'Cb': 'B', 'B': 'Cb' };
         window.svgEnharmonicOverrides = {};
 
@@ -448,34 +501,12 @@
             let selectedVar = variationSelect && variationSelect.value !== "" ? parseInt(variationSelect.value) : 0;
             if (isNaN(selectedVar)) selectedVar = 0;
 
-            let cleanStr = chordStr.replace(/_SUB|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const isSubbed = chordStr.includes('_SUB');
+            const isDimmed = chordStr.includes('_DIM');
             
             if (progData.id === "custom") return cleanStr;
             if (progData.id === "multitonic-coltrane") return cleanStr;
-
-            // BLUES EXCEPTION: En blues básico (versión 0), I7 y IV7 no son dominantes secundarios.
-            if (progData.id === "blues") {
-                if (selectedVar === 0) {
-                    const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
-                    if (match) {
-                        let root = match[1];
-                        let { stOffset } = getTranspositionOffsets(keyStr, root);
-                        let originalOffset = isSubbed ? (stOffset + 6) % 12 : stOffset;
-                        if (originalOffset === 0) return isSubbed ? `subV7` : `I7`;
-                        if (originalOffset === 5) return isSubbed ? `subV7/V` : `IV7`;
-                        if (originalOffset === 7) return isSubbed ? `subV7/I` : `V7`;
-                    }
-                }
-                return cleanStr; // Las demás versiones del blues no se analizan a la fuerza.
-            }
-
-            if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
-            if (chordStr.includes('_SEC2')) return isSubbed ? "subV7/II" : "V7/II";
-            if (chordStr.includes('_SEC3')) return isSubbed ? "subV7/III" : "V7/III";
-            if (chordStr.includes('_SEC4')) return isSubbed ? "subV7/IV" : "V7/IV";
-            if (chordStr.includes('_SEC5')) return isSubbed ? "subV7/V" : "V7/V";
-            if (chordStr.includes('_SEC6')) return isSubbed ? "subV7/VI" : "V7/VI";
 
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
@@ -485,26 +516,44 @@
             let cleanQual = quality.split('/')[0];
 
             let { stOffset } = getTranspositionOffsets(keyStr, root);
-            let originalOffset = isSubbed ? (stOffset + 6) % 12 : stOffset;
+            let originalOffset = isSubbed ? (stOffset + 6) % 12 : (isDimmed ? (stOffset + 8) % 12 : stOffset);
+
+            // ---> EXCEPCIÓN DEL BLUES (Versión 1) <---
+            if (progData.id === "blues") {
+                if (selectedVar === 0) { // Solo la versión 1 ("Básico")
+                    if (originalOffset === 0) return isSubbed ? `subV7` : (isDimmed ? `VIIo7` : `I7`);
+                    if (originalOffset === 5) return isSubbed ? `subV7/V` : (isDimmed ? `IIIo7` : `IV7`);
+                    if (originalOffset === 7) return isSubbed ? `subV7/I` : (isDimmed ? `Vo7` : `V7`);
+                }
+                return cleanStr; 
+            }
+            // ----------------------------------------
+
+            if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
+            if (chordStr.includes('_SEC2')) return isSubbed ? "subV7/II" : (isDimmed ? "VIIo7/II" : "V7/II");
+            if (chordStr.includes('_SEC3')) return isSubbed ? "subV7/III" : (isDimmed ? "VIIo7/III" : "V7/III");
+            if (chordStr.includes('_SEC4')) return isSubbed ? "subV7/IV" : (isDimmed ? "VIIo7/IV" : "V7/IV");
+            if (chordStr.includes('_SEC5')) return isSubbed ? "subV7/V" : (isDimmed ? "VIIo7/V" : "V7/V");
+            if (chordStr.includes('_SEC6')) return isSubbed ? "subV7/VI" : (isDimmed ? "VIIo7/VI" : "V7/VI");
 
             if (progData.id === "251-maj-all") {
                 if (cleanQual === "m7" || cleanQual === "m9") return "IIm7";
-                if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : "V7";
+                if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "V7");
                 if (cleanQual.startsWith("maj7") || cleanQual.startsWith("6")) return "Imaj7";
                 return cleanStr;
             }
 
             if (progData.id === "251-min-all") {
                 if (cleanQual === "m7(b5)") return "IIm7(b5)";
-                if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : "V7";
+                if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "V7");
                 if (cleanQual === "m7" || cleanQual === "m") return "Im7";
                 return cleanStr;
             }
 
-            let isDominantChord = (cleanQual.startsWith('7') || cleanQual.startsWith('9') || cleanQual.startsWith('13')) 
-                && !cleanQual.includes('maj') && !cleanQual.includes('m') && !cleanQual.includes('dim') && !cleanQual.includes('o');
+            let isDominantChord = (cleanQual.startsWith('7') || cleanQual.startsWith('9') || cleanQual.startsWith('13') || cleanQual.startsWith('dim') || cleanQual.startsWith('o')) 
+                && !cleanQual.includes('maj') && !cleanQual.includes('m');
 
-            if (isDominantChord) {
+            if (isDominantChord || isDimmed) {
                 let targetRoman = null;
                 if (originalOffset === 0) targetRoman = "IV";
                 else if (originalOffset === 2) targetRoman = "V";
@@ -514,12 +563,14 @@
                 else if (originalOffset === 7) {
                     let tension = cleanQual.replace('7', '');
                     if (tension === "9" || tension === "13") tension = "";
+                    if (isDimmed) return `VIIo7`;
                     return isSubbed ? `subV7${tension}` : `V7${tension}`;
                 }
 
                 if (targetRoman) {
                     let tension = cleanQual.replace('7', '');
                     if (tension === "9" || tension === "13") tension = "";
+                    if (isDimmed) return `VIIo7/${targetRoman}`;
                     return isSubbed ? `subV7${tension}/${targetRoman}` : `V7${tension}/${targetRoman}`;
                 }
             }
@@ -532,7 +583,6 @@
             else if (originalOffset === 4) baseRoman = "III";
             else if (originalOffset === 5) baseRoman = "IV";
             else if (originalOffset === 6) {
-                // Controlar los disminuidos que caen a distancia de tritono
                 baseRoman = (cleanQual.includes('dim') || cleanQual.includes('o')) ? "#IV" : "bV";
             }
             else if (originalOffset === 7) baseRoman = "V";
@@ -551,7 +601,7 @@
         };
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
-            let cleanChord = chordStr.replace(/_SUB|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanChord = chordStr.replace(/_SUB|_DIM|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
             
@@ -588,8 +638,9 @@
         let totalSteps = 0;
         let selectedStartMeasure = 0;
         let globalTritone = false;
+        let globalDim = false;
         let relacionIIVActive = false;
-        let tritoneOverrides = {}; 
+        let mutationOverrides = {}; 
         let manualKeyChange = false;
         
         let isPianoMuted = false;
@@ -605,6 +656,10 @@
             let v3 = transposeRoot(t3, 7, 4); let ii3 = transposeRoot(v3, 7, 4);
 
             if (globalTritone) { v1 = tritoneRootMap[v1] || v1; v2 = tritoneRootMap[v2] || v2; v3 = tritoneRootMap[v3] || v3; }
+            else if (globalDim) { 
+                let d1 = dimRootMap[v1] || v1; let d2 = dimRootMap[v2] || v2; let d3 = dimRootMap[v3] || v3;
+                v1 = d1; v2 = d2; v3 = d3;
+            }
 
             const cx = 200, cy = 90; 
             const rOffset = 45; 
@@ -638,7 +693,7 @@
                     </g>
                     <g id="svg-node-v1" class="coltrane-node" onclick="toggleSvgEnharmonic('v1')">
                         <rect x="${posV1.x - 20}" y="${posV1.y - 12}" width="40" height="24" class="ii-v-bg pointer-events-none" />
-                        <text x="${posV1.x}" y="${posV1.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v1, 'v1')}7</text>
+                        <text x="${posV1.x}" y="${posV1.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v1, 'v1')}${globalDim ? 'dim7' : '7'}</text>
                     </g>
                     
                     <g id="svg-node-ii2" class="coltrane-node" onclick="toggleSvgEnharmonic('ii2')">
@@ -647,7 +702,7 @@
                     </g>
                     <g id="svg-node-v2" class="coltrane-node" onclick="toggleSvgEnharmonic('v2')">
                         <rect x="${posV2.x - 20}" y="${posV2.y - 12}" width="40" height="24" class="ii-v-bg pointer-events-none" />
-                        <text x="${posV2.x}" y="${posV2.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v2, 'v2')}7</text>
+                        <text x="${posV2.x}" y="${posV2.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v2, 'v2')}${globalDim ? 'dim7' : '7'}</text>
                     </g>
                     
                     <g id="svg-node-ii3" class="coltrane-node" onclick="toggleSvgEnharmonic('ii3')">
@@ -656,7 +711,7 @@
                     </g>
                     <g id="svg-node-v3" class="coltrane-node" onclick="toggleSvgEnharmonic('v3')">
                         <rect x="${posV3.x - 20}" y="${posV3.y - 12}" width="40" height="24" class="ii-v-bg pointer-events-none" />
-                        <text x="${posV3.x}" y="${posV3.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v3, 'v3')}7</text>
+                        <text x="${posV3.x}" y="${posV3.y + 4}" text-anchor="middle" font-size="12" class="ii-v-text pointer-events-none">${getDisplayNote(v3, 'v3')}${globalDim ? 'dim7' : '7'}</text>
                     </g>
 
                     <g id="svg-node-t1" class="coltrane-node" onclick="toggleSvgEnharmonic('t1')">
@@ -679,9 +734,9 @@
             if (chordStr === "NC" || chordStr === "-") return false;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return false;
-            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_BKT/g, '');
-            return (mainQuality.startsWith('7') || mainQuality.startsWith('9') || mainQuality.startsWith('13')) 
-                && !mainQuality.includes('maj') && !mainQuality.includes('m') && !mainQuality.includes('dim') && !mainQuality.includes('o');
+            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
+            return (mainQuality.startsWith('7') || mainQuality.startsWith('9') || mainQuality.startsWith('13') || mainQuality.startsWith('dim') || mainQuality.startsWith('o')) 
+                && !mainQuality.includes('maj') && !mainQuality.includes('m');
         }
 
         function applyTritoneSub(chordStr) {
@@ -692,17 +747,32 @@
             return (tritoneRootMap[root] || root) + quality;
         }
 
+        function applyDimSub(chordStr) {
+            const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
+            if (!match) return chordStr;
+            const root = match[1];
+            let newRoot = dimRootMap[root] || root;
+            return newRoot + "dim7";
+        }
+
         function loadAndCompileProgression(preserveOverrides = false) {
-            if (!preserveOverrides) tritoneOverrides = {};
-            const progIndex = progressionSelect.value || (document.getElementById('progressionSelectMobile') && document.getElementById('progressionSelectMobile').value) || 0;
-            const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
+            if (!preserveOverrides) mutationOverrides = {};
+            
+            let pSelectVal = progressionSelect.value;
+            if (!pSelectVal && document.getElementById('progressionSelectMobile')) pSelectVal = document.getElementById('progressionSelectMobile').value;
+            const progIndex = pSelectVal || 0;
+            
+            let tSelectVal = keySelect.value;
+            if (!tSelectVal && document.getElementById('keySelectMobile')) tSelectVal = document.getElementById('keySelectMobile').value;
+            const targetKey = tSelectVal || "C";
+            
             const progData = progressionLibrary[progIndex];
+            if (!progData) return; 
             
             const vContainer = document.getElementById('variationContainer'); const vSelect = document.getElementById('variationSelect');
             const vContainerMobile = document.getElementById('variationContainerMobile'); const vSelectMobile = document.getElementById('variationSelectMobile');
             const customInputCont = document.getElementById('customInputContainer');
 
-            // Lógica para mostrar el botón II-V SOLO en "Dominantes Secundarios"
             const iivContainer = document.getElementById('iivToggleContainer');
             const iivContainerMobile = document.getElementById('iivToggleContainerMobile');
 
@@ -712,7 +782,6 @@
             } else {
                 if (iivContainer) { iivContainer.classList.add('hidden'); iivContainer.classList.remove('flex'); }
                 if (iivContainerMobile) { iivContainerMobile.classList.add('hidden'); iivContainerMobile.classList.remove('flex'); }
-                // Forzar apagado del interruptor y variable para no arrastrar errores
                 relacionIIVActive = false;
                 if(document.getElementById('relacionToggle')) document.getElementById('relacionToggle').checked = false;
                 if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = false;
@@ -731,6 +800,7 @@
                         progData.variations.forEach((v, idx) => {
                             let label = (idx + 1).toString();
                             if (v[0].type && v[0].type !== "A" && v[0].type !== "B") label = v[0].type;
+                            if (progData.id === "secondary-dominants" && v[0].name) { label = v[0].name; }
                             const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
                             if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
@@ -752,14 +822,13 @@
             let selectedVar = 0;
             if (vSelect && vSelect.value !== "") selectedVar = parseInt(vSelect.value);
             else if (vSelectMobile && vSelectMobile.value !== "") selectedVar = parseInt(vSelectMobile.value);
-            if (isNaN(selectedVar)) selectedVar = 0;
+            if (isNaN(selectedVar) || !progData.variations || selectedVar >= progData.variations.length) selectedVar = 0;
             
             visualMeasures = []; audioTimeline = [];
             
             let variationData = [];
             if (progData.variations && progData.variations.length > 0) {
-                if (selectedVar < 0 || selectedVar >= progData.variations.length) selectedVar = 0;
-                variationData = progData.variations[selectedVar];
+                variationData = progData.variations[selectedVar] || progData.variations[0];
             }
             
             let activeSections = JSON.parse(JSON.stringify(variationData));
@@ -790,9 +859,21 @@
                     return mStr.split(/\s+/).map((c, cIdx) => {
                         let transposed = transposeChordName(c, stOffset, letterOffset);
                         let overrideKey = `${currentVisualIndex + mIdx}_${cIdx}`;
-                        let isSubbed = globalTritone;
-                        if (tritoneOverrides[overrideKey] !== undefined) isSubbed = tritoneOverrides[overrideKey];
-                        if (isSubbed && isDominant(transposed)) transposed = applyTritoneSub(transposed) + "_SUB";
+                        
+                        let mutationState = 'normal';
+                        if (globalTritone) mutationState = 'tritone';
+                        if (globalDim) mutationState = 'dim';
+                        if (mutationOverrides[overrideKey] !== undefined) {
+                            mutationState = mutationOverrides[overrideKey];
+                        }
+
+                        if (isDominant(transposed)) {
+                            if (mutationState === 'tritone') {
+                                transposed = applyTritoneSub(transposed) + "_SUB";
+                            } else if (mutationState === 'dim') {
+                                transposed = applyDimSub(transposed) + "_DIM";
+                            }
+                        }
                         return transposed;
                     });
                 });
@@ -848,7 +929,6 @@
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
             const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
             
-            // Densidad Inteligente para pantallas pequeñas (activar si hay >= 16 compases)
             if (visualMeasures.length >= 16) {
                 grid.classList.add('dense-grid');
             } else {
@@ -857,39 +937,45 @@
 
             visualMeasures.forEach((vMeasure, index) => {
                 const measureDiv = document.createElement('div'); measureDiv.id = `measure-${vMeasure.id}`;
-                let classNames = `measure-box ${vMeasure.colorClass} border border-slate-300 dark:border-slate-600 sm:rounded-xl rounded relative overflow-hidden`;
+                let classNames = `measure-box ${vMeasure.colorClass} border border-slate-300 dark:border-slate-600 sm:rounded-xl rounded pt-4 sm:pt-5`;
                 if (vMeasure.hasRepeatStart) classNames += ' repeat-start text-blue-600';
                 if (vMeasure.hasRepeatEnd) classNames += ' repeat-end text-blue-600';
                 if (index === selectedStartMeasure) classNames += ' ring-2 ring-blue-500 bg-blue-50/40 dark:bg-blue-900/40';
                 measureDiv.className = classNames;
                 
-                // Alineado top-left para que NUNCA tape el acorde
                 let rehearsalMarkHTML = '';
-                if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-0 left-0 text-[10px] sm:text-[11px] font-bold text-white bg-blue-500 px-1.5 py-0.5 rounded-br-lg shadow-sm z-10 tracking-wider">${vMeasure.sectionName}</div>`;
+                if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-0 left-0 text-[9px] sm:text-[11px] font-bold text-white bg-blue-500 px-1.5 py-0.5 rounded-br-lg shadow-sm z-10 tracking-wider">${vMeasure.sectionName}</div>`;
 
                 const processChord = (c, chordIdx, vMeasureId) => {
-                    let color = "text-slate-800 dark:text-slate-100"; let isSubbed = c.includes('_SUB');
-                    let rawChord = c; let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_BKT/g, '');
-                    let isDom = isSubbed || isDominant(cleanC);
+                    let color = "text-slate-800 dark:text-slate-100"; 
+                    let isSubbed = c.includes('_SUB');
+                    let isDimmed = c.includes('_DIM');
+                    let rawChord = c; 
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
+                    let isDom = isSubbed || isDimmed || isDominant(cleanC);
                     let text = romanMode ? convertToRoman(rawChord, targetKey) : cleanC;
 
                     if (isSubbed) color = "text-amber-500 dark:text-amber-400 font-bold border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
+                    else if (isDimmed) color = "text-pink-500 dark:text-pink-400 font-bold border-b-2 border-pink-500 border-dashed is-dimmed is-dominant";
                     else if (c.includes('_T1')) color = "text-blue-500 font-black"; 
                     else if (c.includes('_T2')) color = "text-red-500 font-black"; 
                     else if (c.includes('_T3')) color = "text-amber-500 font-black"; 
                     else if (isDom) color += " is-dominant";
 
                     let intClasses = "pointer-events-auto "; let tooltip = "";
-                    if (isDom) { intClasses += "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative z-20"; tooltip = 'title="Clic para alternar Sustituto Tritonal"'; }
-                    return `<span class="chord-text text-sm sm:text-base md:text-xl lg:text-3xl font-bold tracking-tight ${color} ${intClasses}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${text}</span>`;
+                    if (isDom) { intClasses += "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative z-20"; tooltip = 'title="Clic para cambiar variante de acorde"'; }
+                    return `<span class="chord-text text-xs sm:text-base md:text-xl lg:text-3xl font-bold tracking-tight ${color} ${intClasses}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${text}</span>`;
                 };
 
                 let measureChordsHTML = '';
                 let inBracket = false;
                 vMeasure.chords.forEach((c, i) => {
                     let isBkt = c.includes('_BKT');
+                    let hasDim = vMeasure.chords.some(ch => ch.includes('_DIM') && ch.includes('_BKT'));
+                    
                     if (isBkt && !inBracket) {
-                        measureChordsHTML += `<div class="ii-v-bracket flex items-center justify-center gap-1 sm:gap-2 px-1">`;
+                        let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
+                        measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} px-0.5 sm:px-1">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
                         measureChordsHTML += `</div>`;
@@ -902,9 +988,9 @@
                 });
                 
                 measureDiv.innerHTML = `
-                    <div class="absolute top-0 right-1 text-[9px] sm:text-[10px] text-slate-400 font-mono z-10">${index + 1}</div>
+                    <div class="absolute top-0 right-1 text-[8px] sm:text-[10px] text-slate-400 font-mono z-10">${index + 1}</div>
                     ${rehearsalMarkHTML}
-                    <div class="flex flex-row items-center justify-center gap-2 sm:gap-3 w-full h-full whitespace-nowrap px-1 pt-4 pb-1">
+                    <div class="flex flex-row items-center justify-center w-full h-full px-0.5 sm:px-1 pb-1 flex-wrap content-center text-center overflow-hidden gap-1.5 sm:gap-3">
                         ${measureChordsHTML}
                     </div>
                 `;
@@ -1076,7 +1162,15 @@
         }));
 
         ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            globalTritone = e.target.checked; document.getElementById('globalTritoneToggle').checked = globalTritone; document.getElementById('globalTritoneToggleMobile').checked = globalTritone; loadAndCompileProgression(true);
+            globalTritone = e.target.checked; 
+            if (globalTritone) { globalDim = false; ['globalDimToggle', 'globalDimToggleMobile'].forEach(i => { if(document.getElementById(i)) document.getElementById(i).checked = false; }); }
+            document.getElementById('globalTritoneToggle').checked = globalTritone; document.getElementById('globalTritoneToggleMobile').checked = globalTritone; loadAndCompileProgression(true);
+        }));
+
+        ['globalDimToggle', 'globalDimToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            globalDim = e.target.checked; 
+            if (globalDim) { globalTritone = false; ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(i => { if(document.getElementById(i)) document.getElementById(i).checked = false; }); }
+            document.getElementById('globalDimToggle').checked = globalDim; document.getElementById('globalDimToggleMobile').checked = globalDim; loadAndCompileProgression(true);
         }));
 
         ['relacionToggle', 'relacionToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
@@ -1119,7 +1213,15 @@
         document.getElementById('chordGrid')?.addEventListener('click', (e) => {
             const chordEl = e.target.closest('.chord-text');
             if (chordEl && chordEl.classList.contains('is-dominant')) {
-                e.stopPropagation(); tritoneOverrides[`${chordEl.dataset.mid}_${chordEl.dataset.cid}`] = !chordEl.classList.contains('is-subbed'); loadAndCompileProgression(true);
+                e.stopPropagation();
+                let key = `${chordEl.dataset.mid}_${chordEl.dataset.cid}`;
+                let current = mutationOverrides[key] || (globalTritone ? 'tritone' : (globalDim ? 'dim' : 'normal'));
+                
+                if (current === 'normal') mutationOverrides[key] = 'tritone';
+                else if (current === 'tritone') mutationOverrides[key] = 'dim';
+                else mutationOverrides[key] = 'normal';
+
+                loadAndCompileProgression(true);
             } else {
                 const measureBox = e.target.closest('.measure-box');
                 if (measureBox) { selectedStartMeasure = parseInt(measureBox.dataset.index); renderGrid(); updateStartMeasureLabel(); }
@@ -1131,3 +1233,4 @@
     </script>
 </body>
 </html>
+```
