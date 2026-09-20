@@ -48,18 +48,15 @@
         .ii-v-bracket::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
         .dark .ii-v-bracket::after { border-color: #94a3b8; }
 
-        /* Estilos Metrónomo Visual */
         .metronome-dot { transition: all 0.05s ease-out; }
         .metronome-dot.active { background-color: #3b82f6 !important; transform: scale(1.5); box-shadow: 0 0 6px rgba(59,130,246,0.8); }
         .dark .metronome-dot.active { background-color: #60a5fa !important; box-shadow: 0 0 8px rgba(96,165,250,0.8); }
         .metronome-dot.active-beat1 { background-color: #ef4444 !important; box-shadow: 0 0 8px rgba(239,68,68,0.8); }
 
-        /* Estilos Mute Buttons */
         .mute-btn { transition: all 0.2s; }
         .mute-btn.muted { opacity: 0.5; background-color: #cbd5e1 !important; color: #64748b !important; text-decoration: line-through; }
         .dark .mute-btn.muted { background-color: #334155 !important; color: #94a3b8 !important; }
 
-        /* Nodos Coltrane */
         .coltrane-node { cursor: pointer; transition: transform 0.1s; }
         .coltrane-node:hover { transform: scale(1.05); }
         .coltrane-node .ii-v-bg { fill: transparent; rx: 6px; transition: all 0.15s ease; }
@@ -109,7 +106,6 @@
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
             .chord-text { font-size: 0.85rem !important; }
             
-            /* DENSIDAD DINAMICA PARA PROGRESIONES LARGAS (Mobile) */
             .dense-grid .measure-box { min-height: 28px !important; }
             .dense-grid .chord-text { font-size: 0.7rem !important; line-height: 1; }
             .dense-grid .measure-number { font-size: 7px; top: 1px; left: 2px; }
@@ -330,12 +326,12 @@
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cm7 | Am7(b5) | Dm7(b5) | G7 | Cm7 | Am7(b5) | Dm7(b5) | G7" } ]
             ], sections: [] },
             { id: "secondary-dominants", name: "Dominantes Secundarios", baseKey: "C", variations: [
-                [ { type: "V7/II", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],
-                [ { type: "V7/III", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | B7_SEC3 | Em7 | A7 | Dm7 | G7 | Cmaj7 | G7" } ],
-                [ { type: "V7/IV", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 Bb7 | Cmaj7 | A7 | Dm7 | G7" } ],
-                [ { type: "V7/V", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | D7_SEC5 | G7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ],
-                [ { type: "V7/VI", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | E7_SEC6 | Am7 | D7 | Dm7 | G7 | Cmaj7 | G7" } ],
-                [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7 | Dm7 | G7" } ]
+                { type: "V7/II", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ] },
+                { type: "V7/III", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | B7_SEC3 | Em7 | A7 | Dm7 | G7 | Cmaj7 | G7" } ] },
+                { type: "V7/IV", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 Bb7 | Cmaj7 | A7 | Dm7 | G7" } ] },
+                { type: "V7/V", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | D7_SEC5 | G7 | G7 | Cmaj7 | Am7 | Dm7 | G7" } ] },
+                { type: "V7/VI", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | E7_SEC6 | Am7 | D7 | Dm7 | G7 | Cmaj7 | G7" } ] },
+                { type: "#IVdim7", sections: [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7 | Dm7 | G7" } ] }
             ], sections: [] },
             { id: "multitonic-coltrane", name: "Multitónica (Coltrane)", baseKey: "B", sections: [{ type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" }] },
             { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
@@ -438,6 +434,8 @@
 
             if (progData.id === "custom") return chordStr.replace(/_SUB|_BKT/g, '');
             if (progData.id === "multitonic-coltrane") return chordStr.replace(/_SUB|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            
+            // Si es Blues y NO es la versión 1 (índice "0"), no analizar con Weber
             if (progData.id === "blues" && selectedVar !== "0") return chordStr.replace(/_SUB|_BKT/g, '');
 
             const isSubbed = chordStr.includes('_SUB');
@@ -459,6 +457,13 @@
 
             let { stOffset } = getTranspositionOffsets(keyStr, root);
             let originalOffset = isSubbed ? (stOffset + 6) % 12 : stOffset;
+
+            // Excepción especial para el Blues Básico (Versión 1)
+            if (progData.id === "blues" && selectedVar === "0") {
+                if (originalOffset === 0 && cleanQual.startsWith('7')) return "I7";
+                if (originalOffset === 5 && cleanQual.startsWith('7')) return "IV7";
+                if (originalOffset === 7 && cleanQual.startsWith('7')) return "V7";
+            }
 
             if (progData.id === "251-maj-all") {
                 if (cleanQual === "m7" || cleanQual === "m9") return "IIm7";
@@ -500,7 +505,6 @@
             const romanNumerals = ["I", "bII", "II", "bIII", "III", "IV", "bV", "V", "bVI", "VI", "bVII", "VII"];
             let baseRoman = romanNumerals[stOffset];
             
-            // Lógica para forzar #IV en disminuidos ubicados a un tritono de la tónica
             if (stOffset === 6 && (cleanQual.includes('dim') || cleanQual.includes('o'))) {
                 baseRoman = "#IV";
             }
@@ -678,7 +682,8 @@
                         vSelect.innerHTML = ''; if(vSelectMobile) vSelectMobile.innerHTML = '';
                         progData.variations.forEach((v, idx) => {
                             let label = (idx + 1).toString();
-                            if (v[0].type && v[0].type !== "A" && v[0].type !== "B") label = v[0].type;
+                            if (v.type) label = v.type;
+                            else if (v[0] && v[0].type && v[0].type !== "A" && v[0].type !== "B") label = v[0].type;
                             const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
                             if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
@@ -686,7 +691,8 @@
                         if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = 0; }
                     }
                     const selectedVar = vSelect ? vSelect.value : (vSelectMobile ? vSelectMobile.value : 0);
-                    progData.sections = progData.variations[selectedVar];
+                    let chosenVarObj = progData.variations[selectedVar];
+                    progData.sections = chosenVarObj.sections ? chosenVarObj.sections : chosenVarObj;
                 } else {
                     if (vContainer) { vContainer.classList.add('hidden'); vContainer.classList.remove('flex'); }
                     if (vContainerMobile) { vContainerMobile.classList.add('hidden'); vContainerMobile.classList.remove('flex'); }
