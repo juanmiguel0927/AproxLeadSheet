@@ -50,7 +50,6 @@
         .ii-v-bracket::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 6px; border-bottom: 2px solid #64748b; border-left: 2px solid #64748b; border-right: 2px solid #64748b; opacity: 0.8; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; }
         .dark .ii-v-bracket::after { border-color: #94a3b8; }
         
-        /* Red styled bracket for DIM/VIIo7 analysis */
         .ii-v-bracket-dim::after { border-color: #ec4899; border-style: dashed; }
         .dark .ii-v-bracket-dim::after { border-color: #f472b6; }
 
@@ -93,6 +92,7 @@
         input#globalTritoneToggle:checked ~ .toggle-track, input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #fef3c7; }
         input#globalDimToggle:checked ~ .toggle-track, input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #fce7f3; }
         input#relacionToggle:checked ~ .toggle-track, input#relacionToggleMobile:checked ~ .toggle-track { background-color: #d1fae5; }
+        
         .dark input:checked ~ .toggle-track { background-color: #1e3a8a; }
         .dark input#globalTritoneToggle:checked ~ .toggle-track, .dark input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #78350f; }
         .dark input#globalDimToggle:checked ~ .toggle-track, .dark input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #831843; }
@@ -110,7 +110,7 @@
             flex-wrap: nowrap;
             justify-content: center;
             align-items: baseline;
-            column-gap: 0.6rem; /* Incrementado para más separación */
+            padding-bottom: 2px;
         }
 
         /* Fluid Typography and dynamic sizing based on screen width */
@@ -125,21 +125,10 @@
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
             
-            /* Solución Fluida Estricta para Celulares */
             .chord-text { 
-                font-size: clamp(0.55rem, 2.5vw, 0.9rem) !important; 
-                white-space: nowrap !important; /* Fuerza a que no haya saltos de línea */
+                white-space: nowrap !important;
                 letter-spacing: -0.05em; 
-                line-height: 1.2;
-            }
-            .dense-grid .chord-text { 
-                font-size: clamp(0.45rem, 1.8vw, 0.75rem) !important; 
-            }
-            .bracket-container {
-                flex-direction: row !important; /* Nunca vertical */
-                flex-wrap: nowrap !important;
-                column-gap: 0.4rem; /* Separación en móvil */
-                padding-bottom: 2px;
+                line-height: 1.1;
             }
             .dense-grid .measure-box { min-height: 38px !important; padding-top: 0.8rem; padding-bottom: 0.2rem;}
             .dense-grid .measure-number { font-size: 7px; top: 1px; right: 2px; }
@@ -147,7 +136,7 @@
         }
     </style>
 </head>
-<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-3 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-1 sm:px-4 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
     
     <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700">
         
@@ -255,7 +244,7 @@
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Progresión</label>
                         <select id="progressionSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
                     </div>
-                    <div id="variationContainerMobile" class="hidden flex-col min-w-[100px]">
+                    <div id="variationContainerMobile" class="hidden flex-col min-w-[90px]">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                         <select id="variationSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                     </div>
@@ -388,7 +377,7 @@
                 { name: "V7/IV", data: "Cmaj7 | C7_SEC4 | Fmaj7 | G7 | Cmaj7 | Cmaj7 | Dm7 | G7", repeat: true },
                 { name: "V7/V", data: "Cmaj7 | D7_SEC5 | G7 | Cmaj7 | Cmaj7 | D7_SEC5 | Dm7 | G7", repeat: true },
                 { name: "V7/VI", data: "Cmaj7 | E7_SEC6 | Am7 | G7 | Cmaj7 | E7_SEC6 | Dm7 | G7", repeat: true }
-            ].map(v => [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: v.repeat, data: v.data } ])},
+            ].map(v => [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: v.repeat, data: v.data, name: v.name } ])},
             { id: "modal-interchange", name: "Intercambio Modal & #IVdim7", baseKey: "C", variations: [
                 [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
                 [ { type: "IVm7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 | Cmaj7 | Am7 | Dm7 | G7" } ],
@@ -403,20 +392,20 @@
             { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
                 [ { type: "1 (Básico)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
                 [ { type: "2", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
-                [ { type: "3 (Bebop)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
+                [ { type: "3", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#o7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
                 [ { type: "4", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Bb7 | Fmaj7 | Cm7 F7 | Bb7 | Bdim7 | Fmaj7 | Am7 D7 | Gm7 | C7 | Fmaj7 D7 | Gm7 C7" } ],
                 [ { type: "5 (Menor)", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
             ]},
             { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
                 [ 
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
-                    { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
-                ],
-                [ 
                     { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
                     { type: "A (Original)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Cm7 F7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
+                ],
+                [ 
+                    { type: "A (Bebop)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
+                    { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
+                    { type: "A (Bebop)", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
                 ]
             ]}
         ];
@@ -495,18 +484,24 @@
         function convertToRoman(chordStr, keyStr) {
             if (chordStr === "NC" || chordStr === "-") return chordStr;
             
-            const progIndex = progressionSelect.value;
+            const progSelect = document.getElementById('progressionSelect');
+            let progIndex = progSelect ? progSelect.value : 0;
+            if (!progSelect && document.getElementById('progressionSelectMobile')) progIndex = document.getElementById('progressionSelectMobile').value;
             const progData = progressionLibrary[progIndex];
             
-            let selectedVar = variationSelect && variationSelect.value !== "" ? parseInt(variationSelect.value) : 0;
+            let selectedVar = 0;
+            const vSelect = document.getElementById('variationSelect');
+            const vSelectMobile = document.getElementById('variationSelectMobile');
+            if (vSelect && vSelect.value !== "") selectedVar = parseInt(vSelect.value);
+            else if (vSelectMobile && vSelectMobile.value !== "") selectedVar = parseInt(vSelectMobile.value);
             if (isNaN(selectedVar)) selectedVar = 0;
 
             let cleanStr = chordStr.replace(/_SUB|_DIM|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const isSubbed = chordStr.includes('_SUB');
             const isDimmed = chordStr.includes('_DIM');
             
-            if (progData.id === "custom") return cleanStr;
-            if (progData.id === "multitonic-coltrane") return cleanStr;
+            if (progData && progData.id === "custom") return cleanStr;
+            if (progData && progData.id === "multitonic-coltrane") return cleanStr;
 
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
@@ -518,16 +513,15 @@
             let { stOffset } = getTranspositionOffsets(keyStr, root);
             let originalOffset = isSubbed ? (stOffset + 6) % 12 : (isDimmed ? (stOffset + 8) % 12 : stOffset);
 
-            // ---> EXCEPCIÓN DEL BLUES (Versión 1) <---
-            if (progData.id === "blues") {
-                if (selectedVar === 0) { // Solo la versión 1 ("Básico")
+            // ---- EXCEPCIÓN DEL BLUES (Sólo Versión 1) ----
+            if (progData && progData.id === "blues") {
+                if (selectedVar === 0) { 
                     if (originalOffset === 0) return isSubbed ? `subV7` : (isDimmed ? `VIIo7` : `I7`);
                     if (originalOffset === 5) return isSubbed ? `subV7/V` : (isDimmed ? `IIIo7` : `IV7`);
                     if (originalOffset === 7) return isSubbed ? `subV7/I` : (isDimmed ? `Vo7` : `V7`);
                 }
                 return cleanStr; 
             }
-            // ----------------------------------------
 
             if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
             if (chordStr.includes('_SEC2')) return isSubbed ? "subV7/II" : (isDimmed ? "VIIo7/II" : "V7/II");
@@ -536,14 +530,14 @@
             if (chordStr.includes('_SEC5')) return isSubbed ? "subV7/V" : (isDimmed ? "VIIo7/V" : "V7/V");
             if (chordStr.includes('_SEC6')) return isSubbed ? "subV7/VI" : (isDimmed ? "VIIo7/VI" : "V7/VI");
 
-            if (progData.id === "251-maj-all") {
+            if (progData && progData.id === "251-maj-all") {
                 if (cleanQual === "m7" || cleanQual === "m9") return "IIm7";
                 if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "V7");
                 if (cleanQual.startsWith("maj7") || cleanQual.startsWith("6")) return "Imaj7";
                 return cleanStr;
             }
 
-            if (progData.id === "251-min-all") {
+            if (progData && progData.id === "251-min-all") {
                 if (cleanQual === "m7(b5)") return "IIm7(b5)";
                 if (cleanQual.startsWith("7") || cleanQual.startsWith("9") || cleanQual.startsWith("13")) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "V7");
                 if (cleanQual === "m7" || cleanQual === "m") return "Im7";
@@ -739,20 +733,33 @@
                 && !mainQuality.includes('maj') && !mainQuality.includes('m');
         }
 
+        function extractTags(chordStr) {
+            let tags = "";
+            let clean = chordStr;
+            const idx = chordStr.indexOf('_');
+            if (idx !== -1) {
+                tags = chordStr.substring(idx);
+                clean = chordStr.substring(0, idx);
+            }
+            return { clean, tags };
+        }
+
         function applyTritoneSub(chordStr) {
-            const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
+            let { clean, tags } = extractTags(chordStr);
+            const match = clean.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1]; let quality = match[2];
             if (quality.includes('/')) quality = quality.split('/')[0]; 
-            return (tritoneRootMap[root] || root) + quality;
+            return (tritoneRootMap[root] || root) + quality + tags;
         }
 
         function applyDimSub(chordStr) {
-            const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
+            let { clean, tags } = extractTags(chordStr);
+            const match = clean.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1];
             let newRoot = dimRootMap[root] || root;
-            return newRoot + "dim7";
+            return newRoot + "dim7" + tags;
         }
 
         function loadAndCompileProgression(preserveOverrides = false) {
@@ -800,7 +807,7 @@
                         progData.variations.forEach((v, idx) => {
                             let label = (idx + 1).toString();
                             if (v[0].type && v[0].type !== "A" && v[0].type !== "B") label = v[0].type;
-                            if (progData.id === "secondary-dominants" && v[0].name) { label = v[0].name; }
+                            if (v[0].name) { label = v[0].name; }
                             const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
                             if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
@@ -946,14 +953,57 @@
                 let rehearsalMarkHTML = '';
                 if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-0 left-0 text-[9px] sm:text-[11px] font-bold text-white bg-blue-500 px-1.5 py-0.5 rounded-br-lg shadow-sm z-10 tracking-wider">${vMeasure.sectionName}</div>`;
 
-                const processChord = (c, chordIdx, vMeasureId) => {
+                let renderedTexts = vMeasure.chords.map(c => {
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
+                    return romanMode ? convertToRoman(c, targetKey) : cleanC;
+                });
+                
+                let totalChars = renderedTexts.join("").length;
+                let hasBrackets = vMeasure.chords.some(ch => ch.includes('_BKT'));
+                
+                // Penalizaciones matemáticas para el tamaño (suaves para acordes cortos, severas para textos gigantes)
+                if (hasBrackets) totalChars += 2; 
+                if (vMeasure.chords.length > 1) totalChars += 1; 
+
+                let textSizeClass = "";
+                if (totalChars <= 4) {
+                    textSizeClass = "text-[1.3rem] sm:text-3xl md:text-5xl lg:text-6xl";
+                } else if (totalChars <= 7) {
+                    textSizeClass = "text-[1.1rem] sm:text-2xl md:text-4xl lg:text-5xl";
+                } else if (totalChars <= 11) {
+                    textSizeClass = "text-[1rem] sm:text-xl md:text-3xl lg:text-4xl";
+                } else if (totalChars <= 14) {
+                    textSizeClass = "text-[0.85rem] sm:text-lg md:text-2xl lg:text-3xl";
+                } else if (totalChars <= 17) {
+                    textSizeClass = "text-[0.7rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
+                } else if (totalChars <= 21) {
+                    // Escudo 1 para textos largos (ej. IIm7(b5) subV7)
+                    textSizeClass = "text-[0.55rem] sm:text-sm md:text-lg lg:text-xl tracking-tighter";
+                } else {
+                    // Escudo de emergencia para textos gigantes
+                    textSizeClass = "text-[0.45rem] sm:text-xs md:text-base lg:text-lg tracking-tighter";
+                }
+                
+                if (visualMeasures.length >= 16) {
+                    if (totalChars <= 4) textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl lg:text-6xl";
+                    else if (totalChars <= 7) textSizeClass = "text-[0.95rem] sm:text-2xl md:text-4xl lg:text-5xl";
+                    else if (totalChars <= 11) textSizeClass = "text-[0.85rem] sm:text-xl md:text-3xl lg:text-4xl";
+                    else if (totalChars <= 14) textSizeClass = "text-[0.75rem] sm:text-lg md:text-2xl lg:text-3xl";
+                    else if (totalChars <= 17) textSizeClass = "text-[0.65rem] sm:text-sm md:text-lg lg:text-xl tracking-tighter";
+                    else if (totalChars <= 21) textSizeClass = "text-[0.5rem] sm:text-xs md:text-base lg:text-lg tracking-tighter";
+                    else textSizeClass = "text-[0.4rem] sm:text-[10px] md:text-sm lg:text-base tracking-tighter";
+                }
+
+                // Ajuste de espacio dinámico. Menos espacio si el texto es muy largo.
+                let gapClass = totalChars > 15 ? "gap-0.5 sm:gap-2" : "gap-1 sm:gap-2";
+                let mainGapClass = totalChars > 15 ? "gap-0.5 sm:gap-2" : "gap-1.5 sm:gap-3";
+
+                const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
                     let isSubbed = c.includes('_SUB');
                     let isDimmed = c.includes('_DIM');
-                    let rawChord = c; 
                     let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
                     let isDom = isSubbed || isDimmed || isDominant(cleanC);
-                    let text = romanMode ? convertToRoman(rawChord, targetKey) : cleanC;
 
                     if (isSubbed) color = "text-amber-500 dark:text-amber-400 font-bold border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
                     else if (isDimmed) color = "text-pink-500 dark:text-pink-400 font-bold border-b-2 border-pink-500 border-dashed is-dimmed is-dominant";
@@ -964,24 +1014,26 @@
 
                     let intClasses = "pointer-events-auto "; let tooltip = "";
                     if (isDom) { intClasses += "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors relative z-20"; tooltip = 'title="Clic para cambiar variante de acorde"'; }
-                    return `<span class="chord-text text-xs sm:text-base md:text-xl lg:text-3xl font-bold tracking-tight ${color} ${intClasses}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${text}</span>`;
+                    
+                    return `<span class="chord-text font-bold ${color} ${intClasses} ${textSizeClass}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${textStr}</span>`;
                 };
 
                 let measureChordsHTML = '';
                 let inBracket = false;
                 vMeasure.chords.forEach((c, i) => {
+                    let textStr = renderedTexts[i];
                     let isBkt = c.includes('_BKT');
                     let hasDim = vMeasure.chords.some(ch => ch.includes('_DIM') && ch.includes('_BKT'));
                     
                     if (isBkt && !inBracket) {
                         let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} px-0.5 sm:px-1">`;
+                        measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} px-0 sm:px-1 ${gapClass}">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
                         measureChordsHTML += `</div>`;
                         inBracket = false;
                     }
-                    measureChordsHTML += processChord(c, i, index);
+                    measureChordsHTML += processChord(c, i, index, textStr);
                     if (isBkt && i === vMeasure.chords.length - 1) {
                         measureChordsHTML += `</div>`;
                     }
@@ -990,7 +1042,7 @@
                 measureDiv.innerHTML = `
                     <div class="absolute top-0 right-1 text-[8px] sm:text-[10px] text-slate-400 font-mono z-10">${index + 1}</div>
                     ${rehearsalMarkHTML}
-                    <div class="flex flex-row items-center justify-center w-full h-full px-0.5 sm:px-1 pb-1 flex-wrap content-center text-center overflow-hidden gap-1.5 sm:gap-3">
+                    <div class="flex flex-row items-center justify-center w-full h-full px-0.5 sm:px-1 pb-1 flex-wrap content-center text-center overflow-hidden ${mainGapClass}">
                         ${measureChordsHTML}
                     </div>
                 `;
@@ -1149,7 +1201,9 @@
         }));
 
         ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('variationSelect', 'variationSelectMobile', e.target.value); 
+            let val = e.target.value;
+            if (val === "" || val === undefined) val = "0";
+            syncSelects('variationSelect', 'variationSelectMobile', val); 
             const was = isPlaying; 
             stopProgression(); 
             selectedStartMeasure = 0; 
