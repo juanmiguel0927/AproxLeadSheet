@@ -18,8 +18,10 @@
         }
     </script>
     
-    <!-- Librerías de Audio e Iconos -->
+    <!-- Librerías de Audio, PDF e Iconos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://unpkg.com/@tonejs/midi"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -110,10 +112,7 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
 
         @media (max-width: 640px) {
-            .measure-box { 
-                min-height: 45px !important; 
-                padding: 1px; 
-            } 
+            .measure-box { min-height: 45px !important; padding: 1px; } 
             .section-label { font-size: 8px; padding: 1px 3px; }
             .measure-number { font-size: 7px; top: 2px; right: 4px; }
             .repeat-start::after, .repeat-end::after { font-size: 14px; left: 4px; right: 4px;}
@@ -126,21 +125,42 @@
     </style>
 </head>
 
-<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-2 sm:px-3 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden">
+<body class="h-dvh sm:min-h-screen flex flex-col items-center sm:py-2 md:py-4 px-2 sm:px-3 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 overflow-hidden relative">
     
-    <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700">
+    <!-- Toast Notification -->
+    <div id="toastMsg" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-xl z-50 transition-opacity duration-300 opacity-0 hidden flex items-center gap-2">
+        <i class="fa-solid fa-circle-info" id="toastIcon"></i>
+        <span class="text-sm font-medium" id="toastText">Mensaje</span>
+    </div>
+
+    <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700" id="mainAppWrapper">
         
         <!-- Header / Controles -->
-        <div class="bg-slate-100 dark:bg-slate-800/80 p-1.5 border-b border-slate-200 dark:border-slate-700 flex flex-col relative z-20 shrink-0">
+        <div id="topControls" class="bg-slate-100 dark:bg-slate-800/80 p-1.5 border-b border-slate-200 dark:border-slate-700 flex flex-col relative z-20 shrink-0">
             
             <div class="flex items-center justify-between w-full mb-1 px-1">
                 <h1 class="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2 leading-tight">
                     <i class="fa-solid fa-music text-blue-600"></i>
                     <span>Aproximación<br><span class="text-xs font-medium text-slate-500">al Lead Sheet</span></span>
                 </h1>
-                <button id="themeToggleBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
+                
+                <div class="flex items-center gap-1 sm:gap-2">
+                    <button id="shareBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Compartir enlace de esta progresión">
+                        <i class="fa-solid fa-link"></i>
+                    </button>
+                    <!-- Botón PDF directo -->
+                    <button id="pdfBtn" class="text-slate-500 hover:text-red-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Descargar como PDF">
+                        <i class="fa-solid fa-file-pdf"></i>
+                    </button>
+                    <!-- Botón MIDI -->
+                    <button id="midiBtn" class="text-slate-500 hover:text-amber-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Exportar a MIDI">
+                        <i class="fa-solid fa-file-audio"></i>
+                    </button>
+                    <div class="w-px h-5 bg-slate-300 dark:bg-slate-600 mx-1"></div>
+                    <button id="themeToggleBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Cambiar Tema">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                </div>
             </div>
             
             <!-- Controles Desktop -->
@@ -198,7 +218,7 @@
                         <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
                     </label>
                     
-                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal">
+                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal Master">
                         <div class="relative">
                             <input type="checkbox" id="globalTritoneToggle" class="sr-only">
                             <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
@@ -207,7 +227,7 @@
                         <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 transition-colors">Tritono</span>
                     </label>
 
-                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Disminuido">
+                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Disminuido Master">
                         <div class="relative">
                             <input type="checkbox" id="globalDimToggle" class="sr-only">
                             <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
@@ -226,8 +246,8 @@
                     </label>
 
                     <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-2 ml-1">
-                        <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-keyboard"></i></button>
-                        <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]"><i class="fa-solid fa-guitar"></i></button>
+                        <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Piano"><i class="fa-solid fa-keyboard"></i></button>
+                        <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Bajo"><i class="fa-solid fa-guitar"></i></button>
                     </div>
 
                     <div class="flex items-center gap-1 ml-1">
@@ -317,12 +337,12 @@
                         <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 sm:px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200" title="Nuevo Compás">|</button>
                     </div>
                 </div>
-                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|". Usa los botones amarillos inferiores para repeticiones.</p>
+                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|". Usa los botones amarillos inferiores para repeticiones. Se guardará automáticamente.</p>
             </div>
         </div>
 
         <!-- Barra Azul - Repeticiones e Indicadores -->
-        <div class="bg-blue-50 dark:bg-slate-800/80 px-2 py-1 border-b border-blue-100 dark:border-slate-700 flex items-center justify-between text-[10px] text-blue-700 dark:text-blue-400 font-medium z-10 relative shrink-0">
+        <div id="blueBar" class="bg-blue-50 dark:bg-slate-800/80 px-2 py-1 border-b border-blue-100 dark:border-slate-700 flex items-center justify-between text-[10px] text-blue-700 dark:text-blue-400 font-medium z-10 relative shrink-0">
             <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
                 <span class="truncate text-[9px] sm:text-[10px] flex items-center"><i class="fa-solid fa-circle-info mr-1"></i> Selecciona un compás:</span>
                 <div class="flex gap-1">
@@ -348,7 +368,13 @@
 
         <!-- Área Principal de Acordes -->
         <div id="gridScrollContainer" class="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth">
+            <!-- Título Oculto (Solo visible al exportar PDF) -->
+            <div id="printHeader" class="hidden"></div>
+            
             <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2" style="font-size: 100%;"></div>
+
+            <!-- Footer Oculto (Solo visible al exportar PDF) -->
+            <div id="printFooter" class="hidden"></div>
         </div>
     </div>
 
@@ -358,7 +384,7 @@
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7 | G7 | Cmaj7 | Cmaj7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Cm7 | F7 | Bbmaj7 | Bbmaj7 | Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Ebm7 | Ab7 | Dbmaj7 | Dbmaj7 | Abm7 | Db7 | Gbmaj7 | Gbmaj7 | C#m7 | F#7 | Bmaj7 | Bmaj7 | F#m7 | B7 | Emaj7 | Emaj7 | Bm7 | E7 | Amaj7 | Amaj7 | Em7 | A7 | Dmaj7 | Dmaj7 | Am7 | D7 | Gmaj7 | Gmaj7" } ]
             ]},
             { id: "251-min-all", name: "II-V-I Menor (Todos los Tonos)", baseKey: "C", variations: [
-                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7(b5) | G7 | Cm7 | Cm7 | Gm7(b5) | C7 | Fm7 | Fm7 | Cm7(b5) | F7 | Bbm7 | Bbm7 | Fm7(b5) | Bb7 | Ebm7 | Ebm7 | A#m7(b5) | D#7 | G#m7 | G#m7 | D#m7(b5) | G#7 | C#m7 | C#m7 | G#m7(b5) | C#7 | F#m7 | F#m7 | C#m7(b5) | F#7 | Bm7 | Bm7 | F#m7(b5) | B7 | Em7 | Em7 | Bm7(b5) | E7 | Am7 | Am7 | Em7(b5) | A7 | Dm7 | Dm7 | Am7(b5) | D7 | Gm7 | Gm7" } ]
+                [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7(b5) | G7 | Cm7 | Cm7 | Gm7(b5) | C7 | Fm7 | Fm7 | Cm7(b5) | F7 | Bbm7 | Bbm7 | Fm7(b5) | Bb7 | Ebm7 | Ebm7 | Bbm7(b5) | Eb7 | G#m7 | G#m7 | D#m7(b5) | G#7 | C#m7 | C#m7 | G#m7(b5) | C#7 | F#m7 | F#m7 | C#m7(b5) | F#7 | Bm7 | Bm7 | F#m7(b5) | B7 | Em7 | Em7 | Bm7(b5) | E7 | Am7 | Am7 | Em7(b5) | A7 | Dm7 | Dm7 | Am7(b5) | D7 | Gm7 | Gm7" } ]
             ]},
             { id: "turnarounds", name: "Turnarounds (Ciclos)", baseKey: "C", variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | Am7 | Dm7 | G7" } ],
@@ -422,13 +448,271 @@
             'Im7': ['bIIImaj7'],
             'IVm7': ['IIm7(b5)', 'bVImaj7', 'bVII7', 'bIImaj7', 'bVIImaj7', 'bVIIm7', 'bVI7']
         };
+        
         let activeChordMutations = {}; 
-
         let currentActiveSections = []; 
+
+        function safeSetStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) { console.warn("LocalStorage bloqueado."); } }
+        function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
+
+        function updateURLState() {
+            try {
+                const params = new URLSearchParams();
+                const progVal = document.getElementById('progressionSelect')?.value || 0;
+                params.set('prog', progVal);
+                params.set('key', document.getElementById('keySelect')?.value || 'C');
+                params.set('tempo', document.getElementById('tempoSlider')?.value || 120);
+                
+                const vSelect = document.getElementById('variationSelect');
+                if (vSelect && vSelect.value !== "") params.set('var', vSelect.value);
+
+                if (progressionLibrary[progVal] && progressionLibrary[progVal].id === "custom") {
+                    const customInput = document.getElementById('customProgInput')?.value || "";
+                    params.set('custom', encodeURIComponent(customInput));
+                    safeSetStorage('opusLab_customProg', customInput);
+                }
+
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?' + params.toString();
+                window.history.replaceState({path: newUrl}, '', newUrl);
+            } catch(e) { console.warn("Error URL State"); }
+        }
+
+        function restoreStateOnLoad() {
+            try {
+                let savedCustom = safeGetStorage('opusLab_customProg');
+                if (savedCustom) {
+                    const customProg = progressionLibrary.find(p => p.id === "custom");
+                    if(customProg) customProg.variations[0][0].data = savedCustom;
+                    const customProgInput = document.getElementById('customProgInput');
+                    if(customProgInput) customProgInput.value = savedCustom;
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                if (params.has('prog')) syncSelects('progressionSelect', 'progressionSelectMobile', params.get('prog'));
+                if (params.has('var')) syncSelects('variationSelect', 'variationSelectMobile', params.get('var'));
+                if (params.has('key')) { syncSelects('keySelect', 'keySelectMobile', params.get('key')); manualKeyChange = true; }
+                if (params.has('tempo')) {
+                    let t = params.get('tempo');
+                    ['tempoSlider', 'tempoSliderMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = t; });
+                    ['tempoValue', 'tempoValueMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t; });
+                }
+                if (params.has('custom')) {
+                    const dec = decodeURIComponent(params.get('custom'));
+                    const customProgInput = document.getElementById('customProgInput');
+                    if(customProgInput) customProgInput.value = dec;
+                    const customProg = progressionLibrary.find(p => p.id === "custom");
+                    if(customProg) customProg.variations[0][0].data = dec;
+                }
+            } catch(e) { console.warn("Error Restoring State"); }
+        }
+
+        function showToast(message, type="success") {
+            const toast = document.getElementById('toastMsg');
+            const icon = document.getElementById('toastIcon');
+            const text = document.getElementById('toastText');
+            if(!toast || !icon || !text) return;
+            
+            text.textContent = message;
+            if(type === "error") icon.className = "fa-solid fa-triangle-exclamation text-red-400";
+            else icon.className = "fa-solid fa-check-circle text-green-400";
+            
+            toast.classList.remove('hidden'); 
+            setTimeout(() => toast.classList.add('opacity-100'), 10);
+            setTimeout(() => { 
+                toast.classList.remove('opacity-100'); 
+                setTimeout(() => toast.classList.add('hidden'), 300); 
+            }, 3000); 
+        }
+
+        document.getElementById('shareBtn')?.addEventListener('click', async () => {
+            updateURLState();
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(window.location.href);
+                    showToast("Enlace copiado al portapapeles", "success");
+                } else { throw new Error("API Portapapeles no disponible"); }
+            } catch(e) { showToast("Copia la URL de tu navegador manualmente", "error"); }
+        });
+
+        // NUEVO EXPORTADOR PDF (Expansión Temporal + html2pdf + Pie de Página Dinámico)
+        document.getElementById('pdfBtn')?.addEventListener('click', async () => {
+            try {
+                if (typeof html2pdf === 'undefined') { 
+                    showToast("Librería PDF no cargada. Revisa tu conexión.", "error"); 
+                    return; 
+                }
+                showToast("Generando PDF... (Esto tomará un segundo)", "info");
+
+                // 1. Desactivar modo oscuro
+                const isDarkMode = document.documentElement.classList.contains('dark');
+                if (isDarkMode) document.documentElement.classList.remove('dark');
+
+                // 2. Preparar el Título y el Pie de Página (Firma Dinámica)
+                const progSelect = document.getElementById('progressionSelect') || document.getElementById('progressionSelectMobile');
+                let progName = progSelect ? progSelect.options[progSelect.selectedIndex].text : "Progresión";
+                if (progName.includes('✎')) progName = "Progresión Personalizada";
+                const keySelect = document.getElementById('keySelect') || document.getElementById('keySelectMobile');
+                const keyName = keySelect ? keySelect.value : "C";
+
+                // Inyectar Encabezado
+                const printHeader = document.getElementById('printHeader');
+                if (printHeader) {
+                    printHeader.innerHTML = `
+                        <h2 style="font-size: 24pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 5px; text-align: center;">
+                            OpusLab Lead Sheet: <span style="color: #2563eb;">${progName}</span>
+                        </h2>
+                        <div style="font-size: 14pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center; margin-bottom: 20px;">
+                            (Tono Base: ${keyName})
+                        </div>
+                    `;
+                    printHeader.classList.remove('hidden');
+                    printHeader.style.display = 'block';
+                }
+
+                // Inyectar Pie de Página Dinámico (Fecha, Hora, Autor, Enlace)
+                const printFooter = document.getElementById('printFooter');
+                if (printFooter) {
+                    const now = new Date();
+                    const dateStr = now.toLocaleDateString('es-CO');
+                    const timeStr = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+                    
+                    printFooter.innerHTML = `
+                        <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; text-align: center; font-family: sans-serif; color: #64748b; font-size: 11pt; padding-bottom: 20px;">
+                            <p style="margin: 0 0 5px 0;">Documento generado el <strong>${dateStr}</strong> a las <strong>${timeStr}</strong></p>
+                            <p style="margin: 0 0 5px 0;">Créditos y Autor: <strong>Juan Miguel Rios Redondo</strong></p>
+                            <p style="margin: 0;">
+                                <a href="https://juanmiguel0927.github.io/OpusLab3.0/" style="color: #2563eb; text-decoration: none;" target="_blank">
+                                    Visita el proyecto en: https://juanmiguel0927.github.io/OpusLab3.0/
+                                </a>
+                            </p>
+                        </div>
+                    `;
+                    printFooter.classList.remove('hidden');
+                    printFooter.style.display = 'block';
+                }
+
+                // 3. Capturar contenedores y guardar sus estilos originales
+                const els = {
+                    body: document.body,
+                    html: document.documentElement,
+                    wrapper: document.getElementById('mainAppWrapper'),
+                    container: document.getElementById('gridScrollContainer'),
+                    grid: document.getElementById('chordGrid')
+                };
+
+                const originalStyles = {
+                    bodyHeight: els.body.style.height, bodyOverflow: els.body.style.overflow,
+                    htmlHeight: els.html.style.height, htmlOverflow: els.html.style.overflow,
+                    wrapperHeight: els.wrapper.style.height, wrapperOverflow: els.wrapper.style.overflow,
+                    wrapperBorder: els.wrapper.style.border, wrapperShadow: els.wrapper.style.boxShadow,
+                    containerHeight: els.container.style.height, containerOverflow: els.container.style.overflow,
+                    gridGap: els.grid.style.gap
+                };
+
+                // 4. "Romper" los límites temporales (Expansión total)
+                els.body.style.setProperty('height', 'auto', 'important');
+                els.body.style.setProperty('overflow', 'visible', 'important');
+                els.html.style.setProperty('height', 'auto', 'important');
+                els.html.style.setProperty('overflow', 'visible', 'important');
+                
+                els.wrapper.style.setProperty('height', 'auto', 'important');
+                els.wrapper.style.setProperty('overflow', 'visible', 'important');
+                els.wrapper.style.setProperty('border', 'none', 'important');
+                els.wrapper.style.setProperty('box-shadow', 'none', 'important');
+                
+                els.container.style.setProperty('height', 'auto', 'important');
+                els.container.style.setProperty('overflow', 'visible', 'important');
+                els.container.style.setProperty('background-color', 'white', 'important');
+                
+                // Forzar 4 columnas y márgenes de renderizado sólido
+                els.grid.style.setProperty('gap', '15px', 'important');
+                
+                // 5. Darle tiempo al navegador para renderizar la pantalla expandida
+                await new Promise(r => setTimeout(r, 600));
+
+                // 6. Opciones de html2pdf
+                const opt = {
+                    margin: 10,
+                    filename: `LeadSheet_${progName.replace(/\s+/g, '')}_${keyName}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { 
+                        scale: 2, 
+                        useCORS: true, 
+                        logging: false, 
+                        scrollY: 0,
+                        windowWidth: els.container.scrollWidth 
+                    },
+                    jsPDF: { unit: 'mm', format: 'letter', orientation: 'landscape' }
+                };
+
+                // 7. Generar y Guardar
+                await html2pdf().set(opt).from(els.container).save();
+
+                // 8. Restaurar la aplicación a la normalidad
+                els.body.style.height = originalStyles.bodyHeight; els.body.style.overflow = originalStyles.bodyOverflow;
+                els.html.style.height = originalStyles.htmlHeight; els.html.style.overflow = originalStyles.htmlOverflow;
+                els.wrapper.style.height = originalStyles.wrapperHeight; els.wrapper.style.overflow = originalStyles.wrapperOverflow;
+                els.wrapper.style.border = originalStyles.wrapperBorder; els.wrapper.style.boxShadow = originalStyles.wrapperShadow;
+                els.container.style.height = originalStyles.containerHeight; els.container.style.overflow = originalStyles.containerOverflow;
+                els.container.style.backgroundColor = '';
+                els.grid.style.gap = originalStyles.gridGap;
+
+                if (printHeader) {
+                    printHeader.style.display = 'none';
+                    printHeader.classList.add('hidden');
+                }
+                
+                if (printFooter) {
+                    printFooter.style.display = 'none';
+                    printFooter.classList.add('hidden');
+                }
+
+                if (isDarkMode) document.documentElement.classList.add('dark');
+
+                showToast("PDF descargado con éxito", "success");
+
+            } catch (e) {
+                console.error(e);
+                showToast("Error al generar el PDF", "error");
+            }
+        });
+
+        document.getElementById('midiBtn')?.addEventListener('click', () => {
+            try {
+                if (typeof Midi === 'undefined') { showToast("Librería MIDI no cargada.", "error"); return; }
+                if (!audioTimeline || audioTimeline.length === 0) { showToast("Genera una progresión primero.", "error"); return; }
+
+                const midi = new Midi();
+                const pianoTrack = midi.addTrack(); pianoTrack.name = "Piano (OpusLab)";
+                const bassTrack = midi.addTrack(); bassTrack.name = "Bajo (OpusLab)";
+
+                let currentBpm = parseInt(document.getElementById('tempoSlider')?.value || 120);
+                midi.header.setTempo(currentBpm);
+                let secondsPerStep = (60 / currentBpm) / 2;
+
+                audioTimeline.forEach((event, stepIdx) => {
+                    if (event) {
+                        let time = stepIdx * secondsPerStep;
+                        let durationSecs = typeof event.duration === 'number' ? event.duration : 
+                                          (event.duration === "1m" ? secondsPerStep * 8 : 
+                                          (event.duration === "2n" ? secondsPerStep * 4 : 
+                                          (event.duration === "4n" ? secondsPerStep * 2 : secondsPerStep * 2)));
+
+                        if(event.notes) { event.notes.forEach(noteName => { pianoTrack.addNote({ name: noteName, time: time, duration: durationSecs, velocity: 0.8 }); }); }
+                        if(event.bass) { bassTrack.addNote({ name: event.bass, time: time, duration: durationSecs, velocity: 0.9 }); }
+                    }
+                });
+
+                const blob = new Blob([midi.toArray()], {type: "audio/midi"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url; a.download = "Progresion_OpusLab.mid"; a.click(); URL.revokeObjectURL(url);
+            } catch (e) { console.error(e); showToast("Error al generar MIDI", "error"); }
+        });
 
         function toggleSvgEnharmonic(nodeId) {
             window.svgEnharmonicOverrides[nodeId] = !window.svgEnharmonicOverrides[nodeId];
-            renderColtraneGraphic(keySelect.value);
+            renderColtraneGraphic(document.getElementById('keySelect')?.value || 'C');
         }
 
         function getDisplayNote(noteStr, nodeId) {
@@ -473,7 +757,7 @@
         }
 
         function transposeChordName(chordStr, stOffset, letterOffset) {
-            if (chordStr === "NC" || chordStr === "-") return chordStr;
+            if (chordStr === "NC" || chordStr === "-" || chordStr === ":|") return chordStr;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1]; let quality = match[2];
@@ -492,19 +776,15 @@
             const progData = progressionLibrary[progIndex];
             
             if (progData && (progData.id === "251-maj-all" || progData.id === "251-min-all")) {
-                const isMinor = progData.id === "251-min-all";
-                const cycle = isMinor ? 
-                    ["C", "F", "Bb", "Eb", "G#", "C#", "F#", "B", "E", "A", "D", "G"] : 
-                    ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "B", "E", "A", "D", "G"];
-                
-                let startIdx = cycle.indexOf(baseKeyStr);
+                const jazzCircleOfFourths = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "B", "E", "A", "D", "G"];
+                let startIdx = jazzCircleOfFourths.indexOf(baseKeyStr);
                 if (startIdx === -1) {
                     const st = parseNoteObj(baseKeyStr).semitone;
-                    startIdx = cycle.findIndex(k => parseNoteObj(k).semitone === st);
+                    startIdx = jazzCircleOfFourths.findIndex(k => parseNoteObj(k).semitone === st);
                     if (startIdx === -1) startIdx = 0;
                 }
                 let blockIdx = Math.floor(measureId / 4);
-                return cycle[(startIdx + blockIdx) % 12];
+                return jazzCircleOfFourths[(startIdx + blockIdx) % 12];
             }
             return baseKeyStr;
         }
@@ -574,7 +854,7 @@
         }
 
         function convertToRoman(chordStr, keyStr, measureId = -1) {
-            if (chordStr === "NC" || chordStr === "-") return chordStr;
+            if (chordStr === "NC" || chordStr === "-" || chordStr === ":|") return chordStr;
             
             let progIndex = parseInt(document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0);
             if (isNaN(progIndex)) progIndex = 0;
@@ -685,6 +965,7 @@
         };
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
+            if (!chordStr) return { midi: [], toneNames: [], bassNote: "C2" };
             let cleanChord = chordStr.replace(/_SUB|_DIM\d?|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
@@ -836,7 +1117,7 @@
         }
 
         function isDominant(chordStr) {
-            if (chordStr === "NC" || chordStr === "-") return false;
+            if (chordStr === "NC" || chordStr === "-" || chordStr === ":|") return false;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return false;
             const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT/g, '');
@@ -887,8 +1168,11 @@
                 activeChordMutations = {}; 
             }
             
-            let pSelectVal = progressionSelect.value;
-            if (!pSelectVal && progressionSelectMobile) pSelectVal = progressionSelectMobile.value;
+            const progressionSelectVal = document.getElementById('progressionSelect');
+            const progressionSelectMobileVal = document.getElementById('progressionSelectMobile');
+            
+            let pSelectVal = progressionSelectVal ? progressionSelectVal.value : 0;
+            if (!pSelectVal && progressionSelectMobileVal) pSelectVal = progressionSelectMobileVal.value;
             let progIndex = parseInt(pSelectVal);
             
             if (isNaN(progIndex)) progIndex = 0;
@@ -896,8 +1180,11 @@
             
             const progData = progressionLibrary[progIndex] || progressionLibrary[0];
             
-            let tSelectVal = keySelect.value;
-            if (!tSelectVal && keySelectMobile) tSelectVal = keySelectMobile.value;
+            const keySelectVal = document.getElementById('keySelect');
+            const keySelectMobileVal = document.getElementById('keySelectMobile');
+            
+            let tSelectVal = keySelectVal ? keySelectVal.value : "C";
+            if (!tSelectVal && keySelectMobileVal) tSelectVal = keySelectMobileVal.value;
             const targetKey = tSelectVal || "C";
             
             const vContainer = document.getElementById('variationContainer'); const vSelect = document.getElementById('variationSelect');
@@ -910,7 +1197,7 @@
                 if (vContainerMobile) { vContainerMobile.classList.add('hidden'); vContainerMobile.classList.remove('flex'); }
                 
                 const customProgInput = document.getElementById('customProgInput');
-                let val = customProgInput.value.trim() === "" ? "Cmaj7 | Dm7 | G7 | Cmaj7" : customProgInput.value;
+                let val = customProgInput && customProgInput.value.trim() !== "" ? customProgInput.value : "Cmaj7 | Dm7 | G7 | Cmaj7";
                 if (!preserveState) {
                     currentActiveSections = [{ type: "Libre", color: "bg-white dark:bg-slate-800", repeat: false, data: val }];
                 }
@@ -972,12 +1259,12 @@
             }
 
             if (!manualKeyChange) {
-                if (keySelect) keySelect.value = progData.baseKey;
-                if (keySelectMobile) keySelectMobile.value = progData.baseKey;
+                if (keySelectVal) keySelectVal.value = progData.baseKey;
+                if (keySelectMobileVal) keySelectMobileVal.value = progData.baseKey;
             }
             manualKeyChange = false; 
 
-            const currentKey = keySelect ? keySelect.value : (keySelectMobile ? keySelectMobile.value : "C");
+            const currentKey = keySelectVal ? keySelectVal.value : (keySelectMobileVal ? keySelectMobileVal.value : "C");
             const { stOffset, letterOffset } = getTranspositionOffsets(progData.baseKey, currentKey);
             
             visualMeasures = []; audioTimeline = [];
@@ -1012,36 +1299,38 @@
                     }
 
                     let isEnd1 = content.includes('_END1');
+                    let isEnd2 = content.includes('_END2');
+                    
+                    if (isEnd1 && isEnd2) {
+                        let c1Chords = content.replace('_END1', '').replace('_END2', '').split(/\s+/).map(c => transposeChordName(c, stOffset, letterOffset));
+                        sectionVisualMeasures.push({ id: currentVisualIndex + mIdx, chords: c1Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, hasRepeatStart: hasRepeatStart, hasRepeatEnd: hasRepeatEnd, isCombinedCasilla1: true });
+                        continue;
+                    }
+
                     if (isEnd1) {
                         let clean1 = content.replace('_END1', '');
                         let c1Chords = clean1.split(/\s+/).map((c) => transposeChordName(c, stOffset, letterOffset));
                         
-                        sectionVisualMeasures.push({
-                            id: currentVisualIndex + mIdx, 
-                            chords: c1Chords,
-                            colorClass: sec.color || 'bg-white dark:bg-slate-800',
-                            sectionName: null, 
-                            hasRepeatStart: true, 
-                            hasRepeatEnd: true, 
-                            isCombinedCasilla1: true 
-                        });
+                        let isNextEnd2 = (mIdx + 1 < rawBlocks.length) && rawBlocks[mIdx + 1].includes('_END2');
+                        if (isNextEnd2) {
+                            let nextB = rawBlocks[mIdx + 1].replace(/^:/, '').replace(/:$/, '').trim();
+                            let clean2 = nextB.replace('_END2', '');
+                            let c2Chords = clean2.split(/\s+/).map((c) => transposeChordName(c, stOffset, letterOffset));
+                            
+                            sectionVisualMeasures.push({
+                                id: currentVisualIndex + mIdx, chords1: c1Chords, chords2: c2Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, isSplitCasillas: true
+                            });
+                            skipNextBlock = true;
+                        } else {
+                            sectionVisualMeasures.push({ id: currentVisualIndex + mIdx, chords: c1Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, hasRepeatStart: true, hasRepeatEnd: true, isCombinedCasilla1: true });
+                        }
                         continue;
                     }
                     
-                    let isEnd2 = content.includes('_END2');
                     if (isEnd2) {
                         let clean2 = content.replace('_END2', '');
                         let c2Chords = clean2.split(/\s+/).map((c) => transposeChordName(c, stOffset, letterOffset));
-                        
-                        sectionVisualMeasures.push({
-                            id: currentVisualIndex + mIdx, 
-                            chords: c2Chords,
-                            colorClass: sec.color || 'bg-white dark:bg-slate-800',
-                            sectionName: null, 
-                            hasRepeatStart: false, 
-                            hasRepeatEnd: false, 
-                            isCombinedCasilla2: true 
-                        });
+                        sectionVisualMeasures.push({ id: currentVisualIndex + mIdx, chords: c2Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, hasRepeatStart: false, hasRepeatEnd: false, isCombinedCasilla2: true });
                         continue;
                     }
 
@@ -1068,11 +1357,13 @@
                         return transposed;
                     });
 
+                    let isSectionStart = mIdx === 0 && (sec.type === 'A' || sec.type === 'B' || sec.type === 'Libre' || (sec.name && !sec.type));
+                    
                     sectionVisualMeasures.push({
                         id: currentVisualIndex + mIdx, chords: chords, colorClass: sec.color || 'bg-white dark:bg-slate-800',
-                        sectionName: mIdx === 0 && (sec.type === 'A' || sec.type === 'B' || sec.type === 'Libre') ? sec.type : null,
+                        sectionName: isSectionStart ? (sec.name || sec.type) : null,
                         hasRepeatStart: hasRepeatStart, hasRepeatEnd: hasRepeatEnd,
-                        forceLeftCol: (mIdx === 0 && (sec.type === 'A' || sec.type === 'B' || sec.type === 'Libre' || (secIdx > 0))) 
+                        forceLeftCol: (isSectionStart || (mIdx === 0 && secIdx > 0)) 
                     });
                 }
 
@@ -1081,39 +1372,34 @@
                 let i = 0; let repeatStartIdx = -1;
                 while (i < sectionVisualMeasures.length) {
                     let vm = sectionVisualMeasures[i];
-                    if (vm.hasRepeatStart && !vm.isCombinedCasilla1) repeatStartIdx = i;
+                    if (vm.hasRepeatStart && !vm.isCombinedCasilla1 && !vm.isSplitCasillas) repeatStartIdx = i;
 
-                    if (vm.isCombinedCasilla1) {
-                        if (vm.chords.length > 0) {
-                            audioUnrolledMeasures.push(vm.chords);
-                            visualMap.push(vm.id);
-                        }
+                    if (vm.isSplitCasillas) {
+                        if (vm.chords1 && vm.chords1.length > 0) { audioUnrolledMeasures.push(vm.chords1); visualMap.push(vm.id); }
                         if (repeatStartIdx !== -1) {
                             for (let r = repeatStartIdx; r < i; r++) {
                                 let rVm = sectionVisualMeasures[r];
-                                if (rVm.chords.length > 0) {
-                                    audioUnrolledMeasures.push(rVm.chords);
-                                    visualMap.push(rVm.id);
-                                }
+                                if (rVm.chords && rVm.chords.length > 0) { audioUnrolledMeasures.push(rVm.chords); visualMap.push(rVm.id); }
+                            }
+                        }
+                        if (vm.chords2 && vm.chords2.length > 0) { audioUnrolledMeasures.push(vm.chords2); visualMap.push(vm.id); }
+                    }
+                    else if (vm.isCombinedCasilla1) {
+                        if (vm.chords && vm.chords.length > 0) { audioUnrolledMeasures.push(vm.chords); visualMap.push(vm.id); }
+                        if (repeatStartIdx !== -1) {
+                            for (let r = repeatStartIdx; r < i; r++) {
+                                let rVm = sectionVisualMeasures[r];
+                                if (rVm.chords && rVm.chords.length > 0) { audioUnrolledMeasures.push(rVm.chords); visualMap.push(rVm.id); }
                             }
                         }
                     } else if (vm.isCombinedCasilla2) {
-                        if (vm.chords.length > 0) {
-                            audioUnrolledMeasures.push(vm.chords);
-                            visualMap.push(vm.id);
-                        }
+                        if (vm.chords && vm.chords.length > 0) { audioUnrolledMeasures.push(vm.chords); visualMap.push(vm.id); }
                     } else {
-                        if (vm.chords.length > 0) {
-                            audioUnrolledMeasures.push(vm.chords);
-                            visualMap.push(vm.id);
-                        }
+                        if (vm.chords && vm.chords.length > 0) { audioUnrolledMeasures.push(vm.chords); visualMap.push(vm.id); }
                         if (vm.hasRepeatEnd && repeatStartIdx !== -1) {
                             for (let r = repeatStartIdx; r <= i; r++) {
                                 let rVm = sectionVisualMeasures[r];
-                                if (rVm.chords.length > 0) {
-                                    audioUnrolledMeasures.push(rVm.chords);
-                                    visualMap.push(rVm.id);
-                                }
+                                if (rVm.chords && rVm.chords.length > 0) { audioUnrolledMeasures.push(rVm.chords); visualMap.push(rVm.id); }
                             }
                             repeatStartIdx = -1;
                         }
@@ -1130,7 +1416,7 @@
                 measureChords.forEach(chord => { let tagMatch = chord.match(/_(T\d|V\d|II\d)/i); if (tagMatch) nodesInMeasure.push(tagMatch[1].toLowerCase()); });
 
                 measureChords.forEach((chord, chordIdx) => {
-                    if (chord === "NC" || chord === "-") return;
+                    if (chord === "NC" || chord === "-" || chord === ":|") return;
                     let chordsInMeasure = measureChords.length;
                     let specificNodeMatch = chord.match(/_(T\d|V\d|II\d)/i);
                     let specificNodeId = specificNodeMatch ? specificNodeMatch[1].toLowerCase() : null;
@@ -1175,30 +1461,20 @@
             const totalRows = getActualGridRows();
             
             if (window.innerWidth <= 640) {
-                if (totalRows <= 2) {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`;
-                    grid.style.alignContent = 'start';
-                } else if (totalRows <= 8) {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
-                    grid.style.alignContent = 'stretch';
-                } else {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`;
-                    grid.style.alignContent = 'start';
-                }
+                if (totalRows <= 2) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`; grid.style.alignContent = 'start'; } 
+                else if (totalRows <= 8) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`; grid.style.alignContent = 'stretch'; } 
+                else { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`; grid.style.alignContent = 'start'; }
             } else {
-                if (totalRows <= 8) {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
-                    grid.style.alignContent = 'stretch';
-                } else {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(65px, auto))`;
-                    grid.style.alignContent = 'start';
-                }
+                if (totalRows <= 8) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`; grid.style.alignContent = 'stretch'; } 
+                else { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(65px, auto))`; grid.style.alignContent = 'start'; }
             }
         }
 
         function renderGrid() {
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
-            const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
+            const keySelectVal = document.getElementById('keySelect');
+            const keySelectMobileVal = document.getElementById('keySelectMobile');
+            const targetKey = (keySelectVal && keySelectVal.value) || (keySelectMobileVal && keySelectMobileVal.value) || "C";
             const totalRows = getActualGridRows();
 
             visualMeasures.forEach((vMeasure, index) => {
@@ -1207,8 +1483,8 @@
                 let classNames = `measure-box ${vMeasure.colorClass} border border-slate-300 dark:border-slate-600 sm:rounded-xl rounded pt-1 sm:pt-2`;
                 if (vMeasure.forceLeftCol || vMeasure.isCombinedCasilla2) classNames += ' col-start-1';
                 
-                if (vMeasure.hasRepeatStart && !vMeasure.isCombinedCasilla1) classNames += ' repeat-start text-blue-600';
-                if (vMeasure.hasRepeatEnd && !vMeasure.isCombinedCasilla1) classNames += ' repeat-end text-blue-600';
+                if (vMeasure.hasRepeatStart && !vMeasure.isCombinedCasilla1 && !vMeasure.isSplitCasillas) classNames += ' repeat-start text-blue-600';
+                if (vMeasure.hasRepeatEnd && !vMeasure.isCombinedCasilla1 && !vMeasure.isSplitCasillas) classNames += ' repeat-end text-blue-600';
                 if (index === selectedStartMeasure) classNames += ' ring-2 ring-blue-500 bg-blue-50/40 dark:bg-blue-900/40';
                 
                 let rehearsalMarkHTML = '';
@@ -1275,80 +1551,92 @@
 
                 let measureChordsHTML = '';
                 
-                let renderedTexts = vMeasure.chords.map((c, i) => {
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '');
-                    return romanMode ? convertToRoman(c, targetKey, vMeasure.id) : cleanC;
-                });
-                
-                let totalChars = renderedTexts.join("").length;
-                let hasBrackets = vMeasure.chords.some(ch => ch.includes('_BKT'));
-                if (hasBrackets) totalChars += 2; 
-                if (vMeasure.chords.length > 1) totalChars += 1; 
-
-                let textSizeClass = "";
-                if (window.innerWidth <= 640) {
-                    if (totalRows >= 8) { 
-                        if (totalChars > 17) textSizeClass = "text-[0.45em]";
-                        else if (totalChars > 12) textSizeClass = "text-[0.55em]";
-                        else if (totalChars > 8) textSizeClass = "text-[0.7em]";
-                        else if (totalChars > 4) textSizeClass = "text-[0.9em]";
-                        else textSizeClass = "text-[1.1em]";
-                    } else if (totalRows >= 4) { 
-                        if (totalChars > 17) textSizeClass = "text-[0.55em]";
-                        else if (totalChars > 12) textSizeClass = "text-[0.65em]";
-                        else if (totalChars > 8) textSizeClass = "text-[0.8em]";
-                        else if (totalChars > 4) textSizeClass = "text-[1em]";
-                        else textSizeClass = "text-[1.2em]";
-                    } else { 
-                        if (totalChars > 17) textSizeClass = "text-[0.65em]";
-                        else if (totalChars > 12) textSizeClass = "text-[0.85em]";
-                        else if (totalChars > 8) textSizeClass = "text-[1.1em]";
-                        else if (totalChars > 4) textSizeClass = "text-[1.4em]";
-                        else textSizeClass = "text-[1.8em]";
-                    }
-                } else {
-                    if (totalChars > 17) textSizeClass = "text-[0.6em] md:text-[0.6em] lg:text-[0.8em] xl:text-[0.9em]";
-                    else if (totalChars > 12) textSizeClass = "text-[0.7em] md:text-[0.8em] lg:text-[1.1em] xl:text-[1.3em]";
-                    else if (totalChars > 8) textSizeClass = "text-[0.9em] md:text-[1.1em] lg:text-[1.4em] xl:text-[1.7em]";
-                    else if (totalChars > 4) textSizeClass = "text-[1.3em] md:text-[1.6em] lg:text-[2.1em] xl:text-[2.5em]";
-                    else textSizeClass = "text-[1.8em] md:text-[2.2em] lg:text-[2.8em] xl:text-[3.2em]";
-                }
-
-                if (totalChars > 12) adaptiveGapClass = "gap-0.5 sm:gap-1"; 
-                if (totalChars > 17) adaptiveGapClass = "gap-[2px] sm:gap-0.5";
-                
-                measureChordsHTML = `<div class="flex flex-row items-center justify-center w-full h-full px-[3px] sm:px-1 flex-nowrap content-center text-center overflow-hidden ${adaptiveGapClass} ${textSizeClass}">`;
-                
-                let inBracket = false;
-                vMeasure.chords.forEach((c, i) => {
-                    let textStr = renderedTexts[i];
-                    let isBkt = c.includes('_BKT');
-                    let hasDim = vMeasure.chords.some(ch => ch.includes('_DIM') && ch.includes('_BKT'));
+                if (vMeasure.isSplitCasillas) {
+                    measureDiv.className = classNames.replace('col-start-1', '') + ' col-start-1 pt-4 pb-1 sm:pt-6 repeat-end text-blue-600';
+                    let rHtml = `<div class="absolute top-0 left-0 text-[0.4em] sm:text-[0.55em] text-blue-600 font-bold flex w-full">
+                                    <div class="border-t-2 border-l-2 border-blue-500 px-1 py-0.5 mt-1 ml-1 flex-1">1.</div>
+                                    <div class="border-t-2 border-l-2 border-blue-500 px-1 py-0.5 mt-1 mr-1 flex-1 ml-4 border-l-slate-400">2.</div>
+                                </div>`;
                     
-                    if (isBkt && !inBracket) {
-                        let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        measureChordsHTML += `<div class="bracket-container px-1 sm:px-1.5 ${adaptiveGapClass} ii-v-bracket ${bktClass}">`;
-                        inBracket = true;
-                    } else if (!isBkt && inBracket) {
-                        measureChordsHTML += `</div>`;
-                        inBracket = false;
-                    }
-                    measureChordsHTML += processChord(c, i, vMeasure.id, textStr);
-                    if (isBkt && i === vMeasure.chords.length - 1) { measureChordsHTML += `</div>`; }
-                });
-                measureChordsHTML += `</div>`;
-                
-                measureDiv.innerHTML = `
-                    <div class="absolute top-0 right-1 text-[0.55em] sm:text-[0.6em] text-slate-400 font-mono z-10">${index + 1}</div>
-                    ${rehearsalMarkHTML}
-                    ${measureChordsHTML}
-                `;
-                measureDiv.dataset.index = index; 
+                    let rendered1 = vMeasure.chords1.map(c => romanMode ? convertToRoman(c, targetKey, vMeasure.id) : c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, ''));
+                    let rendered2 = vMeasure.chords2.map(c => romanMode ? convertToRoman(c, targetKey, vMeasure.id) : c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, ''));
+                    
+                    measureChordsHTML = `<div class="flex w-full h-full items-center justify-between text-[0.8em] sm:text-[1em] md:text-[1.3em]">
+                        <div class="flex flex-1 justify-center gap-1">${vMeasure.chords1.map((c, i) => processChord(c, i, vMeasure.id, rendered1[i])).join('')}</div>
+                        <div class="text-blue-500 font-bold px-1 opacity-80 text-[1.2em] font-serif">:||</div>
+                        <div class="flex flex-1 justify-center gap-1">${vMeasure.chords2.map((c, i) => processChord(c, i, vMeasure.id, rendered2[i])).join('')}</div>
+                    </div>`;
+                    
+                    measureDiv.innerHTML = `<div class="absolute top-0 right-1 text-[0.55em] sm:text-[0.6em] text-slate-400 font-mono z-10">${index + 1}</div>${rHtml}${measureChordsHTML}`;
+                } else {
+                    let renderedTexts = vMeasure.chords.map((c, i) => {
+                        let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '');
+                        return romanMode ? convertToRoman(c, targetKey, vMeasure.id) : cleanC;
+                    });
+                    
+                    let totalChars = renderedTexts.join("").length;
+                    let hasBrackets = vMeasure.chords.some(ch => ch.includes('_BKT'));
+                    if (hasBrackets) totalChars += 2; 
+                    if (vMeasure.chords.length > 1) totalChars += 1; 
 
-                if (measureSizes[index]) {
-                    measureDiv.style.fontSize = `${measureSizes[index]}%`;
+                    let textSizeClass = "";
+                    if (window.innerWidth <= 640) {
+                        if (totalRows >= 8) { 
+                            if (totalChars > 17) textSizeClass = "text-[0.45em]";
+                            else if (totalChars > 12) textSizeClass = "text-[0.55em]";
+                            else if (totalChars > 8) textSizeClass = "text-[0.7em]";
+                            else if (totalChars > 4) textSizeClass = "text-[0.9em]";
+                            else textSizeClass = "text-[1.1em]";
+                        } else if (totalRows >= 4) { 
+                            if (totalChars > 17) textSizeClass = "text-[0.55em]";
+                            else if (totalChars > 12) textSizeClass = "text-[0.65em]";
+                            else if (totalChars > 8) textSizeClass = "text-[0.8em]";
+                            else if (totalChars > 4) textSizeClass = "text-[1em]";
+                            else textSizeClass = "text-[1.2em]";
+                        } else { 
+                            if (totalChars > 17) textSizeClass = "text-[0.65em]";
+                            else if (totalChars > 12) textSizeClass = "text-[0.85em]";
+                            else if (totalChars > 8) textSizeClass = "text-[1.1em]";
+                            else if (totalChars > 4) textSizeClass = "text-[1.4em]";
+                            else textSizeClass = "text-[1.8em]";
+                        }
+                    } else {
+                        if (totalChars > 17) textSizeClass = "text-[0.6em] md:text-[0.6em] lg:text-[0.8em] xl:text-[0.9em]";
+                        else if (totalChars > 12) textSizeClass = "text-[0.7em] md:text-[0.8em] lg:text-[1.1em] xl:text-[1.3em]";
+                        else if (totalChars > 8) textSizeClass = "text-[0.9em] md:text-[1.1em] lg:text-[1.4em] xl:text-[1.7em]";
+                        else if (totalChars > 4) textSizeClass = "text-[1.3em] md:text-[1.6em] lg:text-[2.1em] xl:text-[2.5em]";
+                        else textSizeClass = "text-[1.8em] md:text-[2.2em] lg:text-[2.8em] xl:text-[3.2em]";
+                    }
+
+                    if (totalChars > 12) adaptiveGapClass = "gap-0.5 sm:gap-1"; 
+                    if (totalChars > 17) adaptiveGapClass = "gap-[2px] sm:gap-0.5";
+                    
+                    measureChordsHTML = `<div class="flex flex-row items-center justify-center w-full h-full px-[3px] sm:px-1 flex-nowrap content-center text-center overflow-hidden ${adaptiveGapClass} ${textSizeClass}">`;
+                    
+                    let inBracket = false;
+                    vMeasure.chords.forEach((c, i) => {
+                        let textStr = renderedTexts[i] || "";
+                        let isBkt = c.includes('_BKT');
+                        let hasDim = vMeasure.chords.some(ch => ch.includes('_DIM') && ch.includes('_BKT'));
+                        
+                        if (isBkt && !inBracket) {
+                            let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
+                            measureChordsHTML += `<div class="bracket-container px-1 sm:px-1.5 ${adaptiveGapClass} ii-v-bracket ${bktClass}">`;
+                            inBracket = true;
+                        } else if (!isBkt && inBracket) {
+                            measureChordsHTML += `</div>`;
+                            inBracket = false;
+                        }
+                        measureChordsHTML += processChord(c, i, vMeasure.id, textStr);
+                        if (isBkt && i === vMeasure.chords.length - 1) { measureChordsHTML += `</div>`; }
+                    });
+                    measureChordsHTML += `</div>`;
+                    
+                    measureDiv.innerHTML = `<div class="absolute top-0 right-1 text-[0.55em] sm:text-[0.6em] text-slate-400 font-mono z-10">${index + 1}</div>${rehearsalMarkHTML}${measureChordsHTML}`;
                 }
 
+                measureDiv.dataset.index = index; 
+                if (measureSizes[index]) measureDiv.style.fontSize = `${measureSizes[index]}%`;
                 grid.appendChild(measureDiv);
             });
             
@@ -1421,63 +1709,71 @@
         let piano, bassSynth; let isPlaying = false; let step = 0; let audioInitialized = false;
 
         async function initAudio() {
-            if (audioInitialized) return; await Tone.start();
-            const chorus = new Tone.Chorus({ frequency: 2, delayTime: 3.5, depth: 0.3 }).start();
-            const reverb = new Tone.Freeverb({ roomSize: 0.6, dampening: 4000 }); reverb.wet.value = 0.2;
-            
-            piano = new Tone.PolySynth(Tone.FMSynth, { harmonicity: 2, modulationIndex: 1.2, oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.6, release: 0.05 } });
-            bassSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.04, decay: 0.4, sustain: 0.3, release: 0.05 } });
-            piano.chain(chorus, reverb, Tone.Destination); bassSynth.toDestination();
-            Tone.Destination.volume.value = parseFloat(document.getElementById('volumeSlider') ? document.getElementById('volumeSlider').value : -6);
-
-            Tone.Transport.scheduleRepeat((time) => {
-                const currentStep = step % totalSteps; 
+            if (audioInitialized) return; 
+            try {
+                await Tone.start();
+                const chorus = new Tone.Chorus({ frequency: 2, delayTime: 3.5, depth: 0.3 }).start();
+                const reverb = new Tone.Freeverb({ roomSize: 0.6, dampening: 4000 }); reverb.wet.value = 0.2;
                 
-                if (step > 0 && currentStep === 0) {
-                    currentLoopCount++;
-                    let lInput = document.getElementById('loopInput');
-                    let loopVal = lInput ? lInput.value : (document.getElementById('loopInputMobile')?.value || "");
-                    let maxLoops = (loopVal === "" || parseInt(loopVal) <= 0) ? Infinity : parseInt(loopVal);
+                piano = new Tone.PolySynth(Tone.FMSynth, { harmonicity: 2, modulationIndex: 1.2, oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.6, release: 0.05 } });
+                bassSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.04, decay: 0.4, sustain: 0.3, release: 0.05 } });
+                piano.chain(chorus, reverb, Tone.Destination); bassSynth.toDestination();
+                Tone.Destination.volume.value = parseFloat(document.getElementById('volumeSlider') ? document.getElementById('volumeSlider').value : -6);
+
+                Tone.Transport.scheduleRepeat((time) => {
+                    const currentStep = step % totalSteps; 
                     
-                    if (currentLoopCount >= maxLoops) {
-                        Tone.Transport.pause(); isPlaying = false; updatePlayButtons(false); step = 0; currentLoopCount = 0; resetMetronome();
-                        document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active')); highlightSvgNode([]);
-                        if (piano) piano.releaseAll(); if (bassSynth) bassSynth.triggerRelease(time); return; 
+                    if (step > 0 && currentStep === 0) {
+                        currentLoopCount++;
+                        let lInput = document.getElementById('loopInput');
+                        let loopVal = lInput ? lInput.value : (document.getElementById('loopInputMobile')?.value || "");
+                        let maxLoops = (loopVal === "" || parseInt(loopVal) <= 0) ? Infinity : parseInt(loopVal);
+                        
+                        if (currentLoopCount >= maxLoops) {
+                            Tone.Transport.pause(); isPlaying = false; updatePlayButtons(false); step = 0; currentLoopCount = 0; resetMetronome();
+                            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active')); highlightSvgNode([]);
+                            if (piano) piano.releaseAll(); if (bassSynth) bassSynth.triggerRelease(time); return; 
+                        }
                     }
-                }
-                if (currentStep % 2 === 0) { let beatIdx = (currentStep % 8) / 2; Tone.Draw.schedule(() => updateMetronome(beatIdx), time); }
-                if (currentStep % 8 === 0) { let cMe = audioTimeline[currentStep]; if (cMe) Tone.Draw.schedule(() => highlightMeasure(cMe.visualId), time); }
-                const event = audioTimeline[currentStep];
-                if (event !== undefined) {
-                    if (event && event.svgNodeIds) Tone.Draw.schedule(() => highlightSvgNode(event.svgNodeIds), time);
-                    else if (event !== null) Tone.Draw.schedule(() => highlightSvgNode([]), time);
-                    if (event !== null) {
-                        if (!isPianoMuted) piano.triggerAttackRelease(event.notes, event.duration, time);
-                        if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, event.duration, time);
+                    if (currentStep % 2 === 0) { let beatIdx = (currentStep % 8) / 2; Tone.Draw.schedule(() => updateMetronome(beatIdx), time); }
+                    if (currentStep % 8 === 0) { let cMe = audioTimeline[currentStep]; if (cMe) Tone.Draw.schedule(() => highlightMeasure(cMe.visualId), time); }
+                    const event = audioTimeline[currentStep];
+                    if (event !== undefined) {
+                        if (event && event.svgNodeIds) Tone.Draw.schedule(() => highlightSvgNode(event.svgNodeIds), time);
+                        else if (event !== null) Tone.Draw.schedule(() => highlightSvgNode([]), time);
+                        if (event !== null) {
+                            if (!isPianoMuted) piano.triggerAttackRelease(event.notes, event.duration, time);
+                            if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, event.duration, time);
+                        }
                     }
-                }
-                step++;
-            }, "8n");
-            Tone.Transport.bpm.value = parseInt(document.getElementById('tempoSlider') ? document.getElementById('tempoSlider').value : 120);
-            audioInitialized = true;
+                    step++;
+                }, "8n");
+                Tone.Transport.bpm.value = parseInt(document.getElementById('tempoSlider') ? document.getElementById('tempoSlider').value : 120);
+                audioInitialized = true;
+            } catch(e) {
+                console.error("Audio Initialization Error:", e);
+                showToast("Por favor interactúa con la página antes de reproducir.", "error");
+            }
         }
 
-        const progressionSelect = document.getElementById('progressionSelect'); const progressionSelectMobile = document.getElementById('progressionSelectMobile');
-        const keySelect = document.getElementById('keySelect'); const keySelectMobile = document.getElementById('keySelectMobile');
+        const progressionSelectEl = document.getElementById('progressionSelect'); 
+        const progressionSelectMobileEl = document.getElementById('progressionSelectMobile');
+        const keySelectEl = document.getElementById('keySelect'); 
+        const keySelectMobileEl = document.getElementById('keySelectMobile');
         const htmlElement = document.documentElement;
 
         progressionLibrary.forEach((prog, index) => {
             const option = document.createElement('option'); option.value = index; option.textContent = prog.name;
-            if(progressionSelect) progressionSelect.appendChild(option);
+            if(progressionSelectEl) progressionSelectEl.appendChild(option);
             const optM = document.createElement('option'); optM.value = index; optM.textContent = prog.name;
-            if(progressionSelectMobile) progressionSelectMobile.appendChild(optM);
+            if(progressionSelectMobileEl) progressionSelectMobileEl.appendChild(optM);
         });
 
         allKeys.forEach(key => {
             const option = document.createElement('option'); option.value = key; option.textContent = key;
-            if(keySelect) keySelect.appendChild(option);
+            if(keySelectEl) keySelectEl.appendChild(option);
             const optM = document.createElement('option'); optM.value = key; optM.textContent = key;
-            if(keySelectMobile) keySelectMobile.appendChild(optM);
+            if(keySelectMobileEl) keySelectMobileEl.appendChild(optM);
         });
 
         function toggleTheme() { 
@@ -1492,45 +1788,45 @@
             [document.getElementById('playBtn'), document.getElementById('playBtnMobile')].forEach(btn => {
                 if(!btn) return;
                 if(playing) { btn.innerHTML = pauseHtml; btn.classList.remove(...playClasses); btn.classList.add(...pauseClasses); } 
-                else { btn.innerHTML = playHtml; btn.classList.remove(...playClasses); btn.classList.add(...playClasses); }
+                else { btn.innerHTML = playHtml; btn.classList.remove(...pauseClasses); btn.classList.add(...playClasses); }
             });
         }
 
         async function playProgression() {
             if (!audioInitialized) await initAudio();
-            if (Tone.context.state !== 'running') await Tone.context.resume();
-            if (!isPlaying) { 
-                currentLoopCount = 0; 
-                let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
-                
-                let stepOffset = 0;
-                for (let i = 0; i < startIdx; i++) {
-                    stepOffset += 8; 
-                }
-                
-                step = stepOffset; 
-                Tone.Transport.position = 0; 
-                Tone.Transport.start(); 
-                isPlaying = true; 
-                updatePlayButtons(true); 
-            } 
-            else { Tone.Transport.pause(); isPlaying = false; if (piano && piano.releaseAll) piano.releaseAll(); if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now()); updatePlayButtons(false); }
+            try {
+                if (Tone.context.state !== 'running') await Tone.context.resume();
+                if (!isPlaying) { 
+                    currentLoopCount = 0; 
+                    let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
+                    
+                    let stepOffset = 0;
+                    for (let i = 0; i < startIdx; i++) { stepOffset += 8; }
+                    
+                    step = stepOffset; 
+                    Tone.Transport.position = 0; 
+                    Tone.Transport.start(); 
+                    isPlaying = true; 
+                    updatePlayButtons(true); 
+                } 
+                else { Tone.Transport.pause(); isPlaying = false; if (piano && piano.releaseAll) piano.releaseAll(); if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now()); updatePlayButtons(false); }
+            } catch (e) { console.error("Play error:", e); }
         }
 
         function stopProgression() {
-            if (audioInitialized) { Tone.Transport.pause(); piano.releaseAll(); bassSynth.triggerRelease(Tone.now()); }
-            isPlaying = false; 
-            
-            let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
-            let stepOffset = 0;
-            for (let i = 0; i < startIdx; i++) {
-                stepOffset += 8;
-            }
-            step = stepOffset; 
-            
-            currentLoopCount = 0; resetMetronome();
-            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
-            highlightSvgNode([]); updatePlayButtons(false);
+            try {
+                if (audioInitialized) { Tone.Transport.pause(); piano.releaseAll(); bassSynth.triggerRelease(Tone.now()); }
+                isPlaying = false; 
+                
+                let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
+                let stepOffset = 0;
+                for (let i = 0; i < startIdx; i++) { stepOffset += 8; }
+                step = stepOffset; 
+                
+                currentLoopCount = 0; resetMetronome();
+                document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
+                highlightSvgNode([]); updatePlayButtons(false);
+            } catch (e) { console.error("Stop error:", e); }
         }
 
         ['playBtn', 'playBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', playProgression));
@@ -1552,6 +1848,7 @@
         ['tempoSlider', 'tempoSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             document.getElementById('tempoValue').textContent = e.target.value; document.getElementById('tempoValueMobile').textContent = e.target.value;
             syncSelects('tempoSlider', 'tempoSliderMobile', e.target.value); if (audioInitialized) Tone.Transport.bpm.value = e.target.value;
+            updateURLState();
         }));
 
         ['volumeSlider', 'volumeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
@@ -1578,17 +1875,17 @@
         ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
 
         ['progressionSelect', 'progressionSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
             let val = e.target.value; if (val === "" || val === undefined || val === "undefined") val = "0";
             syncSelects('variationSelect', 'variationSelectMobile', val); 
-            const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
+            const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['keySelect', 'keySelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('keySelect', 'keySelectMobile', e.target.value); manualKeyChange = true; const was = isPlaying; stopProgression(); loadAndCompileProgression(true); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('keySelect', 'keySelectMobile', e.target.value); manualKeyChange = true; const was = isPlaying; stopProgression(); loadAndCompileProgression(true); updateURLState(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
@@ -1640,7 +1937,7 @@
                 if (found) break;
             }
             if (found) {
-                let pSelectVal = progressionSelect.value || progressionSelectMobile.value || 0;
+                let pSelectVal = document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0;
                 let progIndex = parseInt(pSelectVal); if (isNaN(progIndex)) progIndex = 0;
                 const progData = progressionLibrary[progIndex];
                 if (progData.id === 'custom') {
@@ -1650,6 +1947,7 @@
                 const wasPlaying = isPlaying;
                 if (wasPlaying) stopProgression();
                 loadAndCompileProgression(true);
+                updateURLState();
                 if (wasPlaying) setTimeout(() => playProgression(), 50);
             }
         }
@@ -1660,7 +1958,7 @@
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         const handleCustomInput = debounce((val) => {
             const wasPlaying = isPlaying; if (wasPlaying) stopProgression();
-            selectedStartMeasure = -1; loadAndCompileProgression(false); if (wasPlaying) setTimeout(() => playProgression(), 50);
+            selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if (wasPlaying) setTimeout(() => playProgression(), 50);
         }, 800);
         
         document.getElementById('customProgInput')?.addEventListener('input', (e) => handleCustomInput(e.target.value));
@@ -1687,7 +1985,9 @@
 
                 if (chordEl.classList.contains('is-diatonic-sub')) {
                     e.stopPropagation();
-                    const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
+                    const keySelectVal = document.getElementById('keySelect');
+                    const keySelectMobileVal = document.getElementById('keySelectMobile');
+                    const targetKey = (keySelectVal && keySelectVal.value) || (keySelectMobileVal && keySelectMobileVal.value) || "C";
                     
                     let state = activeChordMutations[overrideKey];
                     
@@ -1752,10 +2052,12 @@
                 updateStartMeasureLabel(); 
                 updateSizeSliderUI();
             }
-            
         });
 
-        loadAndCompileProgression(false);
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreStateOnLoad();
+            loadAndCompileProgression(false);
+        });
     </script>
 </body>
 </html>
