@@ -176,7 +176,6 @@
                     <input type="range" id="volumeSlider" min="-30" max="0" value="-6" step="1" class="mt-1">
                 </div>
 
-                <!-- NUEVO: Control de Tamaño para Escritorio -->
                 <div class="flex flex-col w-20">
                     <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
                         <span>Tam.</span><span id="sizeValue" class="text-blue-600 font-bold">100%</span>
@@ -269,8 +268,6 @@
                         </label>
                         <input type="range" id="volumeSliderMobile" min="-30" max="0" value="-6" step="1" class="mt-0.5">
                     </div>
-                    
-                    <!-- NUEVO: Control de Tamaño para Móviles -->
                     <div class="flex flex-col flex-1">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
                             <span>Tam.</span><span id="sizeValueMobile" class="text-blue-600 dark:text-blue-400 font-bold">100%</span>
@@ -336,7 +333,7 @@
                 <div id="metronome-3" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
             </div>
 
-            <span id="startMeasureIndicator" class="font-bold whitespace-nowrap bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px]">Sel: 1</span>
+            <span id="startMeasureIndicator" class="font-bold whitespace-nowrap bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px]">Sel: Ninguno</span>
         </div>
 
         <!-- Contenedor del Gráfico Coltrane -->
@@ -388,14 +385,12 @@
             ]},
             { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
                 [ 
-                    { name: "1 (Tradicional)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7" },
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" },
+                    { name: "1 (Tradicional)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: ": Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7_END1 :| Bbmaj7_END2" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
                     { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
                 ],
                 [ 
-                    { name: "A (Bebop)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7" },
-                    { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" },
+                    { name: "A (Bebop)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: ": Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7_END1 :| Bbmaj7_END2" },
                     { type: "B", color: "bg-amber-50 dark:bg-amber-900/20", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
                     { type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
                 ]
@@ -494,11 +489,10 @@
             }
             if (isNaN(selectedVar)) selectedVar = 0;
 
-            let cleanStr = chordStr.replace(/_SUB|_DIM|_BKT/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const isSubbed = chordStr.includes('_SUB');
             const isDimmed = chordStr.includes('_DIM');
             
-            // Bloqueo estricto del análisis en Multitónica y Blues alterados
             if (progData && progData.id === "multitonic-coltrane") return cleanStr;
             if (progData && progData.id === "blues" && selectedVar !== 0) return cleanStr;
 
@@ -585,7 +579,7 @@
         };
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
-            let cleanChord = chordStr.replace(/_SUB|_DIM|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanChord = chordStr.replace(/_SUB|_DIM|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
             
@@ -599,17 +593,25 @@
             let parsedRoot = parseNoteObj(rootStr);
             let rootMidi = 60 + parsedRoot.semitone; if (parsedRoot.semitone > 6) rootMidi -= 12; 
             
-            let rawMidi = intervals.map(iv => rootMidi + iv);
-            if (prevMidiNotes && prevMidiNotes.length > 0) {
-                let prevCenter = prevMidiNotes.reduce((a, b) => a + b, 0) / prevMidiNotes.length;
-                rawMidi = rawMidi.map(note => {
-                    let normalizedNote = note % 12; let targetOctave = Math.floor(prevCenter / 12);
-                    let c1 = (targetOctave * 12) + normalizedNote, c2 = ((targetOctave + 1) * 12) + normalizedNote, c3 = ((targetOctave - 1) * 12) + normalizedNote;
-                    let d1 = Math.abs(c1 - prevCenter), d2 = Math.abs(c2 - prevCenter), d3 = Math.abs(c3 - prevCenter);
-                    if (d1 <= d2 && d1 <= d3) return c1; if (d2 <= d1 && d2 <= d3) return c2; return c3;
-                });
-                rawMidi = [...new Set(rawMidi)].sort((a, b) => a - b);
-            }
+            // NUEVO: Motor de Voice Leading para forzar que las notas caigan estrictamente entre C4(60) y F5(77)
+            let rawMidi = intervals.map(iv => {
+                let noteMidi = rootMidi + iv;
+                let n = noteMidi % 12;
+                
+                // Generar las opciones de octava y filtrar las que caen dentro del rango permitido (60 a 77)
+                let possible = [n + 48, n + 60, n + 72].filter(v => v >= 60 && v <= 77);
+                if (possible.length === 0) possible = [n + 60]; // Salvavidas matemático (nunca debería ocurrir)
+
+                // Si hay notas del compás anterior, buscar la octava que mueva menos los dedos
+                if (prevMidiNotes && prevMidiNotes.length > 0) {
+                    let prevCenter = prevMidiNotes.reduce((a, b) => a + b, 0) / prevMidiNotes.length;
+                    return possible.reduce((prev, curr) => Math.abs(curr - prevCenter) < Math.abs(prev - prevCenter) ? curr : prev);
+                } else {
+                    return possible[0]; // Si no hay notas previas, toma la primera opción válida
+                }
+            });
+            
+            rawMidi = [...new Set(rawMidi)].sort((a, b) => a - b);
             
             let parsedBass = parseNoteObj(bassStr);
             let bassMidi = 36 + parsedBass.semitone; if (parsedBass.semitone > 5) bassMidi -= 12; 
@@ -620,7 +622,8 @@
         let visualMeasures = []; 
         let audioTimeline = []; 
         let totalSteps = 0;
-        let selectedStartMeasure = 0;
+        let selectedStartMeasure = -1; // NUEVO: Inicialmente sin selección
+        let measureSizes = {}; // NUEVO: Registro global de tamaños personalizados por compás
         let globalTritone = false;
         let globalDim = false;
         let relacionIIVActive = false;
@@ -751,7 +754,7 @@
         }
 
         function toggleRepeatSymbol(type) {
-            if (!currentActiveSections || currentActiveSections.length === 0) return;
+            if (!currentActiveSections || currentActiveSections.length === 0 || selectedStartMeasure === -1) return;
             let currentVisualIndex = 0; let found = false;
             for (let s = 0; s < currentActiveSections.length; s++) {
                 let sec = currentActiveSections[s];
@@ -786,7 +789,10 @@
         }
 
         function loadAndCompileProgression(preserveState = false) {
-            if (!preserveState) mutationOverrides = {};
+            if (!preserveState) { 
+                mutationOverrides = {}; 
+                measureSizes = {}; // Resetea los tamaños individuales si cambia la progresión
+            }
             
             let pSelectVal = progressionSelect.value;
             if (!pSelectVal && progressionSelectMobile) pSelectVal = progressionSelectMobile.value;
@@ -931,15 +937,48 @@
                 });
 
                 visualMeasures.push(...sectionVisualMeasures);
-                let i = 0; let repeatStartIdx = -1;
                 
+                // NUEVO MOTOR DE DESENROLLADO INTELIGENTE (END1 y END2)
+                let i = 0; let repeatStartIdx = -1;
                 while (i < sectionVisualMeasures.length) {
                     let vm = sectionVisualMeasures[i];
                     if (vm.hasRepeatStart) repeatStartIdx = i;
-                    audioUnrolledMeasures.push(vm.chords); visualMap.push(vm.id);
-                    if (vm.hasRepeatEnd && repeatStartIdx !== -1) {
-                        for (let r = repeatStartIdx; r <= i; r++) { audioUnrolledMeasures.push(sectionVisualMeasures[r].chords); visualMap.push(sectionVisualMeasures[r].id); }
+
+                    let isEnd2 = vm.chords.some(c => c.includes('_END2'));
+
+                    // 1. En la primera pasada normal, agregar si NO es la Casilla 2
+                    if (!isEnd2) {
+                        let firstPassChords = vm.chords.filter(c => !c.includes('_END2'));
+                        if (firstPassChords.length > 0) {
+                            audioUnrolledMeasures.push(firstPassChords);
+                            visualMap.push(vm.id);
+                        }
+                    }
+
+                    // 2. ¿Encontramos el final de repetición? (O porque tiene :| o porque tiene Casilla 1)
+                    let isVisualRepeatEnd = vm.hasRepeatEnd || vm.chords.some(c => c.includes('_END1'));
+                    if (isVisualRepeatEnd && repeatStartIdx !== -1) {
+                        for (let r = repeatStartIdx; r <= i; r++) {
+                            let rVm = sectionVisualMeasures[r];
+                            let rIsEnd1 = rVm.chords.some(c => c.includes('_END1'));
+                            // En la segunda pasada, omitir la Casilla 1
+                            if (!rIsEnd1) {
+                                let secondPassChords = rVm.chords.filter(c => !c.includes('_END1'));
+                                if (secondPassChords.length > 0) {
+                                    audioUnrolledMeasures.push(secondPassChords);
+                                    visualMap.push(rVm.id);
+                                }
+                            }
+                        }
                         repeatStartIdx = -1;
+                    } 
+                    // 3. Agregar la Casilla 2 a la línea de tiempo musical solo si ya pasamos la repetición
+                    else if (isEnd2 && repeatStartIdx === -1) {
+                        let secondPassChords = vm.chords.filter(c => !c.includes('_END1'));
+                        if (secondPassChords.length > 0) {
+                            audioUnrolledMeasures.push(secondPassChords);
+                            visualMap.push(vm.id);
+                        }
                     }
                     i++;
                 }
@@ -974,28 +1013,37 @@
             });
 
             totalSteps = audioUnrolledMeasures.length * 8;
-            if (selectedStartMeasure >= visualMeasures.length) selectedStartMeasure = 0;
-            updateGridRowStyles(); renderGrid(); updateStartMeasureLabel();
+            updateGridRowStyles(); renderGrid(); updateStartMeasureLabel(); updateSizeSliderUI();
+        }
+
+        function getActualGridRows() {
+            if (!visualMeasures || visualMeasures.length === 0) return 0;
+            let rows = 1; let cols = 0;
+            visualMeasures.forEach((vm, idx) => {
+                if (vm.sectionName && idx > 0) { rows++; cols = 1; }
+                else { cols++; if (cols > 4) { rows++; cols = 1; } }
+            });
+            return rows;
         }
 
         function updateGridRowStyles() {
             const grid = document.getElementById('chordGrid');
             if (!grid || visualMeasures.length === 0) return;
-            const totalRows = Math.ceil(visualMeasures.length / 4);
+            const totalRows = getActualGridRows();
             
             if (window.innerWidth <= 640) {
                 if (totalRows <= 2) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`;
                     grid.style.alignContent = 'start';
-                } else if (totalRows > 4 && totalRows <= 8) {
+                } else if (totalRows <= 8) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
                     grid.style.alignContent = 'stretch';
                 } else {
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`;
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(40px, auto))`;
                     grid.style.alignContent = 'start';
                 }
             } else {
-                if (totalRows > 4 && totalRows <= 8) {
+                if (totalRows <= 8) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
                     grid.style.alignContent = 'stretch';
                 } else {
@@ -1008,30 +1056,46 @@
         function renderGrid() {
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
             
-            // NUEVO: Aplicar el factor de escala del usuario al contenedor
-            const userSize = document.getElementById('sizeSlider')?.value || 100;
-            grid.style.fontSize = `${userSize}%`;
-
+            // Tamaño global vs específico se maneja individualmente en cada compás más abajo
             const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
-            const totalRows = Math.ceil(visualMeasures.length / 4);
+            const totalRows = getActualGridRows();
 
             visualMeasures.forEach((vMeasure, index) => {
                 const measureDiv = document.createElement('div'); measureDiv.id = `measure-${vMeasure.id}`;
                 
                 let classNames = `measure-box ${vMeasure.colorClass} border border-slate-300 dark:border-slate-600 sm:rounded-xl rounded`;
-                if (vMeasure.sectionName) { classNames += ' pt-4 pb-1 sm:pt-6'; } 
-                else { classNames += ' py-1 sm:py-2'; }
-
+                
+                let isRepeatEndVisual = vMeasure.hasRepeatEnd || vMeasure.chords.some(c => c.includes('_END1'));
                 if (vMeasure.hasRepeatStart) classNames += ' repeat-start text-blue-600';
-                if (vMeasure.hasRepeatEnd) classNames += ' repeat-end text-blue-600';
+                if (isRepeatEndVisual) classNames += ' repeat-end text-blue-600';
+                
                 if (index === selectedStartMeasure) classNames += ' ring-2 ring-blue-500 bg-blue-50/40 dark:bg-blue-900/40';
-                measureDiv.className = classNames;
                 
                 let rehearsalMarkHTML = '';
-                if (vMeasure.sectionName) rehearsalMarkHTML = `<div class="absolute top-0 left-0 text-[8px] sm:text-[11px] font-bold text-white bg-blue-500 px-1 py-0.5 sm:px-1.5 rounded-br md:rounded-br-lg shadow-sm z-10 tracking-wider leading-none">${vMeasure.sectionName}</div>`;
+                if (vMeasure.sectionName) { 
+                    classNames += ' pt-4 pb-1 sm:pt-6 col-start-1'; 
+                    rehearsalMarkHTML += `<div class="absolute top-0 left-0 text-[8px] sm:text-[11px] font-bold text-white bg-blue-500 px-1 py-0.5 sm:px-1.5 rounded-br md:rounded-br-lg shadow-sm z-10 tracking-wider leading-none">${vMeasure.sectionName}</div>`;
+                } else { 
+                    classNames += ' py-1 sm:py-2'; 
+                }
+
+                if (vMeasure.chords.some(c => c.includes('_END1'))) {
+                    rehearsalMarkHTML += `
+                        <div class="absolute top-0 left-0 border-t-2 border-l-2 border-blue-500 w-1/3 h-1.5 z-10"></div>
+                        <div class="absolute top-0 left-1 text-[8px] sm:text-[9px] text-blue-500 font-bold z-10 leading-none">1.</div>
+                    `;
+                }
+                if (vMeasure.chords.some(c => c.includes('_END2'))) {
+                    rehearsalMarkHTML += `
+                        <div class="absolute top-0 left-0 border-t-2 border-l-2 border-blue-500 w-1/3 h-1.5 z-10"></div>
+                        <div class="absolute top-0 left-1 text-[8px] sm:text-[9px] text-blue-500 font-bold z-10 leading-none">2.</div>
+                    `;
+                }
+                
+                measureDiv.className = classNames;
 
                 let renderedTexts = vMeasure.chords.map(c => {
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT|_END1|_END2/g, '');
                     return romanMode ? convertToRoman(c, targetKey) : cleanC;
                 });
                 
@@ -1043,39 +1107,37 @@
 
                 let textSizeClass = "";
                 
-                // NUEVO: Todas las tipografías ahora usan "em" relativo para heredar la escala del usuario
                 if (totalRows >= 8) { // 32 compases (Rhythm Changes)
-                    if (totalChars > 18) textSizeClass = "text-[0.35em] sm:text-[0.45em] tracking-tighter";
-                    else if (totalChars > 16) textSizeClass = "text-[0.45em] sm:text-[0.75em] md:text-[1em] lg:text-[1.125em] tracking-tighter";
-                    else if (totalChars <= 4) textSizeClass = "text-[0.95em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em]";
-                    else if (totalChars <= 7) textSizeClass = "text-[0.85em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tight";
-                    else if (totalChars <= 11) textSizeClass = "text-[0.75em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
-                    else if (totalChars <= 14) textSizeClass = "text-[0.65em] sm:text-[0.875em] md:text-[1.125em] lg:text-[1.25em] tracking-tighter";
-                    else textSizeClass = "text-[0.55em] sm:text-[0.75em] md:text-[1em] lg:text-[1.125em] tracking-tighter";
+                    if (totalChars > 17) textSizeClass = "text-[0.55em] sm:text-[0.6em] tracking-tighter";
+                    else if (totalChars > 14) textSizeClass = "text-[0.6em] sm:text-[0.65em] tracking-tighter";
+                    else if (totalChars > 11) textSizeClass = "text-[0.7em] sm:text-[0.85em] md:text-[1em] lg:text-[1.125em] tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[0.8em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[0.9em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em]";
+                    else textSizeClass = "text-[1em] sm:text-[1.5em] md:text-[2.25em] lg:text-[3em]";
                 } else if (totalRows >= 4) { // 16 compases (Coltrane, etc)
-                    if (totalChars > 18) textSizeClass = "text-[0.45em] sm:text-[0.55em] tracking-tighter";
-                    else if (totalChars > 16) textSizeClass = "text-[0.55em] sm:text-[0.75em] md:text-[1.125em] lg:text-[1.25em] tracking-tighter";
-                    else if (totalChars <= 4) textSizeClass = "text-[1.1em] sm:text-[1.875em] md:text-[3em] lg:text-[3.75em]";
-                    else if (totalChars <= 7) textSizeClass = "text-[0.95em] sm:text-[1.5em] md:text-[2.25em] lg:text-[3em]";
-                    else if (totalChars <= 11) textSizeClass = "text-[0.85em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em] tracking-tight";
-                    else if (totalChars <= 14) textSizeClass = "text-[0.75em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tighter";
-                    else textSizeClass = "text-[0.65em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
-                } else { // 1 a 3 filas (4 a 12 compases)
-                    if (totalChars > 18) textSizeClass = "text-[0.55em] sm:text-[0.65em] tracking-tighter";
-                    else if (totalChars > 16) textSizeClass = "text-[0.65em] sm:text-[0.75em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
-                    else if (totalChars <= 4) textSizeClass = "text-[1.3em] sm:text-[1.875em] md:text-[3em] lg:text-[3.75em]";
-                    else if (totalChars <= 7) textSizeClass = "text-[1.1em] sm:text-[1.5em] md:text-[2.25em] lg:text-[3em]";
-                    else if (totalChars <= 11) textSizeClass = "text-[1em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em] tracking-tight";
-                    else if (totalChars <= 14) textSizeClass = "text-[0.85em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tighter";
-                    else textSizeClass = "text-[0.75em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
+                    if (totalChars > 17) textSizeClass = "text-[0.55em] sm:text-[0.65em] tracking-tighter";
+                    else if (totalChars > 14) textSizeClass = "text-[0.65em] sm:text-[0.75em] tracking-tighter";
+                    else if (totalChars > 11) textSizeClass = "text-[0.8em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[0.9em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em] tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[1.1em] sm:text-[1.5em] md:text-[2.5em] lg:text-[3em]";
+                    else textSizeClass = "text-[1.3em] sm:text-[2.25em] md:text-[3.5em] lg:text-[4em]";
+                } else { // 1 a 3 filas
+                    if (totalChars > 17) textSizeClass = "text-[0.65em] sm:text-[0.75em] tracking-tighter";
+                    else if (totalChars > 14) textSizeClass = "text-[0.75em] sm:text-[1em] tracking-tighter";
+                    else if (totalChars > 11) textSizeClass = "text-[0.9em] sm:text-[1.25em] md:text-[1.5em] lg:text-[1.875em] tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[1.1em] sm:text-[1.5em] md:text-[2.25em] lg:text-[2.5em] tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[1.3em] sm:text-[2.25em] md:text-[3.5em] lg:text-[4em] tracking-tight";
+                    else textSizeClass = "text-[1.6em] sm:text-[3em] md:text-[4.5em] lg:text-[5em]";
                 }
-
-                let adaptiveGapClass = "gap-[1px] sm:gap-2 md:gap-4"; 
+                
+                // Mantenemos una separación mínima (gap) en lugar de reducirlo a cero, para evitar la fusión de acordes (como Em7(b5)A7)
+                let adaptiveGapClass = "gap-1 sm:gap-2 md:gap-3"; 
+                if (totalChars > 14) adaptiveGapClass = "gap-0.5 sm:gap-1"; 
                 
                 const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
                     let isSubbed = c.includes('_SUB'); let isDimmed = c.includes('_DIM');
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT/g, '');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM|_BKT|_END1|_END2/g, '');
                     let isDom = isSubbed || isDimmed || isDominant(cleanC);
 
                     if (isSubbed) color = "text-amber-500 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
@@ -1100,7 +1162,7 @@
                     
                     if (isBkt && !inBracket) {
                         let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        let bktPadClass = totalChars > 14 ? "px-[3px]" : "px-[4px] sm:px-2";
+                        let bktPadClass = totalChars > 14 ? "px-[2px]" : "px-[4px] sm:px-2";
                         measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} ${bktPadClass} ${adaptiveGapClass}">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
@@ -1118,13 +1180,46 @@
                         ${measureChordsHTML}
                     </div>
                 `;
-                measureDiv.dataset.index = index; grid.appendChild(measureDiv);
+                measureDiv.dataset.index = index; 
+
+                // Aplicar el tamaño individual si el usuario lo configuró
+                if (measureSizes[index]) {
+                    measureDiv.style.fontSize = `${measureSizes[index]}%`;
+                }
+
+                grid.appendChild(measureDiv);
             });
+            
+            // Re-aplicar tamaño global si existe y no estamos seleccionando
+            if (selectedStartMeasure === -1) {
+                let sVal = document.getElementById('sizeSlider')?.value || 100;
+                grid.style.fontSize = `${sVal}%`;
+            }
         }
 
         window.addEventListener('resize', updateGridRowStyles);
 
-        function updateStartMeasureLabel() { const ind = document.getElementById('startMeasureIndicator'); if (ind) ind.textContent = `Sel: ${selectedStartMeasure + 1}`; }
+        function updateStartMeasureLabel() { 
+            const ind = document.getElementById('startMeasureIndicator'); 
+            if (ind) {
+                if (selectedStartMeasure === -1) ind.textContent = `Sel: Ninguno`;
+                else ind.textContent = `Sel: ${selectedStartMeasure + 1}`; 
+            }
+        }
+        
+        function updateSizeSliderUI() {
+            let val = 100;
+            if (selectedStartMeasure !== -1 && measureSizes[selectedStartMeasure]) {
+                val = measureSizes[selectedStartMeasure];
+            } else {
+                let grid = document.getElementById('chordGrid');
+                val = grid?.style.fontSize ? grid.style.fontSize.replace('%', '') : 100;
+            }
+            if(document.getElementById('sizeSlider')) document.getElementById('sizeSlider').value = val;
+            if(document.getElementById('sizeSliderMobile')) document.getElementById('sizeSliderMobile').value = val;
+            if(document.getElementById('sizeValue')) document.getElementById('sizeValue').textContent = `${val}%`;
+            if(document.getElementById('sizeValueMobile')) document.getElementById('sizeValueMobile').textContent = `${val}%`;
+        }
 
         function highlightMeasure(visualId) {
             document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
@@ -1136,7 +1231,8 @@
                     if (container) {
                         const rect = activeEl.getBoundingClientRect();
                         const containerRect = container.getBoundingClientRect();
-                        if (rect.bottom > containerRect.bottom || rect.top < containerRect.top) {
+                        // Tolerancia para no saltar bruscamente si aún está parcialmente visible
+                        if (rect.bottom > containerRect.bottom - 10 || rect.top < containerRect.top + 10) {
                             activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
@@ -1243,13 +1339,25 @@
         async function playProgression() {
             if (!audioInitialized) await initAudio();
             if (Tone.context.state !== 'running') await Tone.context.resume();
-            if (!isPlaying) { currentLoopCount = 0; step = selectedStartMeasure * 8; Tone.Transport.position = 0; Tone.Transport.start(); isPlaying = true; updatePlayButtons(true); } 
+            if (!isPlaying) { 
+                currentLoopCount = 0; 
+                // Usar 0 si no hay compás seleccionado, sino usar el visual
+                let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
+                step = startIdx * 8; 
+                Tone.Transport.position = 0; 
+                Tone.Transport.start(); 
+                isPlaying = true; 
+                updatePlayButtons(true); 
+            } 
             else { Tone.Transport.pause(); isPlaying = false; if (piano && piano.releaseAll) piano.releaseAll(); if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now()); updatePlayButtons(false); }
         }
 
         function stopProgression() {
             if (audioInitialized) { Tone.Transport.pause(); piano.releaseAll(); bassSynth.triggerRelease(Tone.now()); }
-            isPlaying = false; step = selectedStartMeasure * 8; currentLoopCount = 0; resetMetronome();
+            isPlaying = false; 
+            let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
+            step = startIdx * 8; 
+            currentLoopCount = 0; resetMetronome();
             document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
             highlightSvgNode([]); updatePlayButtons(false);
         }
@@ -1280,25 +1388,35 @@
             syncSelects('volumeSlider', 'volumeSliderMobile', e.target.value); if (audioInitialized) Tone.Destination.volume.value = parseFloat(e.target.value);
         }));
 
-        // NUEVO: Evento en vivo para actualizar el tamaño de fuente inmediatamente
+        // NUEVO MOTOR DE ZOOM INDIVIDUAL VS GLOBAL
         ['sizeSlider', 'sizeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
-            document.getElementById('sizeValue').textContent = `${e.target.value}%`; 
-            if (document.getElementById('sizeValueMobile')) document.getElementById('sizeValueMobile').textContent = `${e.target.value}%`;
-            syncSelects('sizeSlider', 'sizeSliderMobile', e.target.value);
-            const grid = document.getElementById('chordGrid');
-            if (grid) grid.style.fontSize = `${e.target.value}%`;
+            let val = e.target.value;
+            if(document.getElementById('sizeValue')) document.getElementById('sizeValue').textContent = `${val}%`; 
+            if(document.getElementById('sizeValueMobile')) document.getElementById('sizeValueMobile').textContent = `${val}%`;
+            syncSelects('sizeSlider', 'sizeSliderMobile', val);
+            
+            if (selectedStartMeasure !== -1) {
+                // Modo Individual: Solo afecta al compás que el usuario tocó
+                measureSizes[selectedStartMeasure] = val;
+                const measureEl = document.getElementById(`measure-${visualMeasures[selectedStartMeasure].id}`);
+                if (measureEl) measureEl.style.fontSize = `${val}%`;
+            } else {
+                // Modo Global: Afecta a toda la cuadrícula
+                const grid = document.getElementById('chordGrid');
+                if (grid) grid.style.fontSize = `${val}%`;
+            }
         }));
 
         ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
 
         ['progressionSelect', 'progressionSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
             let val = e.target.value; if (val === "" || val === undefined || val === "undefined") val = "0";
             syncSelects('variationSelect', 'variationSelectMobile', val); 
-            const was = isPlaying; stopProgression(); selectedStartMeasure = 0; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
+            const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['keySelect', 'keySelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
@@ -1331,7 +1449,7 @@
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         const handleCustomInput = debounce((val) => {
             const wasPlaying = isPlaying; if (wasPlaying) stopProgression();
-            selectedStartMeasure = 0; loadAndCompileProgression(false); if (wasPlaying) setTimeout(() => playProgression(), 50);
+            selectedStartMeasure = -1; loadAndCompileProgression(false); if (wasPlaying) setTimeout(() => playProgression(), 50);
         }, 800);
         
         document.getElementById('customProgInput')?.addEventListener('input', (e) => handleCustomInput(e.target.value));
@@ -1349,6 +1467,7 @@
         
         document.getElementById('insertPipeBtn')?.addEventListener('click', () => insertTextAtCursor('customProgInput', '|'));
 
+        // LÓGICA DE SELECCIÓN Y DESELECCIÓN DE COMPASES
         document.getElementById('chordGrid')?.addEventListener('click', (e) => {
             const chordEl = e.target.closest('.chord-text');
             if (chordEl && chordEl.classList.contains('is-dominant')) {
@@ -1360,7 +1479,18 @@
                 loadAndCompileProgression(true);
             } else {
                 const measureBox = e.target.closest('.measure-box');
-                if (measureBox) { selectedStartMeasure = parseInt(measureBox.dataset.index); renderGrid(); updateStartMeasureLabel(); }
+                if (measureBox) { 
+                    let index = parseInt(measureBox.dataset.index);
+                    // Si ya estaba seleccionado, se deselecciona. Si no, se selecciona.
+                    if (selectedStartMeasure === index) {
+                        selectedStartMeasure = -1; 
+                    } else {
+                        selectedStartMeasure = index;
+                    }
+                    renderGrid(); 
+                    updateStartMeasureLabel(); 
+                    updateSizeSliderUI();
+                }
             }
         });
 
