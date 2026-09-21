@@ -176,6 +176,14 @@
                     <input type="range" id="volumeSlider" min="-30" max="0" value="-6" step="1" class="mt-1">
                 </div>
 
+                <!-- NUEVO: Control de Tamaño para Escritorio -->
+                <div class="flex flex-col w-20">
+                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                        <span>Tam.</span><span id="sizeValue" class="text-blue-600 font-bold">100%</span>
+                    </label>
+                    <input type="range" id="sizeSlider" min="50" max="200" value="100" step="5" class="mt-1">
+                </div>
+
                 <div class="flex items-center gap-2 ml-auto">
                     <label class="flex items-center gap-1 cursor-pointer group" title="Cifrado Funcional (Weber)">
                         <div class="relative">
@@ -260,6 +268,14 @@
                             <span>Vol.</span><span id="volumeValueMobile" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
                         </label>
                         <input type="range" id="volumeSliderMobile" min="-30" max="0" value="-6" step="1" class="mt-0.5">
+                    </div>
+                    
+                    <!-- NUEVO: Control de Tamaño para Móviles -->
+                    <div class="flex flex-col flex-1">
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                            <span>Tam.</span><span id="sizeValueMobile" class="text-blue-600 dark:text-blue-400 font-bold">100%</span>
+                        </label>
+                        <input type="range" id="sizeSliderMobile" min="50" max="200" value="100" step="5" class="mt-0.5">
                     </div>
                 </div>
 
@@ -991,6 +1007,11 @@
 
         function renderGrid() {
             const grid = document.getElementById('chordGrid'); if(!grid) return; grid.innerHTML = '';
+            
+            // NUEVO: Aplicar el factor de escala del usuario al contenedor
+            const userSize = document.getElementById('sizeSlider')?.value || 100;
+            grid.style.fontSize = `${userSize}%`;
+
             const targetKey = keySelect.value || (document.getElementById('keySelectMobile') && document.getElementById('keySelectMobile').value) || "C";
             const totalRows = Math.ceil(visualMeasures.length / 4);
 
@@ -1022,33 +1043,35 @@
 
                 let textSizeClass = "";
                 
+                // NUEVO: Todas las tipografías ahora usan "em" relativo para heredar la escala del usuario
                 if (totalRows >= 8) { // 32 compases (Rhythm Changes)
-                    if (totalChars > 17) textSizeClass = "text-[0.45rem] sm:text-xs md:text-base lg:text-lg tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.55rem] sm:text-xs md:text-lg lg:text-xl tracking-tighter";
-                    else if (totalChars > 11) textSizeClass = "text-[0.6rem] sm:text-sm md:text-xl lg:text-2xl tracking-tighter";
-                    else if (totalChars > 7) textSizeClass = "text-[0.75rem] sm:text-base md:text-2xl lg:text-3xl tracking-tight";
-                    else if (totalChars > 4) textSizeClass = "text-[0.85rem] sm:text-lg md:text-3xl lg:text-4xl tracking-tight";
-                    else textSizeClass = "text-[0.95rem] sm:text-xl md:text-4xl lg:text-5xl";
-                } else if (totalRows >= 4) { // 16 compases
-                    if (totalChars > 17) textSizeClass = "text-[0.55rem] sm:text-xs md:text-lg lg:text-xl tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.65rem] sm:text-sm md:text-xl lg:text-2xl tracking-tighter";
-                    else if (totalChars > 11) textSizeClass = "text-[0.7rem] sm:text-base md:text-2xl lg:text-3xl tracking-tighter";
-                    else if (totalChars > 7) textSizeClass = "text-[0.85rem] sm:text-lg md:text-3xl lg:text-4xl tracking-tight";
-                    else if (totalChars > 4) textSizeClass = "text-[0.95rem] sm:text-xl md:text-4xl lg:text-5xl";
-                    else textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl lg:text-6xl";
-                } else { // 1 a 3 filas
-                    if (totalChars > 17) textSizeClass = "text-[0.65rem] sm:text-xs md:text-xl lg:text-2xl tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.75rem] sm:text-base md:text-2xl lg:text-3xl tracking-tighter";
-                    else if (totalChars > 11) textSizeClass = "text-[0.85rem] sm:text-lg md:text-3xl lg:text-4xl tracking-tighter";
-                    else if (totalChars > 7) textSizeClass = "text-[1rem] sm:text-xl md:text-4xl lg:text-5xl tracking-tight";
-                    else if (totalChars > 4) textSizeClass = "text-[1.1rem] sm:text-2xl md:text-5xl lg:text-6xl";
-                    else textSizeClass = "text-[1.3rem] sm:text-3xl md:text-6xl lg:text-7xl";
+                    if (totalChars > 18) textSizeClass = "text-[0.35em] sm:text-[0.45em] tracking-tighter";
+                    else if (totalChars > 16) textSizeClass = "text-[0.45em] sm:text-[0.75em] md:text-[1em] lg:text-[1.125em] tracking-tighter";
+                    else if (totalChars <= 4) textSizeClass = "text-[0.95em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em]";
+                    else if (totalChars <= 7) textSizeClass = "text-[0.85em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tight";
+                    else if (totalChars <= 11) textSizeClass = "text-[0.75em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
+                    else if (totalChars <= 14) textSizeClass = "text-[0.65em] sm:text-[0.875em] md:text-[1.125em] lg:text-[1.25em] tracking-tighter";
+                    else textSizeClass = "text-[0.55em] sm:text-[0.75em] md:text-[1em] lg:text-[1.125em] tracking-tighter";
+                } else if (totalRows >= 4) { // 16 compases (Coltrane, etc)
+                    if (totalChars > 18) textSizeClass = "text-[0.45em] sm:text-[0.55em] tracking-tighter";
+                    else if (totalChars > 16) textSizeClass = "text-[0.55em] sm:text-[0.75em] md:text-[1.125em] lg:text-[1.25em] tracking-tighter";
+                    else if (totalChars <= 4) textSizeClass = "text-[1.1em] sm:text-[1.875em] md:text-[3em] lg:text-[3.75em]";
+                    else if (totalChars <= 7) textSizeClass = "text-[0.95em] sm:text-[1.5em] md:text-[2.25em] lg:text-[3em]";
+                    else if (totalChars <= 11) textSizeClass = "text-[0.85em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em] tracking-tight";
+                    else if (totalChars <= 14) textSizeClass = "text-[0.75em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tighter";
+                    else textSizeClass = "text-[0.65em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
+                } else { // 1 a 3 filas (4 a 12 compases)
+                    if (totalChars > 18) textSizeClass = "text-[0.55em] sm:text-[0.65em] tracking-tighter";
+                    else if (totalChars > 16) textSizeClass = "text-[0.65em] sm:text-[0.75em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
+                    else if (totalChars <= 4) textSizeClass = "text-[1.3em] sm:text-[1.875em] md:text-[3em] lg:text-[3.75em]";
+                    else if (totalChars <= 7) textSizeClass = "text-[1.1em] sm:text-[1.5em] md:text-[2.25em] lg:text-[3em]";
+                    else if (totalChars <= 11) textSizeClass = "text-[1em] sm:text-[1.25em] md:text-[1.875em] lg:text-[2.25em] tracking-tight";
+                    else if (totalChars <= 14) textSizeClass = "text-[0.85em] sm:text-[1.125em] md:text-[1.5em] lg:text-[1.875em] tracking-tighter";
+                    else textSizeClass = "text-[0.75em] sm:text-[1em] md:text-[1.25em] lg:text-[1.5em] tracking-tighter";
                 }
 
-                let adaptiveGapClass = "gap-0.5 sm:gap-2 md:gap-4"; 
-                if (totalChars > 17) adaptiveGapClass = "gap-[2px] sm:gap-0.5 md:gap-1";
-                else if (totalChars > 11) adaptiveGapClass = "gap-[3px] sm:gap-1 md:gap-2";
-
+                let adaptiveGapClass = "gap-[1px] sm:gap-2 md:gap-4"; 
+                
                 const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
                     let isSubbed = c.includes('_SUB'); let isDimmed = c.includes('_DIM');
@@ -1084,7 +1107,7 @@
                         measureChordsHTML += `</div>`;
                         inBracket = false;
                     }
-                    measureChordsHTML += processChord(c, i, index, textStr);
+                    measureChordsHTML += processChord(c, i, vMeasure.id, textStr);
                     if (isBkt && i === vMeasure.chords.length - 1) { measureChordsHTML += `</div>`; }
                 });
                 
@@ -1255,6 +1278,15 @@
         ['volumeSlider', 'volumeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             document.getElementById('volumeValue').textContent = `${e.target.value} dB`; document.getElementById('volumeValueMobile').textContent = `${e.target.value} dB`;
             syncSelects('volumeSlider', 'volumeSliderMobile', e.target.value); if (audioInitialized) Tone.Destination.volume.value = parseFloat(e.target.value);
+        }));
+
+        // NUEVO: Evento en vivo para actualizar el tamaño de fuente inmediatamente
+        ['sizeSlider', 'sizeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
+            document.getElementById('sizeValue').textContent = `${e.target.value}%`; 
+            if (document.getElementById('sizeValueMobile')) document.getElementById('sizeValueMobile').textContent = `${e.target.value}%`;
+            syncSelects('sizeSlider', 'sizeSliderMobile', e.target.value);
+            const grid = document.getElementById('chordGrid');
+            if (grid) grid.style.fontSize = `${e.target.value}%`;
         }));
 
         ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
