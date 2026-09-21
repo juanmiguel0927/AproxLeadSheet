@@ -33,6 +33,8 @@
             transition: all 0.15s ease-in-out; height: 100%; min-height: 45px;
             cursor: pointer; display: flex; flex-direction: column; justify-content: center;
             position: relative; overflow: hidden;
+            /* Bordes más firmes para garantizar renderizado en PDF */
+            border-style: solid; border-width: 1px;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
         .measure-active { background-color: #eff6ff !important; border-color: #60a5fa !important; transform: scale(1.02); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2); z-index: 10; }
@@ -121,6 +123,17 @@
             .controls-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem; width: 100%; }
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
+        }
+
+        /* Reglas estandarizadas para el motor de Impresión (Fallback seguro) */
+        @media print {
+            body, html { height: auto !important; overflow: visible !important; background-color: white !important; }
+            #topControls, #blueBar, #coltraneGraphicContainer, .measure-active { display: none !important; }
+            #gridScrollContainer { overflow: visible !important; height: auto !important; }
+            #chordGrid { gap: 15px !important; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; font-size: 100% !important; }
+            .measure-box { break-inside: avoid; border: 1px solid #cbd5e1 !important; color: black !important; background-color: #f8fafc !important; min-height: 60px !important; box-shadow: none !important;}
+            .text-slate-800, .dark .text-slate-100 { color: black !important; }
+            * { text-shadow: none !important; }
         }
     </style>
 </head>
@@ -365,14 +378,18 @@
         </div>
 
         <!-- Área Principal de Acordes -->
-        <div id="gridScrollContainer" class="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth">
-            <!-- Título Oculto (Solo visible al exportar PDF) -->
-            <div id="printHeader" class="hidden"></div>
+        <div id="gridScrollContainer" class="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth w-full">
             
-            <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2" style="font-size: 100%;"></div>
+            <!-- Título Oculto (Solo visible al exportar PDF) -->
+            <div id="printHeader" class="hidden w-full px-4 pt-8 pb-4 bg-white"></div>
+            
+            <!-- Container for the grid (needs absolute width control for PDF) -->
+            <div id="pdfExportWrapper" class="w-full relative h-full">
+                <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2 w-full" style="font-size: 100%;"></div>
+            </div>
 
             <!-- Footer Oculto (Solo visible al exportar PDF) -->
-            <div id="printFooter" class="hidden"></div>
+            <div id="printFooter" class="hidden w-full px-4 pt-4 pb-8 bg-white"></div>
         </div>
     </div>
 
@@ -451,8 +468,12 @@
 
         function updateURLState() {
             try {
-                const params = new URLSearchParams();
+                const params = new URLSearchParams(window.location.search);
                 const progVal = document.getElementById('progressionSelect')?.value || 0;
+                
+                // Add the explicit tool parameter for OpusLab's routing system
+                params.set('tool', 'leadsheet');
+                
                 params.set('prog', progVal);
                 params.set('key', document.getElementById('keySelect')?.value || 'C');
                 params.set('tempo', document.getElementById('tempoSlider')?.value || 120);
@@ -518,80 +539,67 @@
             }, 3000); 
         }
 
-        // COMPARTIR INTELIGENTE (Triple Fallback para móviles)
+        // COMPARTIR INTELIGENTE Y A PRUEBA DE FALLOS
         document.getElementById('shareBtn')?.addEventListener('click', async () => {
-            updateURLState(); // Asegurar que los parámetros estén actualizados
+            updateURLState();
             
             try {
-                // Siempre construye el enlace apuntando al servidor oficial
-                const params = window.location.search;
-                const finalShareUrl = "https://juanmiguel0927.github.io/OpusLab3.0/" + params;
+                // Constructor estricto de la URL base para el ruteo
+                let currentParams = new URLSearchParams(window.location.search);
+                currentParams.set('tool', 'leadsheet'); // Garantizar que la herramienta esté en la URL
                 
-                // Intento 1: API de Compartir Nativa (Ideal para móviles iOS/Android)
+                // Forzar el dominio y directorio oficial de OpusLab3.0
+                const finalShareUrl = "https://juanmiguel0927.github.io/OpusLab3.0/?" + currentParams.toString();
+                
+                let shared = false;
+
+                // 1. Intentar el menú nativo de móviles
                 if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
                     try {
-                        await navigator.share({
-                            title: 'OpusLab 3.0',
-                            text: 'Mira esta progresión armónica interactiva',
-                            url: finalShareUrl
-                        });
-                        return; // Si el usuario comparte o abre una app, terminamos aquí sin mostrar notificaciones extra
+                        await navigator.share({ title: 'OpusLab 3.0 - Lead Sheet', text: 'Mira esta progresión armónica:', url: finalShareUrl });
+                        shared = true;
                     } catch (e) {
-                        // Si el error es AbortError, significa que el usuario simplemente cerró la ventana de compartir. No hacer nada.
-                        if (e.name === 'AbortError' || e.message.includes('abort')) return; 
-                        
-                        // Si es otro tipo de error (ej. permisos), dejamos que siga al Intento 2.
-                        console.log("Web Share falló, intentando portapapeles...");
+                        if (e.name === 'AbortError' || e.message.includes('abort')) return; // Usuario canceló a propósito
                     }
                 }
                 
-                // Intento 2: Portapapeles Moderno (Ideal para PC o navegadores seguros)
-                if (navigator.clipboard && window.isSecureContext) {
+                // 2. Intentar API moderna de portapapeles
+                if (!shared && navigator.clipboard && window.isSecureContext) {
                     try {
                         await navigator.clipboard.writeText(finalShareUrl);
-                        showToast("Enlace copiado al portapapeles", "success");
-                        return;
-                    } catch(e) {
-                        console.log("Clipboard API falló, intentando método Legacy...");
-                    }
+                        shared = true;
+                    } catch(e) {}
                 }
                 
-                // Intento 3: Portapapeles Legacy (Salvavidas para WebViews como WhatsApp In-App Browser)
-                const textArea = document.createElement("textarea");
-                textArea.value = finalShareUrl;
-                // Esconder el textarea visualmente
-                textArea.style.position = "fixed";
-                textArea.style.left = "-999999px";
-                textArea.style.top = "-999999px";
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                
-                try {
-                    const successful = document.execCommand('copy');
-                    if (successful) {
-                        showToast("Enlace copiado al portapapeles", "success");
-                    } else {
-                        throw new Error("execCommand falló");
-                    }
-                } catch (err) {
-                    showToast("Error al copiar el enlace", "error");
-                } finally {
-                    textArea.remove();
+                // 3. Fallback Infalible (Para WebViews y navegadores antiguos)
+                if (!shared) {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = finalShareUrl;
+                    textArea.style.position = "fixed"; textArea.style.left = "-999999px"; textArea.style.top = "-999999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus(); textArea.select();
+                    
+                    try {
+                        if (document.execCommand('copy')) shared = true;
+                    } catch (err) {} finally { textArea.remove(); }
                 }
+
+                if (shared) showToast("Enlace copiado al portapapeles", "success");
+                else showToast("Error al compartir (Permisos denegados)", "error");
                 
             } catch(e) { 
-                showToast("Error inesperado al compartir", "error"); 
+                showToast("Error inesperado", "error"); 
             }
         });
 
-        // NUEVO EXPORTADOR PDF (html2pdf expandido)
+        // NUEVO EXPORTADOR PDF - EXPANSIÓN TEMPORAL
         document.getElementById('pdfBtn')?.addEventListener('click', async () => {
             try {
                 if (typeof html2pdf === 'undefined') { 
                     showToast("Librería PDF no cargada. Revisa tu conexión.", "error"); 
                     return; 
                 }
+                
                 showToast("Generando PDF... (Esto tomará un segundo)", "info");
 
                 const isDarkMode = document.documentElement.classList.contains('dark');
@@ -603,20 +611,21 @@
                 const keySelect = document.getElementById('keySelect') || document.getElementById('keySelectMobile');
                 const keyName = keySelect ? keySelect.value : "C";
 
+                // Preparar Cabecera
                 const printHeader = document.getElementById('printHeader');
                 if (printHeader) {
                     printHeader.innerHTML = `
-                        <h2 style="font-size: 24pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 5px; text-align: center;">
+                        <h2 style="font-size: 28pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 5px; text-align: center;">
                             OpusLab Lead Sheet: <span style="color: #2563eb;">${progName}</span>
                         </h2>
-                        <div style="font-size: 14pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 16pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center;">
                             (Tono Base: ${keyName})
                         </div>
                     `;
                     printHeader.classList.remove('hidden');
-                    printHeader.style.display = 'block';
                 }
 
+                // Preparar Pie de Página Profesional
                 const printFooter = document.getElementById('printFooter');
                 if (printFooter) {
                     const now = new Date();
@@ -624,18 +633,17 @@
                     const timeStr = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
                     
                     printFooter.innerHTML = `
-                        <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; text-align: center; font-family: sans-serif; color: #64748b; font-size: 11pt; padding-bottom: 20px;">
+                        <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; text-align: center; font-family: sans-serif; color: #64748b; font-size: 12pt;">
                             <p style="margin: 0 0 5px 0;">Documento generado el <strong>${dateStr}</strong> a las <strong>${timeStr}</strong></p>
                             <p style="margin: 0 0 5px 0;">Créditos y Autor: <strong>Juan Miguel Rios Redondo</strong></p>
                             <p style="margin: 0;">
-                                <a href="https://juanmiguel0927.github.io/OpusLab3.0/" style="color: #2563eb; text-decoration: none;" target="_blank">
+                                <a href="https://juanmiguel0927.github.io/OpusLab3.0/" style="color: #2563eb; text-decoration: none;">
                                     https://juanmiguel0927.github.io/OpusLab3.0/
                                 </a>
                             </p>
                         </div>
                     `;
                     printFooter.classList.remove('hidden');
-                    printFooter.style.display = 'block';
                 }
 
                 const els = {
@@ -652,10 +660,12 @@
                     wrapperHeight: els.wrapper.style.height, wrapperOverflow: els.wrapper.style.overflow,
                     wrapperBorder: els.wrapper.style.border, wrapperShadow: els.wrapper.style.boxShadow,
                     containerHeight: els.container.style.height, containerOverflow: els.container.style.overflow,
-                    gridGap: els.grid.style.gap
+                    gridGap: els.grid.style.gap, gridCols: els.grid.style.gridTemplateColumns,
+                    gridDisplay: els.grid.style.display, wrapperBg: els.wrapper.style.backgroundColor,
+                    gridSize: els.grid.style.fontSize
                 };
 
-                // Expansión temporal
+                // "Desenrollar" la aplicación para la foto (Expansión Temporal)
                 els.body.style.setProperty('height', 'auto', 'important');
                 els.body.style.setProperty('overflow', 'visible', 'important');
                 els.html.style.setProperty('height', 'auto', 'important');
@@ -664,12 +674,19 @@
                 els.wrapper.style.setProperty('overflow', 'visible', 'important');
                 els.wrapper.style.setProperty('border', 'none', 'important');
                 els.wrapper.style.setProperty('box-shadow', 'none', 'important');
+                els.wrapper.style.setProperty('background-color', 'white', 'important');
+                
                 els.container.style.setProperty('height', 'auto', 'important');
                 els.container.style.setProperty('overflow', 'visible', 'important');
                 els.container.style.setProperty('background-color', 'white', 'important');
-                els.grid.style.setProperty('gap', '15px', 'important');
                 
-                await new Promise(r => setTimeout(r, 600));
+                els.grid.style.setProperty('gap', '15px', 'important');
+                els.grid.style.setProperty('display', 'grid', 'important');
+                els.grid.style.setProperty('grid-template-columns', 'repeat(4, minmax(0, 1fr))', 'important');
+                els.grid.style.setProperty('font-size', '100%', 'important');
+                
+                // Dar tiempo al navegador para que redibuje todo sin recortes
+                await new Promise(r => setTimeout(r, 800));
 
                 const opt = {
                     margin: 10,
@@ -680,30 +697,36 @@
                         useCORS: true, 
                         logging: false, 
                         scrollY: 0,
-                        windowWidth: els.container.scrollWidth 
+                        windowWidth: 1050, // Forzar ancho de escritorio estable
+                        backgroundColor: '#ffffff'
                     },
                     jsPDF: { unit: 'mm', format: 'letter', orientation: 'landscape' }
                 };
 
                 await html2pdf().set(opt).from(els.container).save();
 
-                // Restaurar estilos
+                // Restaurar estilos y enrollar la aplicación
                 els.body.style.height = originalStyles.bodyHeight; els.body.style.overflow = originalStyles.bodyOverflow;
                 els.html.style.height = originalStyles.htmlHeight; els.html.style.overflow = originalStyles.htmlOverflow;
                 els.wrapper.style.height = originalStyles.wrapperHeight; els.wrapper.style.overflow = originalStyles.wrapperOverflow;
                 els.wrapper.style.border = originalStyles.wrapperBorder; els.wrapper.style.boxShadow = originalStyles.wrapperShadow;
+                els.wrapper.style.backgroundColor = originalStyles.wrapperBg;
+                
                 els.container.style.height = originalStyles.containerHeight; els.container.style.overflow = originalStyles.containerOverflow;
                 els.container.style.backgroundColor = '';
-                els.grid.style.gap = originalStyles.gridGap;
+                
+                els.grid.style.gap = originalStyles.gridGap; els.grid.style.gridTemplateColumns = originalStyles.gridCols;
+                els.grid.style.display = originalStyles.gridDisplay; els.grid.style.fontSize = originalStyles.gridSize;
 
-                if (printHeader) { printHeader.style.display = 'none'; printHeader.classList.add('hidden'); }
-                if (printFooter) { printFooter.style.display = 'none'; printFooter.classList.add('hidden'); }
-
+                if (printHeader) printHeader.classList.add('hidden');
+                if (printFooter) printFooter.classList.add('hidden');
                 if (isDarkMode) document.documentElement.classList.add('dark');
+                
+                updateGridRowStyles(); // Recalcular alturas móviles
                 showToast("PDF descargado con éxito", "success");
 
             } catch (e) {
-                console.error(e);
+                console.error("PDF Error:", e);
                 showToast("Error al generar el PDF", "error");
             }
         });
@@ -1332,6 +1355,7 @@
                     let isEnd1 = content.includes('_END1');
                     let isEnd2 = content.includes('_END2');
                     
+                    // Manejo Seguro si las casillas no están separadas por un PIPE |
                     if (isEnd1 && isEnd2) {
                         let c1Chords = content.replace('_END1', '').replace('_END2', '').split(/\s+/).map(c => transposeChordName(c, stOffset, letterOffset));
                         sectionVisualMeasures.push({ id: currentVisualIndex + mIdx, chords: c1Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, hasRepeatStart: hasRepeatStart, hasRepeatEnd: hasRepeatEnd, isCombinedCasilla1: true });
@@ -1493,8 +1517,9 @@
                 if (vMeasure.forceLeftCol || vMeasure.isCombinedCasilla2) {
                     classNames += ' col-start-1';
                     measureDiv.style.gridColumnStart = '1';
+                    
                     if (vMeasure.isCombinedCasilla2) {
-                        classNames += ' col-span-4'; // Obliga a la Casilla 2 a tomar la fila completa
+                        classNames += ' col-span-4'; // Fuerza a Casilla 2 a ser la única en su fila
                         measureDiv.style.gridColumnEnd = '-1';
                     }
                 }
