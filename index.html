@@ -327,7 +327,7 @@
         </div>
 
         <!-- Contenedor del Gráfico Coltrane -->
-        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink min-h-[90px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
+        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink min-h-[110px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
             <div id="coltrane-graphic" class="w-full h-full flex justify-center items-center"></div>
         </div>
 
@@ -974,13 +974,11 @@
                 if (totalRows <= 2) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`;
                     grid.style.alignContent = 'start';
-                } else if (totalRows <= 8 && totalRows > 4) {
-                    // Magia elástica SOLO para Rhythm Changes (8 filas)
+                } else if (totalRows <= 8) {
                     grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`;
                     grid.style.alignContent = 'stretch';
                 } else {
-                    // Multitónica y demás (3, 4 filas) mantienen un tamaño fijo holgado
-                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`;
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(40px, auto))`;
                     grid.style.alignContent = 'start';
                 }
             } else {
@@ -1025,35 +1023,31 @@
                 if (hasBrackets) totalChars += 2; 
                 if (vMeasure.chords.length > 1) totalChars += 1; 
 
-                // Lógica de escalado quirúrgica
                 let textSizeClass = "";
                 if (totalRows >= 8) { 
                     if (totalChars > 17) textSizeClass = "text-[0.45rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.55rem] sm:text-[0.65rem] tracking-tighter";
-                    else if (totalChars > 11) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 7) textSizeClass = "text-[0.75rem] sm:text-base tracking-tighter";
-                    else if (totalChars > 4) textSizeClass = "text-[0.85rem] sm:text-lg tracking-tight";
-                    else textSizeClass = "text-[0.95rem] sm:text-xl";
+                    else if (totalChars > 11) textSizeClass = "text-[0.55rem] sm:text-[0.65rem] tracking-tighter";
+                    else if (totalChars > 7) textSizeClass = "text-[0.65rem] sm:text-xs tracking-tighter";
+                    else if (totalChars > 4) textSizeClass = "text-[0.75rem] sm:text-sm tracking-tight";
+                    else textSizeClass = "text-[0.85rem] sm:text-base";
                 } else if (totalRows >= 4) { 
                     if (totalChars > 17) textSizeClass = "text-[0.5rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.6rem] sm:text-[0.65rem] tracking-tighter";
-                    else if (totalChars > 12) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 10) textSizeClass = "text-[0.75rem] sm:text-base tracking-tighter";
-                    else if (totalChars > 7) textSizeClass = "text-[0.85rem] sm:text-xl md:text-3xl tracking-tight";
-                    else if (totalChars > 4) textSizeClass = "text-[0.95rem] sm:text-2xl md:text-4xl";
-                    else textSizeClass = "text-[1.1rem] sm:text-3xl md:text-5xl";
+                    else if (totalChars > 12) textSizeClass = "text-[0.55rem] sm:text-[0.65rem] tracking-tighter";
+                    else if (totalChars > 9) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
+                    else if (totalChars > 6) textSizeClass = "text-[0.75rem] sm:text-lg tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[0.85rem] sm:text-xl md:text-2xl";
+                    else textSizeClass = "text-[1rem] sm:text-2xl md:text-3xl";
                 } else { 
                     if (totalChars > 17) textSizeClass = "text-[0.6rem] sm:text-xs tracking-tighter";
-                    else if (totalChars > 14) textSizeClass = "text-[0.65rem] sm:text-sm tracking-tighter";
-                    else if (totalChars > 12) textSizeClass = "text-[0.75rem] sm:text-base md:text-xl lg:text-2xl tracking-tighter";
-                    else if (totalChars > 9) textSizeClass = "text-[0.85rem] sm:text-lg md:text-2xl lg:text-3xl tracking-tight";
-                    else if (totalChars > 6) textSizeClass = "text-[1.1rem] sm:text-2xl md:text-4xl lg:text-5xl";
+                    else if (totalChars > 12) textSizeClass = "text-[0.7rem] sm:text-sm tracking-tighter";
+                    else if (totalChars > 9) textSizeClass = "text-[0.8rem] sm:text-base tracking-tighter";
+                    else if (totalChars > 6) textSizeClass = "text-[0.95rem] sm:text-lg md:text-2xl tracking-tight";
+                    else if (totalChars > 4) textSizeClass = "text-[1.1rem] sm:text-2xl md:text-4xl";
                     else textSizeClass = "text-[1.3rem] sm:text-3xl md:text-5xl lg:text-6xl";
                 }
 
-                // Asegurar siempre un gap mínimo entre acordes
                 let adaptiveGapClass = "gap-0.5 sm:gap-2"; 
-                if (totalChars <= 8) adaptiveGapClass = "gap-1 sm:gap-2";
+                if (totalChars > 17) adaptiveGapClass = "gap-[2px] sm:gap-1";
 
                 const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
@@ -1083,8 +1077,7 @@
                     
                     if (isBkt && !inBracket) {
                         let bktClass = hasDim ? 'ii-v-bracket-dim' : '';
-                        // Corchete protector
-                        let bktPadClass = "px-[3px] sm:px-2";
+                        let bktPadClass = totalChars > 17 ? "px-[3px]" : "px-[4px] sm:px-2";
                         measureChordsHTML += `<div class="bracket-container ii-v-bracket ${bktClass} ${bktPadClass} ${adaptiveGapClass}">`;
                         inBracket = true;
                     } else if (!isBkt && inBracket) {
@@ -1115,8 +1108,7 @@
             const activeEl = document.getElementById(`measure-${visualId}`);
             if (activeEl) {
                 activeEl.classList.add('measure-active');
-                try {
-                    // Auto-Scroll inteligente durante la reproducción
+                if (isPlaying) { 
                     const container = document.getElementById('gridScrollContainer');
                     if (container) {
                         const rect = activeEl.getBoundingClientRect();
@@ -1125,8 +1117,6 @@
                             activeEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         }
                     }
-                } catch(e) {
-                    activeEl.scrollIntoView();
                 }
             }
         }
