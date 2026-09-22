@@ -21,7 +21,7 @@
     <!-- Librerías de Audio, PDF e Iconos -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script src="https://unpkg.com/@tonejs/midi"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -161,8 +161,9 @@
                     <button id="shareBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Compartir enlace de esta progresión">
                         <i class="fa-solid fa-share-nodes"></i>
                     </button>
-                    <button id="pdfBtn" class="text-slate-500 hover:text-red-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Descargar como PDF">
-                        <i class="fa-solid fa-file-pdf"></i>
+                    <!-- BOTÓN DE IMAGEN -->
+                    <button id="imgBtn" class="text-slate-500 hover:text-green-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Descargar como Imagen JPEG">
+                        <i class="fa-solid fa-image"></i>
                     </button>
                     <button id="midiBtn" class="text-slate-500 hover:text-amber-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Exportar a MIDI">
                         <i class="fa-solid fa-file-audio"></i>
@@ -384,13 +385,12 @@
             <div id="printHeader" class="hidden w-full px-4 pt-8 pb-4 bg-white"></div>
             
             <!-- Container for the grid (needs absolute width control for PDF) -->
-            <div id="pdfExportWrapper" class="w-full relative h-full flex flex-col">
-                <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full p-1 sm:p-2 pb-2 w-full flex-grow" style="font-size: 100%;"></div>
-                
-                <!-- Footer Oculto movido DENTRO del wrapper de exportación para asegurar que se capture -->
-                <div id="printFooter" class="hidden w-full px-4 pt-4 pb-8 bg-white mt-auto"></div>
+            <div id="pdfExportWrapper" class="w-full relative h-full">
+                <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2 w-full" style="font-size: 100%;"></div>
             </div>
 
+            <!-- Footer Oculto (Solo visible al exportar PDF) -->
+            <div id="printFooter" class="hidden w-full px-4 pt-4 pb-8 bg-white"></div>
         </div>
     </div>
 
@@ -472,9 +472,7 @@
                 const params = new URLSearchParams(window.location.search);
                 const progVal = document.getElementById('progressionSelect')?.value || 0;
                 
-                // Add the explicit tool parameter for OpusLab's routing system
                 params.set('tool', 'leadsheet');
-                
                 params.set('prog', progVal);
                 params.set('key', document.getElementById('keySelect')?.value || 'C');
                 params.set('tempo', document.getElementById('tempoSlider')?.value || 120);
@@ -540,31 +538,25 @@
             }, 3000); 
         }
 
-        // COMPARTIR INTELIGENTE Y A PRUEBA DE FALLOS
         document.getElementById('shareBtn')?.addEventListener('click', async () => {
             updateURLState();
             
             try {
-                // Constructor estricto de la URL base para el ruteo
                 let currentParams = new URLSearchParams(window.location.search);
-                currentParams.set('tool', 'leadsheet'); // Garantizar que la herramienta esté en la URL
+                currentParams.set('tool', 'leadsheet'); 
                 
-                // Forzar el dominio y directorio oficial de OpusLab3.0
                 const finalShareUrl = "https://juanmiguel0927.github.io/OpusLab3.0/?" + currentParams.toString();
-                
                 let shared = false;
 
-                // 1. Intentar el menú nativo de móviles
                 if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {
                     try {
                         await navigator.share({ title: 'OpusLab 3.0 - Lead Sheet', text: 'Mira esta progresión armónica:', url: finalShareUrl });
                         shared = true;
                     } catch (e) {
-                        if (e.name === 'AbortError' || e.message.includes('abort')) return; // Usuario canceló a propósito
+                        if (e.name === 'AbortError' || e.message.includes('abort')) return; 
                     }
                 }
                 
-                // 2. Intentar API moderna de portapapeles
                 if (!shared && navigator.clipboard && window.isSecureContext) {
                     try {
                         await navigator.clipboard.writeText(finalShareUrl);
@@ -572,7 +564,6 @@
                     } catch(e) {}
                 }
                 
-                // 3. Fallback Infalible (Para WebViews y navegadores antiguos)
                 if (!shared) {
                     const textArea = document.createElement("textarea");
                     textArea.value = finalShareUrl;
@@ -593,50 +584,62 @@
             }
         });
 
-        // NUEVO EXPORTADOR PDF - SOLUCIÓN DE FILAS (CERO CORTES)
-        document.getElementById('pdfBtn')?.addEventListener('click', async () => {
+        // NUEVO EXPORTADOR DIRECTO A IMAGEN (JPEG)
+        document.getElementById('imgBtn')?.addEventListener('click', async () => {
             try {
-                if (typeof html2pdf === 'undefined') { 
-                    showToast("Librería PDF no cargada. Revisa tu conexión.", "error"); 
+                if (typeof html2canvas === 'undefined') { 
+                    showToast("Librería de imagen no cargada.", "error"); 
                     return; 
                 }
                 
-                showToast("Generando PDF... (Esto tomará unos segundos)", "info");
+                showToast("Generando Imagen... (Esto tomará un segundo)", "info");
 
-                const isDarkMode = document.documentElement.classList.contains('dark');
-                if (isDarkMode) document.documentElement.classList.remove('dark');
-
+                // Elementos y Títulos
                 const progSelect = document.getElementById('progressionSelect') || document.getElementById('progressionSelectMobile');
                 let progName = progSelect ? progSelect.options[progSelect.selectedIndex].text : "Progresión";
                 if (progName.includes('✎')) progName = "Progresión Personalizada";
                 const keySelect = document.getElementById('keySelect') || document.getElementById('keySelectMobile');
                 const keyName = keySelect ? keySelect.value : "C";
 
-                // Preparar Cabecera
-                const printHeader = document.getElementById('printHeader');
+                const els = { container: document.getElementById('gridScrollContainer') };
+
+                // 1. Crear clon invisible para tomar la foto
+                const cloneWrapper = els.container.cloneNode(true);
+                cloneWrapper.style.setProperty('position', 'absolute', 'important');
+                cloneWrapper.style.setProperty('top', '-99999px', 'important'); // Esconderlo
+                cloneWrapper.style.setProperty('width', '1200px', 'important'); // Ancho gigante forzado
+                cloneWrapper.style.setProperty('background-color', 'white', 'important');
+                cloneWrapper.style.setProperty('height', 'auto', 'important');
+                cloneWrapper.style.setProperty('overflow', 'visible', 'important');
+                cloneWrapper.style.setProperty('font-family', '"Inter", sans-serif', 'important');
+                document.body.appendChild(cloneWrapper);
+
+                // Preparar Cabecera en el clon
+                const printHeader = cloneWrapper.querySelector('#printHeader');
                 if (printHeader) {
                     printHeader.innerHTML = `
-                        <h2 style="font-size: 24pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 5px; text-align: center;">
+                        <h2 style="font-size: 32pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 10px; text-align: center;">
                             OpusLab Lead Sheet: <span style="color: #2563eb;">${progName}</span>
                         </h2>
-                        <div style="font-size: 16pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 18pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center;">
                             (Tono Base: ${keyName})
                         </div>
                     `;
                     printHeader.classList.remove('hidden');
+                    printHeader.style.setProperty('padding', '40px 20px', 'important');
+                    printHeader.style.setProperty('background-color', 'white', 'important');
                 }
 
-                // Preparar Pie de Página (Créditos)
-                const printFooter = document.getElementById('printFooter');
+                // Preparar Pie de página en el clon
+                const printFooter = cloneWrapper.querySelector('#printFooter');
                 if (printFooter) {
                     const now = new Date();
                     const dateStr = now.toLocaleDateString('es-CO');
                     const timeStr = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
-                    
                     printFooter.innerHTML = `
-                        <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #e2e8f0; text-align: center; font-family: sans-serif; color: #64748b; font-size: 12pt; break-inside: avoid; page-break-inside: avoid;">
-                            <p style="margin: 0 0 5px 0;">Documento generado el <strong>${dateStr}</strong> a las <strong>${timeStr}</strong></p>
-                            <p style="margin: 0 0 5px 0;">Créditos y Autor: <strong>Juan Miguel Rios Redondo</strong></p>
+                        <div style="margin-top: 40px; padding-top: 20px; border-top: 3px solid #e2e8f0; text-align: center; font-family: sans-serif; color: #64748b; font-size: 14pt;">
+                            <p style="margin: 0 0 8px 0;">Documento generado el <strong>${dateStr}</strong> a las <strong>${timeStr}</strong></p>
+                            <p style="margin: 0 0 8px 0;">Créditos y Autor: <strong>Juan Miguel Rios Redondo</strong></p>
                             <p style="margin: 0;">
                                 <a href="https://juanmiguel0927.github.io/OpusLab3.0/" style="color: #2563eb; text-decoration: none;">
                                     https://juanmiguel0927.github.io/OpusLab3.0/
@@ -645,152 +648,77 @@
                         </div>
                     `;
                     printFooter.classList.remove('hidden');
-                    printFooter.style.display = 'block'; 
+                    printFooter.style.setProperty('padding', '20px', 'important');
+                    printFooter.style.setProperty('background-color', 'white', 'important');
                 }
 
-                const els = {
-                    body: document.body,
-                    html: document.documentElement,
-                    wrapper: document.getElementById('mainAppWrapper'),
-                    container: document.getElementById('gridScrollContainer'),
-                    grid: document.getElementById('chordGrid')
-                };
-
-                const originalStyles = {
-                    bodyHeight: els.body.style.height, bodyOverflow: els.body.style.overflow,
-                    htmlHeight: els.html.style.height, htmlOverflow: els.html.style.overflow,
-                    wrapperHeight: els.wrapper.style.height, wrapperOverflow: els.wrapper.style.overflow,
-                    wrapperBorder: els.wrapper.style.border, wrapperShadow: els.wrapper.style.boxShadow,
-                    containerHeight: els.container.style.height, containerOverflow: els.container.style.overflow,
-                    gridDisplay: els.grid.style.display, wrapperBg: els.wrapper.style.backgroundColor,
-                    gridSize: els.grid.style.fontSize, gridGap: els.grid.style.gap
-                };
-
-                // Desenrollar la aplicación
-                els.body.style.setProperty('height', 'auto', 'important');
-                els.body.style.setProperty('overflow', 'visible', 'important');
-                els.html.style.setProperty('height', 'auto', 'important');
-                els.html.style.setProperty('overflow', 'visible', 'important');
-                els.wrapper.style.setProperty('height', 'auto', 'important');
-                els.wrapper.style.setProperty('overflow', 'visible', 'important');
-                els.wrapper.style.setProperty('border', 'none', 'important');
-                els.wrapper.style.setProperty('box-shadow', 'none', 'important');
-                els.wrapper.style.setProperty('background-color', 'white', 'important');
-                
-                els.container.style.setProperty('height', 'auto', 'important');
-                els.container.style.setProperty('overflow', 'visible', 'important');
-                els.container.style.setProperty('background-color', 'white', 'important');
-                
-                // Conversión de CSS Grid a Bloques envueltos en Filas
-                els.grid.style.setProperty('display', 'block', 'important');
-                els.grid.style.setProperty('font-size', '100%', 'important');
-                
-                const measures = Array.from(els.grid.querySelectorAll('.measure-box'));
-                let currentRow = document.createElement('div');
-                currentRow.className = 'pdf-row';
-                // La fila (pdf-row) tendrá la orden expresa de no cortarse a la mitad:
-                currentRow.style.cssText = 'display: flex; flex-wrap: nowrap; width: 100%; margin-bottom: 12px; gap: 12px; break-inside: avoid; page-break-inside: avoid;';
-
-                const tempContainer = document.createElement('div');
-                tempContainer.id = 'pdf-temp-container';
-                let colCount = 0;
-
-                measures.forEach(m => {
-                    const isFullWidth = m.classList.contains('col-span-4') || m.style.gridColumnEnd === '-1';
-                    const forceLeft = m.classList.contains('col-start-1') || m.style.gridColumnStart === '1';
+                // 2. Modificar el Grid clonado para Flexbox Seguro y Evitar Cortes
+                const grid = cloneWrapper.querySelector('#chordGrid');
+                if (grid) {
+                    grid.style.setProperty('display', 'flex', 'important');
+                    grid.style.setProperty('flex-wrap', 'wrap', 'important');
+                    grid.style.setProperty('justify-content', 'space-between', 'important');
+                    grid.style.setProperty('gap', '15px', 'important');
+                    grid.style.setProperty('padding', '20px', 'important');
+                    grid.style.setProperty('font-size', '150%', 'important'); // Ajuste de tamaño base
                     
-                    // Lógica para cerrar fila e iniciar una nueva
-                    if ((colCount > 0 && forceLeft) || colCount >= 4) {
-                        tempContainer.appendChild(currentRow);
-                        currentRow = document.createElement('div');
-                        currentRow.className = 'pdf-row';
-                        currentRow.style.cssText = 'display: flex; flex-wrap: nowrap; width: 100%; margin-bottom: 12px; gap: 12px; break-inside: avoid; page-break-inside: avoid;';
-                        colCount = 0;
-                    }
-                    
-                    m.dataset.origCssText = m.style.cssText; // Guardar estilo previo
-                    
-                    // Forzar el compás al ancho exacto dentro de la fila
-                    m.style.setProperty('flex', isFullWidth ? '0 0 100%' : '0 0 calc(25% - 9px)', 'important');
-                    m.style.setProperty('max-width', isFullWidth ? '100%' : 'calc(25% - 9px)', 'important');
-                    m.style.setProperty('min-height', '65px', 'important');
-                    m.style.setProperty('margin', '0', 'important'); // El espacio lo pone el 'gap' del padre
-                    m.style.setProperty('box-sizing', 'border-box', 'important');
-                    
-                    // Asegurar que los bordes se rendericen en el PDF forzando todos los lados individualmente
-                    m.style.setProperty('border-top', '1px solid #cbd5e1', 'important');
-                    m.style.setProperty('border-right', '1px solid #cbd5e1', 'important');
-                    m.style.setProperty('border-bottom', '1px solid #cbd5e1', 'important');
-                    m.style.setProperty('border-left', '1px solid #cbd5e1', 'important');
-                    m.style.setProperty('border-radius', '4px', 'important'); // Redondeo ligero para PDF
+                    const measures = Array.from(grid.querySelectorAll('.measure-box'));
+                    measures.forEach(m => {
+                        m.style.setProperty('flex', '0 0 calc(25% - 15px)', 'important');
+                        m.style.setProperty('margin', '0', 'important');
+                        m.style.setProperty('border', '2px solid #cbd5e1', 'important');
+                        m.style.setProperty('border-radius', '8px', 'important');
+                        m.style.setProperty('background-color', '#ffffff', 'important');
+                        
+                        // --- SOLUCIÓN DE RECORTE DE TEXTO ---
+                        m.style.setProperty('overflow', 'visible', 'important'); // Evitar guillotina
+                        m.style.setProperty('height', 'auto', 'important'); 
+                        m.style.setProperty('min-height', '130px', 'important'); // Generoso
+                        m.style.setProperty('padding-top', '35px', 'important');
+                        m.style.setProperty('padding-bottom', '30px', 'important'); // Colchón inferior
+                        
+                        const innerStrs = m.querySelectorAll('.chord-text');
+                        innerStrs.forEach(txt => {
+                            txt.style.setProperty('overflow', 'visible', 'important');
+                            if (txt.classList.contains('text-blue-500')) txt.style.color = '#3b82f6';
+                            else if (txt.classList.contains('text-red-500')) txt.style.color = '#ef4444';
+                            else if (txt.classList.contains('text-amber-500')) txt.style.color = '#f59e0b';
+                            else if (txt.className.includes('text-indigo')) txt.style.color = '#4f46e5';
+                            else if (txt.className.includes('text-pink')) txt.style.color = '#ec4899';
+                            else txt.style.color = '#1e293b'; 
+                        });
 
-                    currentRow.appendChild(m);
-                    colCount += isFullWidth ? 4 : 1;
-                });
-                
-                if (currentRow.children.length > 0) {
-                    tempContainer.appendChild(currentRow);
+                        const innerFlex = m.querySelector('.flex-row');
+                        if(innerFlex) {
+                            innerFlex.style.setProperty('overflow', 'visible', 'important');
+                        }
+                    });
                 }
 
-                // Inyectamos las filas temporales
-                els.grid.innerHTML = '';
-                els.grid.appendChild(tempContainer);
-                
-                // Dar tiempo al navegador para aplicar la estructura
-                await new Promise(r => setTimeout(r, 800));
-
-                const opt = {
-                    margin: [15, 20, 15, 20], // top, left, bottom, right (Márgenes laterales aumentados a 20mm)
-                    filename: `LeadSheet_${progName.replace(/\s+/g, '')}_${keyName}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    // Instrucción obligatoria para el motor PDF: Evita cortar 'pdf-row' y el 'Footer'
-                    pagebreak: { mode: ['css', 'legacy'], avoid: ['.pdf-row', '#printFooter'] }, 
-                    html2canvas: { 
-                        scale: 2, 
-                        useCORS: true, 
-                        logging: false, 
-                        scrollY: 0,
-                        windowWidth: 980,  // Reducido a 980 para compactar el contenido y que encaje perfecto
-                        backgroundColor: '#ffffff'
-                    },
-                    jsPDF: { unit: 'mm', format: 'letter', orientation: 'landscape' }
-                };
-
-                await html2pdf().set(opt).from(els.container).save();
-
-                // RESTAURAR EL ENTORNO EXACTAMENTE COMO ESTABA
-                els.body.style.height = originalStyles.bodyHeight; els.body.style.overflow = originalStyles.bodyOverflow;
-                els.html.style.height = originalStyles.htmlHeight; els.html.style.overflow = originalStyles.htmlOverflow;
-                els.wrapper.style.height = originalStyles.wrapperHeight; els.wrapper.style.overflow = originalStyles.wrapperOverflow;
-                els.wrapper.style.border = originalStyles.wrapperBorder; els.wrapper.style.boxShadow = originalStyles.wrapperShadow;
-                els.wrapper.style.backgroundColor = originalStyles.wrapperBg;
-                
-                els.container.style.height = originalStyles.containerHeight; els.container.style.overflow = originalStyles.containerOverflow;
-                els.container.style.backgroundColor = '';
-                
-                els.grid.style.display = originalStyles.gridDisplay; 
-                els.grid.style.fontSize = originalStyles.gridSize;
-                els.grid.style.gap = originalStyles.gridGap;
-
-                els.grid.innerHTML = '';
-                measures.forEach(m => {
-                    m.style.cssText = m.dataset.origCssText || '';
-                    els.grid.appendChild(m);
+                // 3. Tomar la fotografía con html2canvas
+                const canvas = await html2canvas(cloneWrapper, {
+                    scale: 2, 
+                    useCORS: true, 
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    width: 1200,
+                    windowWidth: 1200
                 });
 
-                if (printHeader) printHeader.classList.add('hidden');
-                if (printFooter) {
-                    printFooter.classList.add('hidden');
-                    printFooter.style.display = '';
-                }
-                if (isDarkMode) document.documentElement.classList.add('dark');
-                
-                updateGridRowStyles(); 
-                showToast("PDF descargado con éxito", "success");
+                // 4. Descargar la imagen
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const link = document.createElement('a');
+                link.download = `LeadSheet_${progName.replace(/\s+/g, '')}_${keyName}.jpg`;
+                link.href = imgData;
+                link.click();
+
+                // 5. Limpieza
+                document.body.removeChild(cloneWrapper);
+                showToast("Imagen descargada con éxito", "success");
 
             } catch (e) {
-                console.error("PDF Error:", e);
-                showToast("Error al generar el PDF", "error");
+                console.error("Image Error:", e);
+                showToast("Error al generar la imagen", "error");
             }
         });
 
@@ -878,10 +806,7 @@
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return chordStr;
             const root = match[1]; let quality = match[2];
-            
-            // Calculamos la nueva raíz utilizando la función de arriba
             const newRoot = transposeRoot(root, stOffset, letterOffset);
-            
             if (quality.includes('/')) {
                 const qParts = quality.split('/');
                 quality = qParts[0] + '/' + transposeRoot(qParts[1], stOffset, letterOffset);
@@ -1337,17 +1262,8 @@
                             const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
                             if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
-                        
-                        // LÓGICA CORREGIDA PARA PRESERVAR LA VARIACIÓN DE LA URL EN LA PRIMERA CARGA
-                        const urlParams = new URLSearchParams(window.location.search);
-                        let varToSet = 0;
-                        if (urlParams.has('var') && !window.initialVarLoaded) {
-                            varToSet = urlParams.get('var');
-                            window.initialVarLoaded = true; // Evita sobreescribir si el usuario cambia manualmente luego
-                        }
-
-                        if (vSelect) { vSelect.dataset.progId = progData.id; vSelect.value = varToSet; }
-                        if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = varToSet; }
+                        if (vSelect) { vSelect.dataset.progId = progData.id; vSelect.value = 0; }
+                        if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = 0; }
                     }
                 }
                 
@@ -1387,11 +1303,13 @@
                 if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = false;
             }
 
-            if (!manualKeyChange) {
+            if (!manualKeyChange && !preserveState) {
                 if (keySelectVal) keySelectVal.value = progData.baseKey;
                 if (keySelectMobileVal) keySelectMobileVal.value = progData.baseKey;
             }
-            manualKeyChange = false; 
+            if (!preserveState) {
+                manualKeyChange = false; 
+            }
 
             const currentKey = keySelectVal ? keySelectVal.value : (keySelectMobileVal ? keySelectMobileVal.value : "C");
             const { stOffset, letterOffset } = getTranspositionOffsets(progData.baseKey, currentKey);
@@ -1430,7 +1348,6 @@
                     let isEnd1 = content.includes('_END1');
                     let isEnd2 = content.includes('_END2');
                     
-                    // Manejo Seguro si las casillas no están separadas por un PIPE |
                     if (isEnd1 && isEnd2) {
                         let c1Chords = content.replace('_END1', '').replace('_END2', '').split(/\s+/).map(c => transposeChordName(c, stOffset, letterOffset));
                         sectionVisualMeasures.push({ id: currentVisualIndex + mIdx, chords: c1Chords, colorClass: sec.color || 'bg-white dark:bg-slate-800', sectionName: null, hasRepeatStart: hasRepeatStart, hasRepeatEnd: hasRepeatEnd, isCombinedCasilla1: true });
@@ -1594,7 +1511,7 @@
                     measureDiv.style.gridColumnStart = '1';
                     
                     if (vMeasure.isCombinedCasilla2) {
-                        classNames += ' col-span-4'; // Fuerza a Casilla 2 a ser la única en su fila
+                        classNames += ' col-span-4'; 
                         measureDiv.style.gridColumnEnd = '-1';
                     }
                 }
@@ -2053,7 +1970,11 @@
         function debounce(func, wait) { let timeout; return function(...args) { clearTimeout(timeout); timeout = setTimeout(() => func.apply(this, args), wait); }; }
         const handleCustomInput = debounce((val) => {
             const wasPlaying = isPlaying; if (wasPlaying) stopProgression();
-            selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if (wasPlaying) setTimeout(() => playProgression(), 50);
+            selectedStartMeasure = -1; 
+            manualKeyChange = true; 
+            loadAndCompileProgression(false); 
+            updateURLState(); 
+            if (wasPlaying) setTimeout(() => playProgression(), 50);
         }, 800);
         
         document.getElementById('customProgInput')?.addEventListener('input', (e) => handleCustomInput(e.target.value));
