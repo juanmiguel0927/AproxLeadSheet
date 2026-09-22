@@ -463,6 +463,7 @@
         
         let activeChordMutations = {}; 
         let currentActiveSections = []; 
+        let initialVarToLoad = null;
 
         function safeSetStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) { console.warn("LocalStorage bloqueado."); } }
         function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
@@ -503,7 +504,7 @@
 
                 const params = new URLSearchParams(window.location.search);
                 if (params.has('prog')) syncSelects('progressionSelect', 'progressionSelectMobile', params.get('prog'));
-                if (params.has('var')) syncSelects('variationSelect', 'variationSelectMobile', params.get('var'));
+                if (params.has('var')) { initialVarToLoad = params.get('var'); }
                 if (params.has('key')) { syncSelects('keySelect', 'keySelectMobile', params.get('key')); manualKeyChange = true; }
                 if (params.has('tempo')) {
                     let t = params.get('tempo');
@@ -1262,8 +1263,18 @@
                             const opt = document.createElement('option'); opt.value = idx; opt.textContent = label; vSelect.appendChild(opt);
                             if(vSelectMobile) { const optM = document.createElement('option'); optM.value = idx; optM.textContent = label; vSelectMobile.appendChild(optM); }
                         });
-                        if (vSelect) { vSelect.dataset.progId = progData.id; vSelect.value = 0; }
-                        if (vSelectMobile) { vSelectMobile.dataset.progId = progData.id; vSelectMobile.value = 0; }
+                        
+                        vSelect.dataset.progId = progData.id;
+                        if(vSelectMobile) vSelectMobile.dataset.progId = progData.id;
+                        
+                        if (initialVarToLoad !== null) {
+                            vSelect.value = initialVarToLoad;
+                            if(vSelectMobile) vSelectMobile.value = initialVarToLoad;
+                            initialVarToLoad = null; // Limpiar para que no afecte cambios futuros
+                        } else {
+                            vSelect.value = 0;
+                            if(vSelectMobile) vSelectMobile.value = 0;
+                        }
                     }
                 }
                 
