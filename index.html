@@ -33,7 +33,6 @@
             transition: all 0.15s ease-in-out; height: 100%; min-height: 45px;
             cursor: pointer; display: flex; flex-direction: column; justify-content: center;
             position: relative; overflow: hidden;
-            /* Bordes más firmes para garantizar renderizado en PDF */
             border-style: solid; border-width: 1px;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
@@ -124,17 +123,6 @@
             .controls-full-width { grid-column: span 2; }
             .toggles-row { display: flex; justify-content: space-between; align-items: center; grid-column: span 2; padding-top: 0.25rem; border-top: 1px solid rgba(148, 163, 184, 0.2); }
         }
-
-        /* Reglas estandarizadas para el motor de Impresión (Fallback seguro) */
-        @media print {
-            body, html { height: auto !important; overflow: visible !important; background-color: white !important; }
-            #topControls, #blueBar, #coltraneGraphicContainer, .measure-active { display: none !important; }
-            #gridScrollContainer { overflow: visible !important; height: auto !important; }
-            #chordGrid { gap: 15px !important; display: grid !important; grid-template-columns: repeat(4, 1fr) !important; font-size: 100% !important; }
-            .measure-box { break-inside: avoid; border: 1px solid #cbd5e1 !important; color: black !important; background-color: #f8fafc !important; min-height: 60px !important; box-shadow: none !important;}
-            .text-slate-800, .dark .text-slate-100 { color: black !important; }
-            * { text-shadow: none !important; }
-        }
     </style>
 </head>
 
@@ -144,6 +132,78 @@
     <div id="toastMsg" class="fixed top-4 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white px-4 py-2 rounded-lg shadow-xl z-50 transition-opacity duration-300 opacity-0 hidden flex items-center gap-2">
         <i class="fa-solid fa-circle-info" id="toastIcon"></i>
         <span class="text-sm font-medium" id="toastText">Mensaje</span>
+    </div>
+
+    <!-- Modal de Ayuda y Guía Armónica -->
+    <div id="helpModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700 animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-circle-question text-blue-500"></i>
+                    <span>Guía Armónica y Manual de OpusLab</span>
+                </h3>
+                <button id="closeHelpBtn" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-5 text-sm leading-relaxed">
+                <div>
+                    <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-1">¿Qué es OpusLab Lead Sheet?</h4>
+                    <p class="text-slate-600 dark:text-slate-300">Es un entorno interactivo avanzado para el análisis armónico, la reproducción en tiempo real con motor de audio/MIDI y la exportación de partituras e imágenes en alta calidad para músicos y compositores.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-1">Interactividad Dinámica (Haz clic en los acordes)</h4>
+                    <ul class="list-disc pl-5 space-y-1.5 text-slate-600 dark:text-slate-300">
+                        <li><strong>Acordes Dominantes:</strong> Haz clic sobre cualquier dominante (ej. <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">G7</code>) para explorar su ciclo de sustituciones: Tercera con lookahead (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">m7(b5)</code> o Disminuido con inversiones), Sustitución Tritonal (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">subV7</code>), y Tritono-Tercera / Disminuido tritonal.</li>
+                        <li><strong>Acordes Principales / Diatónicos:</strong> Haz clic sobre acordes mayores o menores para ver opciones de intercambio modal y sustituciones diatónicas equivalentes.</li>
+                        <li><strong>Gestión de Compases:</strong> Haz clic en cualquier compás de la rejilla para seleccionarlo y añadir marcas de repetición (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">|:</code> / <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">:|</code>).</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-2">Guía de Colores y Significados Armónicos</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 flex items-start gap-3">
+                            <div class="w-4 h-4 rounded-full bg-blue-500 shrink-0 mt-1"></div>
+                            <div>
+                                <strong class="block text-slate-800 dark:text-slate-200">Azul / Estándar</strong>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Armonía diatónica principal, acordes base y funciones tonales nativas.</span>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 flex items-start gap-3">
+                            <div class="w-4 h-4 rounded-full bg-amber-500 shrink-0 mt-1"></div>
+                            <div>
+                                <strong class="block text-amber-700 dark:text-amber-300">Ámbar (Línea punteada)</strong>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Sustitución Tritonal (<code class="text-xs">subV7</code>). Comparte el tritono con el dominante original para una conducción fluida.</span>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50 flex items-start gap-3">
+                            <div class="w-4 h-4 rounded-full bg-emerald-500 shrink-0 mt-1"></div>
+                            <div>
+                                <strong class="block text-emerald-700 dark:text-emerald-300">Esmeralda (Línea punteada)</strong>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Sustitución de 3ra / Voice-leading (<code class="text-xs">m7(b5)</code> para resolución mayor o Inversiones Disminuidas <code class="text-xs">dim7</code> para resolución menor).</span>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/50 flex items-start gap-3">
+                            <div class="w-4 h-4 rounded-full bg-pink-500 shrink-0 mt-1"></div>
+                            <div>
+                                <strong class="block text-pink-700 dark:text-pink-300">Rosa (Línea punteada)</strong>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Sustitución Disminuida y sus múltiples inversiones (<code class="text-xs">dim7</code>). Cuando se usa para resolver a un acorde mayor, funciona por Intercambio Modal.</span>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-800/50 flex items-start gap-3 sm:col-span-2">
+                            <div class="w-4 h-4 rounded-full bg-indigo-500 shrink-0 mt-1"></div>
+                            <div>
+                                <strong class="block text-indigo-700 dark:text-indigo-300">Índigo (Subrayado)</strong>
+                                <span class="text-xs text-slate-500 dark:text-slate-400">Intercambio Modal y Sustituciones Diatónicas (préstamos de acordes de la paralela menor, ej. <code class="text-xs">Fm7</code>, <code class="text-xs">bVII7</code>).</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 flex justify-end">
+                <button id="closeHelpModalFooterBtn" class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl text-xs transition-colors shadow-sm">Entendido</button>
+            </div>
+        </div>
     </div>
 
     <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700" id="mainAppWrapper">
@@ -158,10 +218,12 @@
                 </h1>
                 
                 <div class="flex items-center gap-1 sm:gap-2">
+                    <button id="helpBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Ayuda y Guía Armónica">
+                        <i class="fa-solid fa-circle-question"></i>
+                    </button>
                     <button id="shareBtn" class="text-slate-500 hover:text-blue-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Compartir enlace de esta progresión">
                         <i class="fa-solid fa-share-nodes"></i>
                     </button>
-                    <!-- BOTÓN DE IMAGEN -->
                     <button id="imgBtn" class="text-slate-500 hover:text-green-500 text-lg transition-colors w-8 h-8 flex items-center justify-center rounded-full" title="Descargar como Imagen JPEG">
                         <i class="fa-solid fa-image"></i>
                     </button>
@@ -381,15 +443,12 @@
         <!-- Área Principal de Acordes -->
         <div id="gridScrollContainer" class="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth w-full">
             
-            <!-- Título Oculto (Solo visible al exportar PDF) -->
             <div id="printHeader" class="hidden w-full px-4 pt-8 pb-4 bg-white"></div>
             
-            <!-- Container for the grid (needs absolute width control for PDF) -->
             <div id="pdfExportWrapper" class="w-full relative h-full">
                 <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2 w-full" style="font-size: 100%;"></div>
             </div>
 
-            <!-- Footer Oculto (Solo visible al exportar PDF) -->
             <div id="printFooter" class="hidden w-full px-4 pt-4 pb-8 bg-white"></div>
         </div>
     </div>
@@ -529,7 +588,7 @@
             
             text.textContent = message;
             if(type === "error") icon.className = "fa-solid fa-triangle-exclamation text-red-400";
-            else icon.className = "fa-solid fa-check-circle text-green-400";
+            else icon.className = "fa-solid fa-circle-check text-green-400";
             
             toast.classList.remove('hidden'); 
             setTimeout(() => toast.classList.add('opacity-100'), 10);
@@ -539,13 +598,20 @@
             }, 3000); 
         }
 
+        // Evento Modal de Ayuda
+        const helpModal = document.getElementById('helpModal');
+        const openHelp = () => helpModal?.classList.remove('hidden');
+        const closeHelp = () => helpModal?.classList.add('hidden');
+        document.getElementById('helpBtn')?.addEventListener('click', openHelp);
+        document.getElementById('closeHelpBtn')?.addEventListener('click', closeHelp);
+        document.getElementById('closeHelpModalFooterBtn')?.addEventListener('click', closeHelp);
+        helpModal?.addEventListener('click', (e) => { if(e.target === helpModal) closeHelp(); });
+
         document.getElementById('shareBtn')?.addEventListener('click', async () => {
             updateURLState();
-            
             try {
                 let currentParams = new URLSearchParams(window.location.search);
                 currentParams.set('tool', 'leadsheet'); 
-                
                 const finalShareUrl = "https://juanmiguel0927.github.io/OpusLab3.0/?" + currentParams.toString();
                 let shared = false;
 
@@ -553,16 +619,11 @@
                     try {
                         await navigator.share({ title: 'OpusLab 3.0 - Lead Sheet', text: 'Mira esta progresión armónica:', url: finalShareUrl });
                         shared = true;
-                    } catch (e) {
-                        if (e.name === 'AbortError' || e.message.includes('abort')) return; 
-                    }
+                    } catch (e) { if (e.name === 'AbortError' || e.message.includes('abort')) return; }
                 }
                 
                 if (!shared && navigator.clipboard && window.isSecureContext) {
-                    try {
-                        await navigator.clipboard.writeText(finalShareUrl);
-                        shared = true;
-                    } catch(e) {}
+                    try { await navigator.clipboard.writeText(finalShareUrl); shared = true; } catch(e) {}
                 }
                 
                 if (!shared) {
@@ -571,21 +632,14 @@
                     textArea.style.position = "fixed"; textArea.style.left = "-999999px"; textArea.style.top = "-999999px";
                     document.body.appendChild(textArea);
                     textArea.focus(); textArea.select();
-                    
-                    try {
-                        if (document.execCommand('copy')) shared = true;
-                    } catch (err) {} finally { textArea.remove(); }
+                    try { if (document.execCommand('copy')) shared = true; } catch (err) {} finally { textArea.remove(); }
                 }
-
                 if (shared) showToast("Enlace copiado al portapapeles", "success");
                 else showToast("Error al compartir (Permisos denegados)", "error");
-                
-            } catch(e) { 
-                showToast("Error inesperado", "error"); 
-            }
+            } catch(e) { showToast("Error inesperado", "error"); }
         });
 
-        // NUEVO EXPORTADOR DIRECTO A IMAGEN (JPEG)
+        // EXPORTADOR A IMAGEN (JPEG) CON OVERFLOW VISIBLE
         document.getElementById('imgBtn')?.addEventListener('click', async () => {
             try {
                 if (typeof html2canvas === 'undefined') { 
@@ -595,7 +649,6 @@
                 
                 showToast("Generando Imagen... (Esto tomará un segundo)", "info");
 
-                // Elementos y Títulos
                 const progSelect = document.getElementById('progressionSelect') || document.getElementById('progressionSelectMobile');
                 let progName = progSelect ? progSelect.options[progSelect.selectedIndex].text : "Progresión";
                 if (progName.includes('✎')) progName = "Progresión Personalizada";
@@ -604,18 +657,15 @@
 
                 const els = { container: document.getElementById('gridScrollContainer') };
 
-                // 1. Crear clon invisible para tomar la foto
                 const cloneWrapper = els.container.cloneNode(true);
                 cloneWrapper.style.setProperty('position', 'absolute', 'important');
-                cloneWrapper.style.setProperty('top', '-99999px', 'important'); // Esconderlo
-                cloneWrapper.style.setProperty('width', '1200px', 'important'); // Ancho gigante forzado
+                cloneWrapper.style.setProperty('top', '-99999px', 'important'); 
+                cloneWrapper.style.setProperty('width', '1200px', 'important'); 
                 cloneWrapper.style.setProperty('background-color', 'white', 'important');
                 cloneWrapper.style.setProperty('height', 'auto', 'important');
                 cloneWrapper.style.setProperty('overflow', 'visible', 'important');
-                cloneWrapper.style.setProperty('font-family', '"Inter", sans-serif', 'important');
                 document.body.appendChild(cloneWrapper);
 
-                // Preparar Cabecera en el clon
                 const printHeader = cloneWrapper.querySelector('#printHeader');
                 if (printHeader) {
                     printHeader.innerHTML = `
@@ -628,10 +678,8 @@
                     `;
                     printHeader.classList.remove('hidden');
                     printHeader.style.setProperty('padding', '40px 20px', 'important');
-                    printHeader.style.setProperty('background-color', 'white', 'important');
                 }
 
-                // Preparar Pie de página en el clon
                 const printFooter = cloneWrapper.querySelector('#printFooter');
                 if (printFooter) {
                     const now = new Date();
@@ -650,10 +698,8 @@
                     `;
                     printFooter.classList.remove('hidden');
                     printFooter.style.setProperty('padding', '20px', 'important');
-                    printFooter.style.setProperty('background-color', 'white', 'important');
                 }
 
-                // 2. Modificar el Grid clonado para Flexbox Seguro y Evitar Cortes
                 const grid = cloneWrapper.querySelector('#chordGrid');
                 if (grid) {
                     grid.style.setProperty('display', 'flex', 'important');
@@ -661,7 +707,6 @@
                     grid.style.setProperty('justify-content', 'space-between', 'important');
                     grid.style.setProperty('gap', '15px', 'important');
                     grid.style.setProperty('padding', '20px', 'important');
-                    grid.style.setProperty('font-size', '150%', 'important'); // Ajuste de tamaño base
                     
                     const measures = Array.from(grid.querySelectorAll('.measure-box'));
                     measures.forEach(m => {
@@ -670,25 +715,12 @@
                         m.style.setProperty('border', '2px solid #cbd5e1', 'important');
                         m.style.setProperty('border-radius', '8px', 'important');
                         m.style.setProperty('background-color', '#ffffff', 'important');
-                        
-                        // --- SOLUCIÓN DE RECORTE DE TEXTO ---
-                        m.style.setProperty('overflow', 'visible', 'important'); // Evitar guillotina
+                        m.style.setProperty('overflow', 'visible', 'important'); 
                         m.style.setProperty('height', 'auto', 'important'); 
-                        m.style.setProperty('min-height', '130px', 'important'); // Generoso
-                        m.style.setProperty('padding-top', '35px', 'important');
-                        m.style.setProperty('padding-bottom', '30px', 'important'); // Colchón inferior
+                        m.style.setProperty('min-height', '120px', 'important'); 
+                        m.style.setProperty('padding-top', '30px', 'important'); 
+                        m.style.setProperty('padding-bottom', '25px', 'important'); 
                         
-                        const innerStrs = m.querySelectorAll('.chord-text');
-                        innerStrs.forEach(txt => {
-                            txt.style.setProperty('overflow', 'visible', 'important');
-                            if (txt.classList.contains('text-blue-500')) txt.style.color = '#3b82f6';
-                            else if (txt.classList.contains('text-red-500')) txt.style.color = '#ef4444';
-                            else if (txt.classList.contains('text-amber-500')) txt.style.color = '#f59e0b';
-                            else if (txt.className.includes('text-indigo')) txt.style.color = '#4f46e5';
-                            else if (txt.className.includes('text-pink')) txt.style.color = '#ec4899';
-                            else txt.style.color = '#1e293b'; 
-                        });
-
                         const innerFlex = m.querySelector('.flex-row');
                         if(innerFlex) {
                             innerFlex.style.setProperty('overflow', 'visible', 'important');
@@ -696,24 +728,16 @@
                     });
                 }
 
-                // 3. Tomar la fotografía con html2canvas
                 const canvas = await html2canvas(cloneWrapper, {
-                    scale: 2, 
-                    useCORS: true, 
-                    logging: false,
-                    backgroundColor: '#ffffff',
-                    width: 1200,
-                    windowWidth: 1200
+                    scale: 2, useCORS: true, logging: false, backgroundColor: '#ffffff', width: 1200, windowWidth: 1200
                 });
 
-                // 4. Descargar la imagen
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
                 const link = document.createElement('a');
                 link.download = `LeadSheet_${progName.replace(/\s+/g, '')}_${keyName}.jpg`;
                 link.href = imgData;
                 link.click();
 
-                // 5. Limpieza
                 document.body.removeChild(cloneWrapper);
                 showToast("Imagen descargada con éxito", "success");
 
@@ -819,7 +843,7 @@
             if (measureId === undefined || measureId === -1) return baseKeyStr;
             let progIndex = parseInt(document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0);
             if (isNaN(progIndex)) progIndex = 0;
-            const progData = progressionLibrary[progIndex];
+            const progData = progressionLibrary[progIndex] || progressionLibrary[0]; 
             
             if (progData && (progData.id === "251-maj-all" || progData.id === "251-min-all")) {
                 const jazzCircleOfFourths = ["C", "F", "Bb", "Eb", "Ab", "Db", "Gb", "B", "E", "A", "D", "G"];
@@ -875,7 +899,7 @@
         }
 
         function getBaseRomanForSubstitutionLogic(chordStr, keyStr, measureId = -1) {
-            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
             const root = match[1]; let quality = match[2];
@@ -904,7 +928,7 @@
             
             let progIndex = parseInt(document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0);
             if (isNaN(progIndex)) progIndex = 0;
-            const progData = progressionLibrary[progIndex];
+            const progData = progressionLibrary[progIndex] || progressionLibrary[0]; 
             
             let selectedVar = 0;
             const vSelect = document.getElementById('variationSelect');
@@ -921,7 +945,7 @@
             const dimMatch = chordStr.match(/_DIM(\d)?/);
             const isDimmed = !!dimMatch;
             const isSubbed = chordStr.includes('_SUB');
-            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             
             if (progData && progData.id === "multitonic-coltrane") return cleanStr;
             if (progData && progData.id === "blues" && selectedVar !== 0) return cleanStr;
@@ -1012,7 +1036,7 @@
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
             if (!chordStr) return { midi: [], toneNames: [], bassNote: "C2" };
-            let cleanChord = chordStr.replace(/_SUB|_DIM\d?|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
+            let cleanChord = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
             
@@ -1166,7 +1190,7 @@
             if (chordStr === "NC" || chordStr === "-" || chordStr === ":|") return false;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return false;
-            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT/g, '');
+            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT/g, '');
             return (mainQuality.startsWith('7') || mainQuality.startsWith('9') || mainQuality.startsWith('13') || mainQuality.startsWith('dim') || mainQuality.startsWith('o')) 
                 && !mainQuality.includes('maj') && !mainQuality.includes('m');
         }
@@ -1188,23 +1212,93 @@
             return (tritoneRootMap[root] || root) + quality + tags + extraTags + "_SUB";
         }
 
-        function applyDimSub(chordStr, inversionIndex = 0) {
-            let { clean, tags } = extractTags(chordStr);
-            let extraTags = ""; if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
-            tags = tags.replace(/_DIM\d?/g, '');
-            const match = clean.match(/^([A-G][#b]*)(.*)$/);
-            if (!match) return chordStr;
-            const root = match[1];
-            let baseDimRoot = dimRootMap[root] || root;
+        function applyDimSub(chordStr, inversionIndex = 0) { 
+            let { clean, tags } = extractTags(chordStr); 
+            let extraTags = ""; 
+            if (clean.includes('_BKT')) { 
+                extraTags += "_BKT"; 
+                clean = clean.replace('_BKT', ''); 
+            } 
+            tags = tags.replace(/_DIM\d?/g, ''); 
+            const match = clean.match(/^([A-G][#b]*)(.*)$/); 
+            if (!match) return chordStr; 
+            
+            const root = match[1]; 
+            let baseDimRoot = dimRootMap[root] || root; 
+            let finalRoot = baseDimRoot; 
+            
+            if (inversionIndex > 0) { 
+                const parsed = parseNoteObj(baseDimRoot); 
+                const targetMidi = (parsed.semitone + (inversionIndex * 3)) % 12; 
+                const preferredSpellings = { 0: 'C', 1: 'Db', 2: 'D', 3: 'Eb', 4: 'E', 5: 'F', 6: 'F#', 7: 'G', 8: 'Ab', 9: 'A', 10: 'Bb', 11: 'B' }; 
+                finalRoot = preferredSpellings[targetMidi]; 
+            } 
+            return finalRoot + "dim7" + tags + extraTags + "_DIM" + inversionIndex; 
+        } 
 
-            let finalRoot = baseDimRoot;
-            if (inversionIndex > 0) {
-                const parsed = parseNoteObj(baseDimRoot);
-                const targetMidi = (parsed.semitone + (inversionIndex * 3)) % 12;
-                const preferredSpellings = { 0: 'C', 1: 'Db', 2: 'D', 3: 'Eb', 4: 'E', 5: 'F', 6: 'F#', 7: 'G', 8: 'Ab', 9: 'A', 10: 'Bb', 11: 'B' };
-                finalRoot = preferredSpellings[targetMidi];
+        function applyThirdSub(chordStr, nextChordStr) { 
+            let { clean, tags } = extractTags(chordStr); 
+            let extraTags = ""; 
+            if (clean.includes('_BKT')) { 
+                extraTags += "_BKT"; 
+                clean = clean.replace('_BKT', ''); 
+            } 
+            const match = clean.match(/^([A-G][#b]*)(.*)$/); 
+            if (!match) return chordStr; 
+            
+            const root = match[1]; 
+            let thirdRoot = transposeRoot(root, 4, 2); 
+            let isMinorResolution = false; 
+            
+            if (nextChordStr) { 
+                let nextClean = nextChordStr.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV|_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, ""); 
+                let nextMatch = nextClean.match(/^([A-G][#b]*)(.*)$/); 
+                if (nextMatch) { 
+                    let nextQual = nextMatch[2]; 
+                    if (nextQual.startsWith('m') && !nextQual.startsWith('maj')) { 
+                        isMinorResolution = true; 
+                    } 
+                } 
+            } 
+            
+            if (isMinorResolution) {
+                return thirdRoot + "dim7" + tags + extraTags + "_THIRDSUB";
+            } else {
+                return thirdRoot + "m7(b5)" + tags + extraTags + "_THIRDSUB";
             }
-            return finalRoot + "dim7" + tags + extraTags + "_DIM" + inversionIndex;
+        } 
+
+        function applyTritoneThirdSub(chordStr, nextChordStr) { 
+            let { clean, tags } = extractTags(chordStr); 
+            let extraTags = ""; 
+            if (clean.includes('_BKT')) { 
+                extraTags += "_BKT"; 
+                clean = clean.replace('_BKT', ''); 
+            } 
+            const match = clean.match(/^([A-G][#b]*)(.*)$/); 
+            if (!match) return chordStr; 
+            
+            const root = match[1]; 
+            let tritoneRoot = tritoneRootMap[root] || root; 
+            let thirdRoot = transposeRoot(tritoneRoot, 4, 2); 
+            let isMinorResolution = false; 
+            
+            if (nextChordStr) { 
+                let nextClean = nextChordStr.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV|_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, ""); 
+                let nextMatch = nextClean.match(/^([A-G][#b]*)(.*)$/); 
+                if (nextMatch) { 
+                    let nextQual = nextMatch[2]; 
+                    if (nextQual.startsWith('m') && !nextQual.startsWith('maj')) { 
+                        isMinorResolution = true; 
+                    } 
+                } 
+            } 
+            
+            if (isMinorResolution) {
+                return thirdRoot + "dim7" + tags + extraTags + "_TRITONETHIRDSUB";
+            } else {
+                return thirdRoot + "m7(b5)" + tags + extraTags + "_TRITONETHIRDSUB";
+            }
         }
 
         function loadAndCompileProgression(preserveState = false) {
@@ -1270,7 +1364,7 @@
                         if (initialVarToLoad !== null) {
                             vSelect.value = initialVarToLoad;
                             if(vSelectMobile) vSelectMobile.value = initialVarToLoad;
-                            initialVarToLoad = null; // Limpiar para que no afecte cambios futuros
+                            initialVarToLoad = null;
                         } else {
                             vSelect.value = 0;
                             if(vSelectMobile) vSelectMobile.value = 0;
@@ -1379,7 +1473,8 @@
                         continue;
                     }
 
-                    let chords = content.split(/\s+/).map((c, cIdx) => {
+                    let blockChords = content.split(/\s+/);
+                    let chords = blockChords.map((c, cIdx) => {
                         let transposed = transposeChordName(c, stOffset, letterOffset);
                         let overrideKey = `${currentVisualIndex + mIdx}_${cIdx}`;
                         let mutationState = 'normal';
@@ -1387,13 +1482,34 @@
                         if (globalDim) mutationState = 'dim0';
                         if (mutationOverrides[overrideKey] !== undefined) mutationState = mutationOverrides[overrideKey];
 
+                        let nextChordStr = null;
+                        if (cIdx + 1 < blockChords.length) {
+                            nextChordStr = blockChords[cIdx + 1];
+                        } else if (mIdx + 1 < rawBlocks.length) {
+                            let nextBlock = rawBlocks[mIdx + 1].replace(/^:/, '').replace(/:$/, '').trim();
+                            let nbc = nextBlock.split(/\s+/).filter(x => x && x !== ":|");
+                            if (nbc.length > 0) nextChordStr = nbc[0];
+                        } else if (secIdx + 1 < sectionsToProcess.length) {
+                            let nextSecBlocks = sectionsToProcess[secIdx + 1].data.split('|').map(m => m.trim()).filter(m => m.length > 0);
+                            if (nextSecBlocks.length > 0) {
+                                let nextBlock = nextSecBlocks[0].replace(/^:/, '').replace(/:$/, '').trim();
+                                let nbc = nextBlock.split(/\s+/).filter(x => x && x !== ":|");
+                                if (nbc.length > 0) nextChordStr = nbc[0];
+                            }
+                        }
+                        if (nextChordStr) {
+                             nextChordStr = transposeChordName(nextChordStr, stOffset, letterOffset);
+                        }
+
                         if (activeChordMutations[overrideKey]) {
                             let activeRoman = activeChordMutations[overrideKey].activeRoman;
                             if (activeRoman) {
                                 transposed = romanToChord(activeRoman, currentKey, currentVisualIndex + mIdx);
                             }
                         } else if (isDominant(transposed)) {
-                            if (mutationState === 'tritone') transposed = applyTritoneSub(transposed);
+                            if (mutationState === 'thirdSub') transposed = applyThirdSub(transposed, nextChordStr);
+                            else if (mutationState === 'tritone') transposed = applyTritoneSub(transposed);
+                            else if (mutationState === 'tritoneThirdSub') transposed = applyTritoneThirdSub(transposed, nextChordStr);
                             else if (mutationState.startsWith('dim')) {
                                 let dimIdx = parseInt(mutationState.replace('dim', '')) || 0;
                                 transposed = applyDimSub(transposed, dimIdx);
@@ -1553,7 +1669,8 @@
                 const processChord = (c, chordIdx, vMeasureId, textStr) => {
                     let color = "text-slate-800 dark:text-slate-100"; 
                     let isSubbed = c.includes('_SUB'); let isDimmed = c.includes('_DIM');
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '');
+                    let isThirdSub = c.includes('_THIRDSUB'); let isTritoneThirdSub = c.includes('_TRITONETHIRDSUB');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
                     let isDom = isDominant(cleanC);
 
                     let interactiveClass = ""; let tooltip = "";
@@ -1570,6 +1687,10 @@
                         interactiveClass = "cursor-pointer interactive-chord is-diatonic-sub";
                         tooltip = 'title="Clic para sustitución diatónica / modal"';
                         color = "text-indigo-700 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors";
+                    } else if (isThirdSub || isTritoneThirdSub) {
+                        color = "text-emerald-500 dark:text-emerald-400 font-bold border-b-[1.5px] md:border-b-2 border-emerald-500 border-dashed is-thirdsub is-dominant";
+                        interactiveClass = "cursor-pointer hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors interactive-chord is-dominant";
+                        tooltip = 'title="Clic para mutar acorde dominante"';
                     } else if (isSubbed) {
                         color = "text-amber-500 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
                         interactiveClass = "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors interactive-chord is-dominant";
@@ -1594,7 +1715,7 @@
                 };
 
                 let renderedTexts = vMeasure.chords.map((c, i) => {
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
                     return romanMode ? convertToRoman(c, targetKey, vMeasure.id) : cleanC;
                 });
                 
@@ -1962,7 +2083,7 @@
             if (found) {
                 let pSelectVal = document.getElementById('progressionSelect')?.value || document.getElementById('progressionSelectMobile')?.value || 0;
                 let progIndex = parseInt(pSelectVal); if (isNaN(progIndex)) progIndex = 0;
-                const progData = progressionLibrary[progIndex];
+                const progData = progressionLibrary[progIndex] || progressionLibrary[0]; 
                 if (progData.id === 'custom') {
                     const customProgInput = document.getElementById('customProgInput');
                     if (customProgInput) customProgInput.value = currentActiveSections.map(s => s.data).join(' | ');
@@ -1988,7 +2109,10 @@
             if (wasPlaying) setTimeout(() => playProgression(), 50);
         }, 800);
         
-        document.getElementById('customProgInput')?.addEventListener('input', (e) => handleCustomInput(e.target.value));
+        document.getElementById('customProgInput')?.addEventListener('input', (e) => {
+            manualKeyChange = true;
+            handleCustomInput(e.target.value);
+        });
 
         function insertTextAtCursor(inputId, textToInsert) {
             const input = document.getElementById(inputId); if (!input) return;
@@ -2022,7 +2146,7 @@
                         let vm = visualMeasures.find(m => m.id == vMeasureId);
                         if (vm) {
                             let currentChordStr = vm.chords[chordIdx];
-                            let cleanC = currentChordStr.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_BKT|_END1|_END2/g, '');
+                            let cleanC = currentChordStr.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
                             let baseRoman = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId);
                             
                             if (diatonicSubstitutions[baseRoman]) {
@@ -2055,8 +2179,10 @@
 
                     let current = mutationOverrides[overrideKey] || (globalTritone ? 'tritone' : (globalDim ? 'dim0' : 'normal'));
                     
-                    if (current === 'normal') mutationOverrides[overrideKey] = 'tritone';
-                    else if (current === 'tritone') mutationOverrides[overrideKey] = 'dim0';
+                    if (current === 'normal') mutationOverrides[overrideKey] = 'thirdSub';
+                    else if (current === 'thirdSub') mutationOverrides[overrideKey] = 'tritone';
+                    else if (current === 'tritone') mutationOverrides[overrideKey] = 'tritoneThirdSub';
+                    else if (current === 'tritoneThirdSub') mutationOverrides[overrideKey] = 'dim0';
                     else if (current === 'dim' || current === 'dim0') mutationOverrides[overrideKey] = 'dim1';
                     else if (current === 'dim1') mutationOverrides[overrideKey] = 'dim2';
                     else if (current === 'dim2') mutationOverrides[overrideKey] = 'dim3';
