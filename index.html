@@ -96,18 +96,21 @@
         input#globalDimToggle:checked ~ .toggle-dot, input#globalDimToggleMobile:checked ~ .toggle-dot { background-color: #ec4899; }
         input#relacionToggle:checked ~ .toggle-dot, input#relacionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #10b981; }
         input#requintoToggle:checked ~ .toggle-dot, input#requintoToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #6366f1; }
+        input#modalOriginToggle:checked ~ .toggle-dot, input#modalOriginToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #9333ea; }
 
         input:checked ~ .toggle-track { background-color: #dbeafe; }
         input#globalTritoneToggle:checked ~ .toggle-track, input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #fef3c7; }
         input#globalDimToggle:checked ~ .toggle-track, input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #fce7f3; }
         input#relacionToggle:checked ~ .toggle-track, input#relacionToggleMobile:checked ~ .toggle-track { background-color: #d1fae5; }
         input#requintoToggle:checked ~ .toggle-track, input#requintoToggleMobile:checked ~ .toggle-track { background-color: #e0e7ff; }
+        input#modalOriginToggle:checked ~ .toggle-track, input#modalOriginToggleMobile:checked ~ .toggle-track { background-color: #f3e8ff; }
         
         .dark input:checked ~ .toggle-track { background-color: #1e3a8a; }
         .dark input#globalTritoneToggle:checked ~ .toggle-track, .dark input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #78350f; }
         .dark input#globalDimToggle:checked ~ .toggle-track, .dark input#globalDimToggleMobile:checked ~ .toggle-track { background-color: #831843; }
         .dark input#relacionToggle:checked ~ .toggle-track, .dark input#relacionToggleMobile:checked ~ .toggle-track { background-color: #064e3b; }
         .dark input#requintoToggle:checked ~ .toggle-track, .dark input#requintoToggleMobile:checked ~ .toggle-track { background-color: #312e81; }
+        .dark input#modalOriginToggle:checked ~ .toggle-track, .dark input#modalOriginToggleMobile:checked ~ .toggle-track { background-color: #581c87; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
@@ -164,7 +167,7 @@
                     <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-1">Interactividad Dinámica (Haz clic en los acordes)</h4>
                     <ul class="list-disc pl-5 space-y-1.5 text-slate-600 dark:text-slate-300">
                         <li><strong>Acordes Dominantes:</strong> Haz clic sobre cualquier dominante (ej. <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">G7</code>) para explorar su ciclo de sustituciones: Tercera con lookahead (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">m7(b5)</code> o Disminuido con inversiones), Sustitución Tritonal (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">subV7</code>), y Tritono-Tercera / Disminuido tritonal.</li>
-                        <li><strong>Acordes Principales / Diatónicos:</strong> Haz clic sobre acordes mayores o menores para ver opciones de intercambio modal y sustituciones diatónicas equivalentes.</li>
+                        <li><strong>Subdominantes (IV ↔ II) e Intercambio Modal:</strong> Haz clic sobre cualquier acorde subdominante (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">IVmaj7</code> o <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">IIm7</code>) para alternar entre ambos y recorrer todos los préstamos de Intercambio Modal: <strong>Eólico</strong> (<code class="text-xs">IVm7, bVImaj7, bVII7, IIm7(b5)</code>), <strong>Frigio</strong> (<code class="text-xs">bIImaj7, bVIIm7</code>), <strong>Mixolidio</strong> (<code class="text-xs">bVIImaj7</code>) y <strong>Locrio</strong> (<code class="text-xs">bVI7</code>). Activa el interruptor <em>Origen</em> para mostrar u ocultar la etiqueta del modo debajo de cada acorde.</li>
                         <li><strong>Modo Requinto (La):</strong> Activa el interruptor <em>Requinto</em> para visualizar las posiciones de digitación transportadas una cuarta justa hacia abajo (-5 semitonos). Usa el botón de ojo (<i class="fa-solid fa-eye text-indigo-500"></i>) junto al interruptor para mostrar u ocultar la etiqueta del sonido real de concierto (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">Real: ...</code>).</li>
                         <li><strong>Gestión de Compases:</strong> Haz clic en cualquier compás de la rejilla para seleccionarlo y añadir marcas de repetición (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">|:</code> / <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">:|</code>).</li>
                     </ul>
@@ -330,6 +333,15 @@
                             </div>
                             <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
                         </label>
+
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar el grado, función y origen armónico en todos los acordes">
+                            <div class="relative">
+                                <input type="checkbox" id="modalOriginToggle" class="sr-only" checked>
+                                <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-purple-600 transition-colors">Origen</span>
+                        </label>
                         
                         <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal Master">
                             <div class="relative">
@@ -357,6 +369,12 @@
                             </div>
                             <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 transition-colors">II-V</span>
                         </label>
+
+                        <button id="resetChordsBtn" class="flex items-center gap-1 bg-slate-200/80 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-amber-100 hover:text-amber-700 dark:hover:bg-amber-900/50 dark:hover:text-amber-300 h-7 px-2 rounded-lg font-bold text-[9px] transition-all border border-slate-300 dark:border-slate-600 opacity-50" title="Restaurar todos los acordes a su estado original de base">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Original</span>
+                            <span id="resetCountBadge" class="hidden px-1 py-0.2 rounded-full bg-amber-500 text-white text-[8px] leading-none">0</span>
+                        </button>
 
                         <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-2 ml-1">
                             <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Piano"><i class="fa-solid fa-keyboard"></i></button>
@@ -438,6 +456,9 @@
                         <label class="flex items-center gap-1 cursor-pointer group">
                             <div class="relative"><input type="checkbox" id="romanToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Weber</span>
                         </label>
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar origen de Intercambio Modal">
+                            <div class="relative"><input type="checkbox" id="modalOriginToggleMobile" class="sr-only" checked><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Origen</span>
+                        </label>
                         <label class="flex items-center gap-1 cursor-pointer group">
                             <div class="relative"><input type="checkbox" id="globalTritoneToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Tritono</span>
                         </label>
@@ -447,6 +468,11 @@
                         <label id="iivToggleContainerMobile" class="hidden items-center gap-1 cursor-pointer group">
                             <div class="relative"><input type="checkbox" id="relacionToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">II-V</span>
                         </label>
+                        <button id="resetChordsBtnMobile" class="flex items-center gap-1 bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 h-6 px-1.5 rounded font-bold text-[8px] transition-all border border-slate-300 dark:border-slate-600 opacity-50" title="Restaurar acordes originales">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>Orig.</span>
+                            <span id="resetCountBadgeMobile" class="hidden px-1 rounded-full bg-amber-500 text-white text-[7px] leading-none">0</span>
+                        </button>
                     </div>
 
                     <div class="flex gap-1 ml-1 border-l border-slate-300 pl-2">
@@ -469,7 +495,23 @@
                         <button id="insertPipeBtn" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 sm:px-3 rounded-lg font-bold font-mono transition-colors border border-blue-200" title="Nuevo Compás">|</button>
                     </div>
                 </div>
-                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|". Usa los botones amarillos inferiores para repeticiones. Se guardará automáticamente.</p>
+                <div class="flex flex-wrap items-center gap-1 mt-1.5 px-0.5" id="customOriginQuickBar">
+                    <span class="text-[9px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-1"></i>Insertar por Origen:</span>
+                    <button type="button" data-roman="Imaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300 hover:scale-105 transition-transform">+ Imaj7 (Jónico)</button>
+                    <button type="button" data-roman="VIm7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300 hover:scale-105 transition-transform">+ VIm7 (Eólico)</button>
+                    <button type="button" data-roman="IVmaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300 hover:scale-105 transition-transform">+ IVmaj7 (Jónico)</button>
+                    <button type="button" data-roman="IIm7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300 hover:scale-105 transition-transform">+ IIm7 (Dórico)</button>
+                    <button type="button" data-roman="IVm7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300 hover:scale-105 transition-transform">+ IVm7 (Eólico)</button>
+                    <button type="button" data-roman="bVImaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300 hover:scale-105 transition-transform">+ bVImaj7 (Eólico)</button>
+                    <button type="button" data-roman="bVII7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300 hover:scale-105 transition-transform">+ bVII7 (Backdoor)</button>
+                    <button type="button" data-roman="IIm7(b5)" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300 hover:scale-105 transition-transform">+ IIm7(b5) (Eólico)</button>
+                    <button type="button" data-roman="bIImaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300 hover:scale-105 transition-transform">+ bIImaj7 (Frigio)</button>
+                    <button type="button" data-roman="bVIIm7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300 hover:scale-105 transition-transform">+ bVIIm7 (Frigio)</button>
+                    <button type="button" data-roman="bVIImaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300 hover:scale-105 transition-transform">+ bVIImaj7 (Mixolidio)</button>
+                    <button type="button" data-roman="bVI7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-300 hover:scale-105 transition-transform">+ bVI7 (Locrio)</button>
+                    <button type="button" data-roman="V7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300 hover:scale-105 transition-transform">+ V7 (Dominante)</button>
+                </div>
+                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|" o insértalos por su origen funcional arriba. También puedes hacer clic en cualquier acorde de la rejilla para rotar su función.</p>
             </div>
         </div>
 
@@ -1079,16 +1121,337 @@
         const enharmonicPairs = { 'C#': 'Db', 'Db': 'C#', 'D#': 'Eb', 'Eb': 'D#', 'E#': 'F', 'F': 'E#', 'F#': 'Gb', 'Gb': 'F#', 'G#': 'Ab', 'Ab': 'G#', 'A#': 'Bb', 'Bb': 'A#', 'Cb': 'B', 'B': 'Cb' };
         window.svgEnharmonicOverrides = {};
 
+        // Diccionario Integral de Origen Armónico y Funciones (Tónica, Subdominante, Dominante e Intercambio Modal)
+        const modalOriginCatalog = {
+            // === FUNCIÓN TÓNICA ===
+            'Imaj7':    { roman: 'Imaj7',    mode: 'Tónica · Jónico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'I6':       { roman: 'I6',       mode: 'Tónica · Jónico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'I':        { roman: 'I',        mode: 'Tónica · Jónico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'Imaj':     { roman: 'I',        mode: 'Tónica · Jónico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'IIIm7':    { roman: 'IIIm7',    mode: 'Tónica · Frigio',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'IIIm':     { roman: 'IIIm',     mode: 'Tónica · Frigio',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'VIm7':     { roman: 'VIm7',     mode: 'Tónica · Eólico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'VIm':      { roman: 'VIm',      mode: 'Tónica · Eólico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'VIm6':     { roman: 'VIm6',     mode: 'Tónica · Dórico rel.',family: 'tonic',       badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'VI6':      { roman: 'VI6',      mode: 'Tónica · Eólico',    family: 'tonic',        badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300' },
+            'Im7':      { roman: 'Im7',      mode: 'Tónica m. · Eólico', family: 'tonic-minor',  badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' },
+            'Im6':      { roman: 'Im6',      mode: 'Tónica m. · Dórico', family: 'tonic-minor',  badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' },
+            'Im':       { roman: 'Im',       mode: 'Tónica m. · Eólico', family: 'tonic-minor',  badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' },
+            'bIIImaj7': { roman: 'bIIImaj7', mode: 'Tónica · Eólico',    family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'bIII6':    { roman: 'bIII6',    mode: 'Tónica · Eólico',    family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+
+            // === FUNCIÓN SUBDOMINANTE DIATÓNICA ===
+            'IVmaj7':   { roman: 'IVmaj7',   mode: 'Subdom. · Jónico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IV6':      { roman: 'IV6',      mode: 'Subdom. · Jónico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IV':       { roman: 'IV',       mode: 'Subdom. · Jónico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IIm7':     { roman: 'IIm7',     mode: 'Subdom. · Dórico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IIm':      { roman: 'IIm',      mode: 'Subdom. · Dórico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IIm6':     { roman: 'IIm6',     mode: 'Subdom. · Dórico',   family: 'diatonic-sub', badgeClass: 'bg-blue-100 text-blue-700 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+
+            // === INTERCAMBIO MODAL SUBDOMINANTE ===
+            'IVm7':     { roman: 'IVm7',     mode: 'Eólico',             family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'IVm':      { roman: 'IVm',      mode: 'Eólico',             family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'IVm6':     { roman: 'IVm6',     mode: 'Dórico m.',          family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'bVImaj7':  { roman: 'bVImaj7',  mode: 'Eólico',             family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'bVI6':     { roman: 'bVI6',     mode: 'Eólico',             family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'bVII7':    { roman: 'bVII7',    mode: 'Eólico · Backdoor',  family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'IIm7(b5)': { roman: 'IIm7(b5)', mode: 'Eólico',             family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'bIImaj7':  { roman: 'bIImaj7',  mode: 'Frigio · Napolit.',  family: 'phrygian',     badgeClass: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300' },
+            'bVIIm7':   { roman: 'bVIIm7',   mode: 'Frigio',             family: 'phrygian',     badgeClass: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300' },
+            'bVIIm6':   { roman: 'bVIIm6',   mode: 'Frigio / Eólico',    family: 'phrygian',     badgeClass: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300' },
+            'bVIImaj7': { roman: 'bVIImaj7', mode: 'Mixolidio',          family: 'mixolydian',   badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300' },
+            'Vm7':      { roman: 'Vm7',      mode: 'Mixolidio / Eólico', family: 'mixolydian',   badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300' },
+            'bVI7':     { roman: 'bVI7',     mode: 'Locrio',             family: 'locrian',      badgeClass: 'bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-300' },
+            'bIIIm7':   { roman: 'bIIIm7',   mode: 'Locrio / Cromático', family: 'locrian',      badgeClass: 'bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-300' },
+            'bVIm7':    { roman: 'bVIm7',    mode: 'Frigio Mayor / Crom.',family: 'phrygian',    badgeClass: 'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300' },
+            '#IVdim7':  { roman: '#IVdim7',  mode: 'Dim. Auxiliar',      family: 'dim',          badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300' },
+            '#Idim7':   { roman: '#Idim7',   mode: 'Dim. Paso (V7/II)',  family: 'dim',          badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300' },
+            'bIIIdim7': { roman: 'bIIIdim7', mode: 'Dim. Cromático',     family: 'dim',          badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300' },
+            '#Vdim7':   { roman: '#Vdim7',   mode: 'Dim. Paso (V7/VI)',  family: 'dim',          badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300' },
+            '#IVm7(b5)':{ roman: '#IVm7(b5)',mode: 'Lidio',              family: 'mixolydian',   badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300' },
+            'VIIm7(b5)':{ roman: 'VIIm7(b5)',mode: 'Locrio · Dom.',      family: 'third-sub',    badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300' },
+            'IIIm7(b5)':{ roman: 'IIIm7(b5)',mode: 'IIm7(b5)/II Sec.',   family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+            'VIm7(b5)': { roman: 'VIm7(b5)', mode: 'IIm7(b5)/V · Mel.',  family: 'aeolian',      badgeClass: 'bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-200 border-purple-300' },
+
+            // === FUNCIÓN DOMINANTE ===
+            'V7':       { roman: 'V7',       mode: 'Dom. · Mixolidio',   family: 'dominant',     badgeClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300' },
+            'V7(b9)':   { roman: 'V7(b9)',   mode: 'Dom. · Menor Arm.',  family: 'dominant',     badgeClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300' },
+            'I7':       { roman: 'I7',       mode: 'Tónica Blues · Mix.',family: 'dominant',     badgeClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
+            'IV7':      { roman: 'IV7',      mode: 'Subdom. Blues · Lidio b7', family: 'dominant', badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' }
+        };
+
+        // Resuelve dinámicamente el origen y función de cualquier acorde (Standards, Estudios y Personalizado)
+        function resolveUniversalChordOrigin(rawChord, cleanChord, targetKey, measureId, overrideKey, nextCleanChord = null) {
+            if (!cleanChord || cleanChord === "NC" || cleanChord === "-" || cleanChord === ":|") return null;
+
+            const isSubbed = rawChord.includes('_SUB');
+            const dimMatch = rawChord.match(/_DIM(\d)?/);
+            const isDimmed = !!dimMatch;
+            const isThirdSub = rawChord.includes('_THIRDSUB');
+            const isTritoneThirdSub = rawChord.includes('_TRITONETHIRDSUB');
+            const isActivelyMutated = !!activeChordMutations[overrideKey];
+
+            // 1. Si tiene mutación diatónica / modal activa, usar su grado exacto
+            if (isActivelyMutated) {
+                const activeRom = activeChordMutations[overrideKey].activeRoman;
+                if (modalOriginCatalog[activeRom]) return modalOriginCatalog[activeRom];
+            }
+
+            // 2. Sustituciones de Dominante activas (3ra, Tritono, Tritono-3ra, Disminuido e inversiones)
+            const romanLabel = convertToRoman(rawChord, targetKey, measureId);
+            if (isThirdSub) {
+                const isDimQual = cleanChord.includes('dim') || cleanChord.includes('o7');
+                return {
+                    roman: romanLabel,
+                    mode: isDimQual ? 'Sust. 3ra · VII°7' : 'Sust. 3ra · VIIm7(b5)',
+                    family: 'third-sub',
+                    badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300'
+                };
+            }
+            if (isTritoneThirdSub) {
+                return {
+                    roman: romanLabel,
+                    mode: 'Sust. Tritono + 3ra',
+                    family: 'third-sub',
+                    badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300'
+                };
+            }
+            if (isSubbed) {
+                return {
+                    roman: romanLabel,
+                    mode: 'Sust. Tritonal',
+                    family: 'tritone-sub',
+                    badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300'
+                };
+            }
+            if (isDimmed) {
+                const invIdx = dimMatch[1] ? parseInt(dimMatch[1]) : 0;
+                const invText = invIdx > 0 ? ` (${invIdx}ª Inv.)` : '';
+                return {
+                    roman: romanLabel,
+                    mode: `Sust. Dim.${invText}`,
+                    family: 'dim',
+                    badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300'
+                };
+            }
+
+            // 3. Relación II-V secundaria explícita o detectada por contexto en Standards y Personalizado
+            if (rawChord.includes('_IIV')) {
+                return {
+                    roman: romanLabel,
+                    mode: 'II Relacionado',
+                    family: 'diatonic-sub',
+                    badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300'
+                };
+            }
+
+            const baseRoman = getBaseRomanForSubstitutionLogic(cleanChord, targetKey, measureId);
+            const normalizedRoman = baseRoman.split('/')[0];
+
+            // Detección contextual en Standards y Personalizado:
+            // A) Si un acorde m7 o m7(b5) va seguido de un dominante 4ta justa arriba (+5 semitonos), y no es el IIm7 nativo hacia V7
+            if (nextCleanChord) {
+                const currMatch = cleanChord.match(/^([A-G][#b]*)(.*)$/);
+                const nextMatch = nextCleanChord.match(/^([A-G][#b]*)(.*)$/);
+                if (currMatch && nextMatch) {
+                    const currRoot = currMatch[1];
+                    const currQual = currMatch[2].split('/')[0];
+                    const nextRoot = nextMatch[1];
+                    const nextQual = nextMatch[2].split('/')[0];
+                    const { stOffset: intervalToNext } = getTranspositionOffsets(currRoot, nextRoot);
+
+                    const isCurrMinorOrHalfDim = (currQual === 'm7' || currQual === 'm7(b5)' || currQual === 'm') && !currQual.startsWith('maj');
+                    const isNextDom = isDominant(nextCleanChord) && !nextQual.includes('dim');
+
+                    // Relación II-V secundaria contextual (ej. Cm7 -> F7 en Do, Em7(b5) -> A7 en Do, Bbm7 -> Eb7)
+                    if (isCurrMinorOrHalfDim && isNextDom && intervalToNext === 5 && normalizedRoman !== 'IIm7' && normalizedRoman !== 'IIm7(b5)') {
+                        if (modalOriginCatalog[normalizedRoman] && (normalizedRoman === 'IVm7' || normalizedRoman === 'bVIIm7')) {
+                            return {
+                                roman: modalOriginCatalog[normalizedRoman].roman,
+                                mode: `${modalOriginCatalog[normalizedRoman].mode} · II Rel.`,
+                                family: modalOriginCatalog[normalizedRoman].family,
+                                badgeClass: modalOriginCatalog[normalizedRoman].badgeClass
+                            };
+                        }
+                        return {
+                            roman: normalizedRoman,
+                            mode: currQual.includes('b5') ? 'IIm7(b5) Sec. · Eólico' : 'IIm7 Sec. · Dórico',
+                            family: 'diatonic-sub',
+                            badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300'
+                        };
+                    }
+
+                    // Sustituto Tritonal contextual escrito en Standards/Personalizado (Dominante que resuelve 1 semitono abajo: intervalToNext === 11)
+                    if (isDominant(cleanChord) && !currQual.includes('dim') && intervalToNext === 11) {
+                        const targetRom = getBaseRomanForSubstitutionLogic(nextCleanChord, targetKey, measureId).replace(/(maj7|m7\(b5\)|m7|m6|6|7|m|maj|dim7).*$/, '');
+                        const subLabel = (targetRom === 'I' || !targetRom) ? 'subV7' : `subV7/${targetRom}`;
+                        return {
+                            roman: subLabel,
+                            mode: 'Sust. Tritonal',
+                            family: 'tritone-sub',
+                            badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300'
+                        };
+                    }
+                }
+            }
+
+            // 4. Búsqueda directa en el catálogo por su grado base
+            if (modalOriginCatalog[normalizedRoman]) {
+                return modalOriginCatalog[normalizedRoman];
+            }
+
+            // 5. Clasificación inteligente para Dominantes Secundarios, Dominantes por extensión o Acordes Diatónicos restantes
+            if (romanLabel.includes('/')) {
+                return {
+                    roman: romanLabel,
+                    mode: romanLabel.startsWith('subV') ? 'Sust. Tritonal Sec.' : 'Dom. Secundario',
+                    family: romanLabel.startsWith('subV') ? 'tritone-sub' : 'dominant',
+                    badgeClass: romanLabel.startsWith('subV')
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300'
+                        : 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300'
+                };
+            }
+            if (isDominant(cleanChord)) {
+                return {
+                    roman: romanLabel,
+                    mode: (cleanChord.includes('dim') || cleanChord.includes('o7')) ? 'Disminuido Aux.' : 'Dominante · Mixolidio',
+                    family: (cleanChord.includes('dim') || cleanChord.includes('o7')) ? 'dim' : 'dominant',
+                    badgeClass: (cleanChord.includes('dim') || cleanChord.includes('o7'))
+                        ? 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300'
+                        : 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300'
+                };
+            }
+
+            // Fallback general para cualquier otro acorde (muestra su grado Weber y función)
+            let fallbackMode = 'Armonía Diatónica';
+            if (normalizedRoman.startsWith('I') || normalizedRoman.startsWith('III') || normalizedRoman.startsWith('VI')) fallbackMode = 'Función Tónica';
+            else if (normalizedRoman.startsWith('II') || normalizedRoman.startsWith('IV')) fallbackMode = 'Función Subdom.';
+            else if (normalizedRoman.startsWith('b') || normalizedRoman.startsWith('#')) fallbackMode = 'Intercambio Modal';
+
+            return {
+                roman: romanLabel,
+                mode: fallbackMode,
+                family: 'tonic',
+                badgeClass: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200 border-slate-300'
+            };
+        }
+
+        // Ciclo completo de Subdominantes (IV <-> II + todos los Intercambios Modales de la imagen)
+        const subdominantModalCycle = [
+            'IVmaj7', 'IIm7',
+            'IVm7', 'bVImaj7', 'bVII7', 'IIm7(b5)',
+            'bIImaj7', 'bVIIm7',
+            'bVIImaj7',
+            'bVI7'
+        ];
+
+        function buildCycleStartingAfter(startRoman, fullCycle) {
+            const idx = fullCycle.indexOf(startRoman);
+            if (idx === -1) return fullCycle;
+            return [...fullCycle.slice(idx + 1), ...fullCycle.slice(0, idx)];
+        }
+
         const diatonicSubstitutions = {
-            'Imaj7': ['IIIm7', 'VIm7'],
-            'IVmaj7': ['IIm7'],
-            'Im7': ['bIIImaj7'],
-            'IVm7': ['IIm7(b5)', 'bVImaj7', 'bVII7', 'bIImaj7', 'bVIImaj7', 'bVIIm7', 'bVI7']
+            // Función Tónica Mayor y Menor (incluyendo tríadas y sextas presentes en Standards y Personalizado)
+            'Imaj7':    ['IIIm7', 'VIm7'],
+            'I6':       ['IIIm7', 'VIm7', 'Imaj7'],
+            'I':        ['IIIm7', 'VIm7', 'Imaj7'],
+            'Imaj':     ['IIIm7', 'VIm7', 'Imaj7'],
+            'IIIm7':    ['VIm7', 'Imaj7'],
+            'IIIm':     ['VIm7', 'Imaj7'],
+            'VIm7':     ['Imaj7', 'IIIm7'],
+            'VIm':      ['Imaj7', 'IIIm7'],
+            'VIm6':     ['Imaj7', 'IIIm7'],
+            'VI6':      ['Imaj7', 'IIIm7'],
+            'Im7':      ['bIIImaj7', 'bVImaj7', 'Im6'],
+            'Im6':      ['bIIImaj7', 'bVImaj7', 'Im7'],
+            'Im':       ['bIIImaj7', 'bVImaj7', 'Im7'],
+            'bIIImaj7': ['Im7', 'bVImaj7'],
+            'bIII6':    ['Im7', 'bVImaj7'],
+            // Función Subdominante (IV <-> II + Intercambio Modal completo con su origen)
+            'IVmaj7':   buildCycleStartingAfter('IVmaj7', subdominantModalCycle),
+            'IV6':      buildCycleStartingAfter('IVmaj7', subdominantModalCycle),
+            'IV':       buildCycleStartingAfter('IVmaj7', subdominantModalCycle),
+            'IIm7':     buildCycleStartingAfter('IIm7', subdominantModalCycle),
+            'IIm':      buildCycleStartingAfter('IIm7', subdominantModalCycle),
+            'IIm6':     buildCycleStartingAfter('IIm7', subdominantModalCycle),
+            'IVm7':     buildCycleStartingAfter('IVm7', subdominantModalCycle),
+            'IVm':      buildCycleStartingAfter('IVm7', subdominantModalCycle),
+            'IVm6':     ['IVm7', ...buildCycleStartingAfter('IVm7', subdominantModalCycle)],
+            'bVImaj7':  buildCycleStartingAfter('bVImaj7', subdominantModalCycle),
+            'bVI6':     buildCycleStartingAfter('bVImaj7', subdominantModalCycle),
+            'bVII7':    buildCycleStartingAfter('bVII7', subdominantModalCycle),
+            'IIm7(b5)': buildCycleStartingAfter('IIm7(b5)', subdominantModalCycle),
+            'bIImaj7':  buildCycleStartingAfter('bIImaj7', subdominantModalCycle),
+            'bVIIm7':   buildCycleStartingAfter('bVIIm7', subdominantModalCycle),
+            'bVIIm6':   buildCycleStartingAfter('bVIIm7', subdominantModalCycle),
+            'bVIImaj7': buildCycleStartingAfter('bVIImaj7', subdominantModalCycle),
+            'bVI7':     buildCycleStartingAfter('bVI7', subdominantModalCycle),
+            'Vm7':      buildCycleStartingAfter('IVm7', subdominantModalCycle),
+            'bIIIm7':   buildCycleStartingAfter('bVIIm7', subdominantModalCycle),
+            'bVIm7':    buildCycleStartingAfter('bIImaj7', subdominantModalCycle),
+            'IIIm7(b5)':buildCycleStartingAfter('IIm7(b5)', subdominantModalCycle),
+            'VIm7(b5)': buildCycleStartingAfter('IIm7(b5)', subdominantModalCycle),
+            '#IVm7(b5)':buildCycleStartingAfter('IVmaj7', subdominantModalCycle)
         };
         
         let activeChordMutations = {}; 
+        let originalBaseChordsMap = {};
         let currentActiveSections = []; 
         let initialVarToLoad = null;
+
+        function updateResetButtonsUI() {
+            const mutatedCount = Object.keys(activeChordMutations).length + Object.keys(mutationOverrides).length + (globalTritone ? 1 : 0) + (globalDim ? 1 : 0) + (relacionIIVActive ? 1 : 0);
+            const btns = [document.getElementById('resetChordsBtn'), document.getElementById('resetChordsBtnMobile')];
+            const badges = [document.getElementById('resetCountBadge'), document.getElementById('resetCountBadgeMobile')];
+
+            btns.forEach(btn => {
+                if (!btn) return;
+                if (mutatedCount > 0) {
+                    btn.classList.remove('opacity-50', 'bg-slate-200/80', 'bg-slate-200', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
+                    btn.classList.add('bg-amber-100', 'dark:bg-amber-900/60', 'text-amber-800', 'dark:text-amber-200', 'border-amber-300', 'dark:border-amber-700', 'shadow-sm');
+                } else {
+                    btn.classList.add('opacity-50', 'bg-slate-200/80', 'dark:bg-slate-700', 'text-slate-600', 'dark:text-slate-300');
+                    btn.classList.remove('bg-amber-100', 'dark:bg-amber-900/60', 'text-amber-800', 'dark:text-amber-200', 'border-amber-300', 'dark:border-amber-700', 'shadow-sm');
+                }
+            });
+
+            const individualChanges = Object.keys(activeChordMutations).length + Object.keys(mutationOverrides).length;
+            badges.forEach(badge => {
+                if (!badge) return;
+                if (individualChanges > 0) {
+                    badge.textContent = individualChanges;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            });
+        }
+
+        function resetAllChordMutations() {
+            const hasChanges = Object.keys(activeChordMutations).length > 0 || Object.keys(mutationOverrides).length > 0 || globalTritone || globalDim || relacionIIVActive;
+            if (!hasChanges) {
+                showToast("La progresión ya está en sus acordes originales de base", "info");
+                return;
+            }
+            mutationOverrides = {};
+            activeChordMutations = {};
+            globalTritone = false;
+            globalDim = false;
+            relacionIIVActive = false;
+
+            ['globalTritoneToggle', 'globalTritoneToggleMobile', 'globalDimToggle', 'globalDimToggleMobile', 'relacionToggle', 'relacionToggleMobile'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.checked = false;
+            });
+
+            const wasPlaying = isPlaying;
+            if (wasPlaying) stopProgression();
+            loadAndCompileProgression(true);
+            updateResetButtonsUI();
+            showToast("Acordes restaurados a su estado original de base", "success");
+            if (wasPlaying) setTimeout(() => playProgression(), 50);
+        }
 
         function safeSetStorage(key, val) { try { localStorage.setItem(key, val); } catch(e) { console.warn("LocalStorage bloqueado."); } }
         function safeGetStorage(key) { try { return localStorage.getItem(key); } catch(e) { return null; } }
@@ -1104,8 +1467,10 @@
                 params.set('tempo', document.getElementById('tempoSlider')?.value || 120);
                 params.set('requinto', requintoMode ? '1' : '0');
                 params.set('hidereal', hideRequintoReal ? '1' : '0');
+                params.set('origin', showModalOrigin ? '1' : '0');
                 safeSetStorage('opusLab_requintoMode', requintoMode ? '1' : '0');
                 safeSetStorage('opusLab_hideRequintoReal', hideRequintoReal ? '1' : '0');
+                safeSetStorage('opusLab_showModalOrigin', showModalOrigin ? '1' : '0');
                 
                 const vSelect = document.getElementById('variationSelect');
                 if (vSelect && vSelect.value !== "") params.set('var', vSelect.value);
@@ -1171,6 +1536,18 @@
                 } else if (savedHideReal !== null) {
                     hideRequintoReal = savedHideReal === '1';
                 }
+
+                let savedOrigin = safeGetStorage('opusLab_showModalOrigin');
+                if (params.has('origin')) {
+                    showModalOrigin = params.get('origin') === '1';
+                } else if (savedOrigin !== null) {
+                    showModalOrigin = savedOrigin === '1';
+                } else {
+                    showModalOrigin = true;
+                }
+                if (document.getElementById('modalOriginToggle')) document.getElementById('modalOriginToggle').checked = showModalOrigin;
+                if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
+
                 updateRequintoRealBtnUI();
             } catch(e) { console.warn("Error Restoring State"); }
         }
@@ -1598,9 +1975,6 @@
             const isDimmed = !!dimMatch;
             const isSubbed = chordStr.includes('_SUB');
             let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
-            
-            if (progData && progData.id === "multitonic-coltrane") return cleanStr;
-            if (progData && progData.id === "blues" && selectedVar !== 0) return cleanStr;
 
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
@@ -1610,7 +1984,7 @@
             let originalOffset = stOffset;
             if (isSubbed) originalOffset = (stOffset + 6) % 12;
 
-            if (progData && progData.id === "blues" && selectedVar === 0) {
+            if (progData && (progData.id === "blues" || progData.category?.includes("Blues"))) {
                 if (originalOffset === 0 && cleanQual.startsWith('7')) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "I7");
                 if (originalOffset === 5 && cleanQual.startsWith('7')) return isSubbed ? "subV7/V" : (isDimmed ? "IIIo7" : "IV7");
                 if (originalOffset === 7 && cleanQual.startsWith('7')) return isSubbed ? "subV7/I" : (isDimmed ? "Vo7" : "V7");
@@ -1742,6 +2116,7 @@
         let romanMode = false;
         let requintoMode = false;
         let hideRequintoReal = false;
+        let showModalOrigin = true;
         let visualMeasures = []; 
         let audioTimeline = []; 
         let totalSteps = 0;
@@ -2147,6 +2522,8 @@
                     let chords = blockChords.map((c, cIdx) => {
                         let transposed = transposeChordName(c, stOffset, letterOffset);
                         let overrideKey = `${currentVisualIndex + mIdx}_${cIdx}`;
+                        let cleanOrigBase = transposed.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                        originalBaseChordsMap[overrideKey] = cleanOrigBase;
                         let mutationState = 'normal';
                         if (globalTritone) mutationState = 'tritone';
                         if (globalDim) mutationState = 'dim0';
@@ -2257,7 +2634,7 @@
             });
 
             totalSteps = audioUnrolledMeasures.length * 8;
-            updateGridRowStyles(); renderGrid(); updateStartMeasureLabel(); updateSizeSliderUI();
+            updateGridRowStyles(); renderGrid(); updateStartMeasureLabel(); updateSizeSliderUI(); updateResetButtonsUI();
         }
 
         function getActualGridRows() {
@@ -2354,32 +2731,61 @@
                     let interactiveClass = ""; let tooltip = "";
                     let overrideKey = `${vMeasureId}_${chordIdx}`;
 
-                    let baseRomanTest = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId);
+                    // Obtener el siguiente acorde limpio para análisis contextual (II-V secundarios y sustitutos tritonales en Standards y Personalizado)
+                    let nextCleanChord = null;
+                    if (chordIdx + 1 < vMeasure.chords.length) {
+                        nextCleanChord = vMeasure.chords[chordIdx + 1];
+                    } else if (index + 1 < visualMeasures.length && visualMeasures[index + 1].chords.length > 0) {
+                        nextCleanChord = visualMeasures[index + 1].chords[0];
+                    }
+                    if (nextCleanChord) {
+                        nextCleanChord = nextCleanChord.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                    }
+
+                    let baseRomanTest = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId).split('/')[0];
                     let isActivelyMutated = !!activeChordMutations[overrideKey];
+                    let modalOriginInfo = resolveUniversalChordOrigin(c, cleanC, targetKey, vMeasureId, overrideKey, nextCleanChord);
+                    // Si es un acorde como bVII7 o bVI7 que forma parte del catálogo de Intercambio Modal, permitir también mutarlo como subdominante modal
+                    let canDiatonicOrModalSub = !!diatonicSubstitutions[baseRomanTest] && (!isDom || baseRomanTest === 'bVII7' || baseRomanTest === 'bVI7');
 
                     let reqChord = transposeForRequinto(cleanC);
                     let subInfo = requintoMode ? ` [Requinto: ${reqChord} | Real: ${cleanC}]` : ` [${cleanC}]`;
+                    let originTooltipText = modalOriginInfo ? ` — Origen: ${modalOriginInfo.roman} (${modalOriginInfo.mode})` : '';
+                    let origBaseChord = originalBaseChordsMap[overrideKey];
+                    let origBaseNote = (origBaseChord && origBaseChord !== cleanC) ? ` (Acorde base original: ${origBaseChord})` : '';
 
                     if (isActivelyMutated) {
                         interactiveClass = "cursor-pointer interactive-chord is-diatonic-sub";
-                        tooltip = `title="Clic para continuar sustitución modal${subInfo}"`;
-                        color = "text-indigo-600 dark:text-indigo-400 font-bold border-b-[1.5px] md:border-b-2 border-indigo-500 border-dashed";
-                    } else if (diatonicSubstitutions[baseRomanTest] && !isDom) {
+                        tooltip = `title="Clic para cambiar Función / Intercambio Modal${originTooltipText}${subInfo}${origBaseNote}"`;
+                        if (modalOriginInfo && modalOriginInfo.family === 'mixolydian') {
+                            color = "text-amber-600 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed";
+                        } else if (modalOriginInfo && modalOriginInfo.family === 'locrian') {
+                            color = "text-teal-600 dark:text-teal-400 font-bold border-b-[1.5px] md:border-b-2 border-teal-500 border-dashed";
+                        } else if (modalOriginInfo && (modalOriginInfo.family === 'diatonic-sub' || modalOriginInfo.family === 'tonic' || modalOriginInfo.family === 'tonic-minor')) {
+                            color = "text-blue-600 dark:text-blue-400 font-bold border-b-[1.5px] md:border-b-2 border-blue-500 border-dashed";
+                        } else {
+                            color = "text-purple-600 dark:text-purple-400 font-bold border-b-[1.5px] md:border-b-2 border-purple-500 border-dashed";
+                        }
+                    } else if (canDiatonicOrModalSub) {
                         interactiveClass = "cursor-pointer interactive-chord is-diatonic-sub";
-                        tooltip = `title="Clic para sustitución diatónica / modal${subInfo}"`;
-                        color = "text-indigo-700 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors";
+                        tooltip = `title="Clic para sustitución Funcional (Tónica / Subdominante / Intercambio Modal)${originTooltipText}${subInfo}${origBaseNote}"`;
+                        if (modalOriginInfo && (modalOriginInfo.family === 'aeolian' || modalOriginInfo.family === 'phrygian' || modalOriginInfo.family === 'mixolydian' || modalOriginInfo.family === 'locrian')) {
+                            color = "text-purple-700 dark:text-purple-300 hover:text-purple-500 dark:hover:text-purple-400 transition-colors";
+                        } else {
+                            color = "text-indigo-700 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors";
+                        }
                     } else if (isThirdSub || isTritoneThirdSub) {
                         color = "text-emerald-500 dark:text-emerald-400 font-bold border-b-[1.5px] md:border-b-2 border-emerald-500 border-dashed is-thirdsub is-dominant";
                         interactiveClass = "cursor-pointer hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${subInfo}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (isSubbed) {
                         color = "text-amber-500 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
                         interactiveClass = "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${subInfo}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (isDimmed) {
                         color = "text-pink-500 dark:text-pink-400 font-bold border-b-[1.5px] md:border-b-2 border-pink-500 border-dashed is-dimmed is-dominant";
                         interactiveClass = "cursor-pointer hover:text-pink-500 dark:hover:text-pink-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${subInfo}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (c.includes('_T1')) {
                         color = "text-blue-500 font-black"; 
                     } else if (c.includes('_T2')) {
@@ -2389,22 +2795,42 @@
                     } else if (isDom) {
                         color += " is-dominant";
                         interactiveClass = "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors interactive-chord is-dominant"; 
-                        tooltip = `title="Clic para mutar acorde dominante${subInfo}"`; 
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`; 
                     }
+
+                    // Si el interruptor "Origen" está activo, se muestra la etiqueta en TODAS las funciones armónicas
+                    let shouldRenderOriginBadge = showModalOrigin && !!modalOriginInfo;
+                    let originBadgeHTML = shouldRenderOriginBadge
+                        ? `<span class="text-[0.32em] font-bold px-1 py-[1px] rounded-full border ${modalOriginInfo.badgeClass} tracking-tight font-sans mt-0.5 leading-none whitespace-nowrap shadow-sm">${modalOriginInfo.roman} (${modalOriginInfo.mode})</span>`
+                        : '';
                     
                     if (requintoMode && cleanC !== "NC" && cleanC !== "-" && cleanC !== ":|") {
                         let mainDisplay = romanMode ? textStr : reqChord;
                         if (hideRequintoReal) {
                             let singleDisplay = romanMode ? `${textStr} (${reqChord})` : reqChord;
+                            if (originBadgeHTML) {
+                                return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
+                                    <span>${singleDisplay}</span>
+                                    ${originBadgeHTML}
+                                </span>`;
+                            }
                             return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${singleDisplay}</span>`;
                         }
                         let secondaryDisplay = romanMode ? `Req:${reqChord} · Real:${cleanC}` : `Real: ${cleanC}`;
                         return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
                             <span>${mainDisplay}</span>
                             <span class="text-[0.42em] font-semibold text-slate-400 dark:text-slate-400 tracking-tight font-sans mt-0.5 opacity-95">${secondaryDisplay}</span>
+                            ${originBadgeHTML}
                         </span>`;
                     }
                     
+                    if (originBadgeHTML) {
+                        return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
+                            <span>${textStr}</span>
+                            ${originBadgeHTML}
+                        </span>`;
+                    }
+
                     return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${textStr}</span>`;
                 };
 
@@ -2886,6 +3312,15 @@
             romanMode = e.target.checked; document.getElementById('romanToggle').checked = romanMode; document.getElementById('romanToggleMobile').checked = romanMode; renderGrid(); 
         }));
 
+        ['modalOriginToggle', 'modalOriginToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            showModalOrigin = e.target.checked;
+            if (document.getElementById('modalOriginToggle')) document.getElementById('modalOriginToggle').checked = showModalOrigin;
+            if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
+            renderGrid();
+            updateURLState();
+            showToast(showModalOrigin ? "Origen de Intercambio Modal visible" : "Origen de Intercambio Modal oculto", "info");
+        }));
+
         ['requintoToggle', 'requintoToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
             requintoMode = e.target.checked;
             if(document.getElementById('requintoToggle')) document.getElementById('requintoToggle').checked = requintoMode;
@@ -2903,6 +3338,8 @@
             updateURLState();
             showToast(hideRequintoReal ? "Acorde real oculto (Solo posición de Requinto)" : "Acorde real visible debajo del Requinto", "info");
         }));
+
+        ['resetChordsBtn', 'resetChordsBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', resetAllChordMutations));
 
         function toggleRepeatSymbol(type) {
             if (!currentActiveSections || currentActiveSections.length === 0 || selectedStartMeasure === -1) return;
@@ -2971,6 +3408,22 @@
         
         document.getElementById('insertPipeBtn')?.addEventListener('click', () => insertTextAtCursor('customProgInput', '|'));
 
+        // Botones de inserción rápida por Origen en Progresión Personalizada
+        document.querySelectorAll('.custom-origin-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const roman = btn.dataset.roman;
+                if (!roman) return;
+                const keySelectVal = document.getElementById('keySelect');
+                const keySelectMobileVal = document.getElementById('keySelectMobile');
+                const currentKey = (keySelectVal && keySelectVal.value) || (keySelectMobileVal && keySelectMobileVal.value) || "C";
+                // Convertir el grado funcional/modal al acorde en el Tono actual
+                const chordInKey = romanToChord(roman, currentKey, 0);
+                insertTextAtCursor('customProgInput', `| ${chordInKey}`);
+                const originMeta = modalOriginCatalog[roman] ? `${modalOriginCatalog[roman].roman} (${modalOriginCatalog[roman].mode})` : roman;
+                showToast(`Insertado: ${chordInKey} — ${originMeta}`, "info");
+            });
+        });
+
         document.getElementById('chordGrid')?.addEventListener('click', (e) => {
             const chordEl = e.target.closest('.chord-text');
             if (chordEl) {
@@ -2991,7 +3444,7 @@
                         if (vm) {
                             let currentChordStr = vm.chords[chordIdx];
                             let cleanC = currentChordStr.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
-                            let baseRoman = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId);
+                            let baseRoman = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId).split('/')[0];
                             
                             if (diatonicSubstitutions[baseRoman]) {
                                 activeChordMutations[overrideKey] = {
@@ -3017,7 +3470,15 @@
                     let updatedVm = visualMeasures.find(m => m.id == vMeasureId);
                     if (updatedVm && updatedVm.chords[chordIdx]) {
                         let newClean = updatedVm.chords[chordIdx].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
-                        if (requintoMode) showToast(`Sustitución Modal → Requinto: ${transposeForRequinto(newClean)} (Real: ${newClean})`, "info");
+                        let activeState = activeChordMutations[overrideKey];
+                        let originMeta = activeState && modalOriginCatalog[activeState.activeRoman]
+                            ? `${modalOriginCatalog[activeState.activeRoman].roman} (${modalOriginCatalog[activeState.activeRoman].mode})`
+                            : (activeState ? activeState.activeRoman : 'Original');
+                        if (requintoMode) {
+                            showToast(`${newClean} [${originMeta}] → Requinto: ${transposeForRequinto(newClean)}`, "info");
+                        } else {
+                            showToast(`Sustitución: ${newClean} — ${originMeta}`, "info");
+                        }
                     }
                     if (wasPlaying) setTimeout(() => playProgression(), 50);
                     return;
@@ -3040,8 +3501,18 @@
                     loadAndCompileProgression(true);
                     let updatedVm = visualMeasures.find(m => m.id == vMeasureId);
                     if (updatedVm && updatedVm.chords[chordIdx]) {
-                        let newClean = updatedVm.chords[chordIdx].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
-                        if (requintoMode) showToast(`Sustitución Dominante → Requinto: ${transposeForRequinto(newClean)} (Real: ${newClean})`, "info");
+                        let rawMutated = updatedVm.chords[chordIdx];
+                        let newClean = rawMutated.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                        const keySelectVal = document.getElementById('keySelect');
+                        const keySelectMobileVal = document.getElementById('keySelectMobile');
+                        const targetKey = (keySelectVal && keySelectVal.value) || (keySelectMobileVal && keySelectMobileVal.value) || "C";
+                        let domOrigin = resolveUniversalChordOrigin(rawMutated, newClean, targetKey, vMeasureId, overrideKey);
+                        let domMeta = domOrigin ? `${domOrigin.roman} (${domOrigin.mode})` : 'Dominante';
+                        if (requintoMode) {
+                            showToast(`${newClean} [${domMeta}] → Requinto: ${transposeForRequinto(newClean)}`, "info");
+                        } else {
+                            showToast(`Dominante: ${newClean} — ${domMeta}`, "info");
+                        }
                     }
                     return;
                 }
