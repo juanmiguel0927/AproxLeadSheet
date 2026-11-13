@@ -97,6 +97,7 @@
         input#relacionToggle:checked ~ .toggle-dot, input#relacionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #10b981; }
         input#requintoToggle:checked ~ .toggle-dot, input#requintoToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #6366f1; }
         input#modalOriginToggle:checked ~ .toggle-dot, input#modalOriginToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #9333ea; }
+        input#scaleTensionToggle:checked ~ .toggle-dot, input#scaleTensionToggleMobile:checked ~ .toggle-dot { transform: translateX(100%); background-color: #0d9488; }
 
         input:checked ~ .toggle-track { background-color: #dbeafe; }
         input#globalTritoneToggle:checked ~ .toggle-track, input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #fef3c7; }
@@ -104,6 +105,7 @@
         input#relacionToggle:checked ~ .toggle-track, input#relacionToggleMobile:checked ~ .toggle-track { background-color: #d1fae5; }
         input#requintoToggle:checked ~ .toggle-track, input#requintoToggleMobile:checked ~ .toggle-track { background-color: #e0e7ff; }
         input#modalOriginToggle:checked ~ .toggle-track, input#modalOriginToggleMobile:checked ~ .toggle-track { background-color: #f3e8ff; }
+        input#scaleTensionToggle:checked ~ .toggle-track, input#scaleTensionToggleMobile:checked ~ .toggle-track { background-color: #ccfbf1; }
         
         .dark input:checked ~ .toggle-track { background-color: #1e3a8a; }
         .dark input#globalTritoneToggle:checked ~ .toggle-track, .dark input#globalTritoneToggleMobile:checked ~ .toggle-track { background-color: #78350f; }
@@ -111,6 +113,7 @@
         .dark input#relacionToggle:checked ~ .toggle-track, .dark input#relacionToggleMobile:checked ~ .toggle-track { background-color: #064e3b; }
         .dark input#requintoToggle:checked ~ .toggle-track, .dark input#requintoToggleMobile:checked ~ .toggle-track { background-color: #312e81; }
         .dark input#modalOriginToggle:checked ~ .toggle-track, .dark input#modalOriginToggleMobile:checked ~ .toggle-track { background-color: #581c87; }
+        .dark input#scaleTensionToggle:checked ~ .toggle-track, .dark input#scaleTensionToggleMobile:checked ~ .toggle-track { background-color: #115e59; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); border-radius: 10px; }
@@ -166,11 +169,329 @@
                 <div>
                     <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-1">Interactividad Dinámica (Haz clic en los acordes)</h4>
                     <ul class="list-disc pl-5 space-y-1.5 text-slate-600 dark:text-slate-300">
-                        <li><strong>Acordes Dominantes:</strong> Haz clic sobre cualquier dominante (ej. <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">G7</code>) para explorar su ciclo de sustituciones: Tercera con lookahead (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">m7(b5)</code> o Disminuido con inversiones), Sustitución Tritonal (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">subV7</code>), y Tritono-Tercera / Disminuido tritonal.</li>
+                        <li><strong>Acordes Dominantes:</strong> Haz clic sobre cualquier dominante (ej. <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">G7</code>) para explorar su ciclo de sustituciones: Dominante suspendido (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">7sus4</code>), Tercera con lookahead (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">m7(b5)</code> o Disminuido), Sustitución Tritonal (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">subV7</code>), Tritono-Tercera e Inversiones Disminuidas (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">dim7</code>).</li>
                         <li><strong>Subdominantes (IV ↔ II) e Intercambio Modal:</strong> Haz clic sobre cualquier acorde subdominante (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">IVmaj7</code> o <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">IIm7</code>) para alternar entre ambos y recorrer todos los préstamos de Intercambio Modal: <strong>Eólico</strong> (<code class="text-xs">IVm7, bVImaj7, bVII7, IIm7(b5)</code>), <strong>Frigio</strong> (<code class="text-xs">bIImaj7, bVIIm7</code>), <strong>Mixolidio</strong> (<code class="text-xs">bVIImaj7</code>) y <strong>Locrio</strong> (<code class="text-xs">bVI7</code>). Activa el interruptor <em>Origen</em> para mostrar u ocultar la etiqueta del modo debajo de cada acorde.</li>
                         <li><strong>Modo Requinto (La):</strong> Activa el interruptor <em>Requinto</em> para visualizar las posiciones de digitación transportadas una cuarta justa hacia abajo (-5 semitonos). Usa el botón de ojo (<i class="fa-solid fa-eye text-indigo-500"></i>) junto al interruptor para mostrar u ocultar la etiqueta del sonido real de concierto (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">Real: ...</code>).</li>
                         <li><strong>Gestión de Compases:</strong> Haz clic en cualquier compás de la rejilla para seleccionarlo y añadir marcas de repetición (<code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">|:</code> / <code class="bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded font-mono text-xs">:|</code>).</li>
                     </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-base text-teal-600 dark:text-teal-400 mb-2">Notas de Cuidado (a Evitar) y Sonoridad Modal vs. Tonal</h4>
+                    <div class="space-y-3 text-slate-600 dark:text-slate-300 bg-teal-50/50 dark:bg-teal-950/20 p-4 rounded-xl border border-teal-200 dark:border-teal-800/50">
+                        <p>En la armonía funcional tonal, las llamadas <strong>notas a evitar</strong> son en realidad <strong>notas de cuidado</strong> (<code class="text-rose-600 dark:text-rose-400 font-bold">Ev:</code>): no están prohibidas melódicamente, pero requieren tratamiento y resolución cuidadosa para no desestabilizar la función del acorde.</p>
+                        
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <strong class="block text-slate-800 dark:text-slate-100 mb-1"> Formas de uso y Resolución de la 11 (4ª justa) en acordes Mayores y Dominantes:</strong>
+                            <ul class="list-disc pl-5 space-y-1 text-xs">
+                                <li>Puede <strong>resolver hacia arriba a la 5ª</strong> del acorde (<code class="font-mono">11 → 5</code>).</li>
+                                <li>Puede <strong>resolver directamente hacia abajo a la 3ª</strong> del acorde (<code class="font-mono">11 → 3</code>).</li>
+                                <li>Puede realizar un giro melódico (cambiata/doble resolución): <strong>ascender a la 5ª y luego descender a la 3ª</strong> (<code class="font-mono">11 → 5 → 3</code>).</li>
+                                <li>En acordes <strong>7sus4</strong> (tanto dominantes como tritonales <code class="font-mono">subV7sus4</code>), la <code class="font-mono">4ª (11)</code> es nota del acorde y la <strong>nota a evitar es siempre la 3ª</strong> (<code class="font-mono">Ev:3</code>). Escalas para <strong>7sus4</strong> según función: <strong>Mixolidia</strong>, <strong>Mixolidia b6</strong> (ej. <code class="font-mono">V7sus4/II · T:9, b13 · Ev:3</code>), <strong>Mixolidia b2 b6</strong>, <strong>Frigia ♮6</strong> y <strong>Mixolidia b2</strong>.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-200 dark:border-slate-700">
+                            <strong class="block text-slate-800 dark:text-slate-100 mb-1.5">✨ De Nota de Cuidado (Tonal) a Nota Característica (Modal):</strong>
+                            <p class="text-xs mb-3">Algunas notas que son de cuidado en el contexto tonal funcional pasan a ser las <strong>notas características (Principal y Secundaria)</strong> en la sonoridad modal, ordenadas de <strong>más brillante a más oscuro</strong>:</p>
+                            
+                            <!-- Esquema de Modos de más brillante a más oscuro y agrupaciones -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                                <div class="p-2.5 rounded-xl bg-amber-50/50 dark:bg-slate-700/40 border border-amber-200/70 dark:border-slate-600 text-xs">
+                                    <strong class="block text-amber-800 dark:text-amber-300 mb-1 flex items-center justify-between">
+                                        <span>☀️ Más brillante → 🌑 Más oscuro</span>
+                                        <i class="fa-solid fa-arrows-up-down text-amber-500"></i>
+                                    </strong>
+                                    <ol class="list-decimal pl-4 space-y-0.5 font-semibold text-slate-700 dark:text-slate-200">
+                                        <li>Lidio <span class="text-[10px] text-amber-600 dark:text-amber-400 font-normal">(Más brillante)</span></li>
+                                        <li>Jónico</li>
+                                        <li>Mixolidio</li>
+                                        <li>Dórico</li>
+                                        <li>Eólico</li>
+                                        <li>Frigio</li>
+                                        <li>Locrio <span class="text-[10px] text-slate-500 dark:text-slate-400 font-normal">(Más oscuro)</span></li>
+                                    </ol>
+                                </div>
+                                <div class="p-2.5 rounded-xl bg-blue-50/50 dark:bg-slate-700/40 border border-blue-200/70 dark:border-slate-600 text-xs space-y-1.5">
+                                    <div>
+                                        <strong class="text-blue-800 dark:text-blue-300 block">Modos mayores:</strong>
+                                        <div class="font-mono text-[11px] text-slate-700 dark:text-slate-200">
+                                            <div><strong>#4 &amp; 7</strong> = Lidio</div>
+                                            <div><strong>4 &amp; 7</strong> = Jónico</div>
+                                            <div><strong>b7 &amp; 4</strong> = Mixolidio</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <strong class="text-indigo-800 dark:text-indigo-300 block">Modos menores sin 2da frigia:</strong>
+                                        <div class="font-mono text-[11px] text-slate-700 dark:text-slate-200">
+                                            <div><strong>6 &amp; 2</strong> = Dórico</div>
+                                            <div><strong>b6 &amp; 2</strong> = Eólico</div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <strong class="text-purple-800 dark:text-purple-300 block">Modos menores con 2da frigia:</strong>
+                                        <div class="font-mono text-[11px] text-slate-700 dark:text-slate-200">
+                                            <div><strong>b2 &amp; 5</strong> = Frigio</div>
+                                            <div><strong>b5 &amp; b2</strong> = Locrio</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabla de Notas Característica Principal y Secundaria -->
+                            <div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 mb-4 shadow-sm">
+                                <table class="w-full text-xs text-left border-collapse">
+                                    <thead>
+                                        <tr class="border-b border-blue-200 dark:border-slate-700">
+                                            <th class="py-2.5 px-3 font-extrabold text-slate-900 dark:text-white bg-white dark:bg-slate-800">Modo (Brillante ↕ Oscuro)</th>
+                                            <th class="py-2.5 px-3 font-extrabold text-center text-blue-800 dark:text-blue-300 bg-blue-100/80 dark:bg-blue-900/40">Nota Característica Principal</th>
+                                            <th class="py-2.5 px-3 font-extrabold text-center text-indigo-800 dark:text-indigo-300 bg-indigo-50/90 dark:bg-indigo-950/40">Nota Característica Secundaria</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/60 font-semibold">
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Lidio</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">#4</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">7</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Jónico</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">4</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">7</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Mixolidio</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">b7</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">4</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Dórico</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">6</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">2</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Eólico</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">b6</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">2</td>
+                                        </tr>
+                                        <tr class="bg-slate-50/70 dark:bg-slate-800/80">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Frigio</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">b2</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">5</td>
+                                        </tr>
+                                        <tr class="bg-white dark:bg-slate-800">
+                                            <td class="py-2 px-3 text-slate-800 dark:text-slate-200">Locrio</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-blue-700 dark:text-blue-400 bg-blue-50/40 dark:bg-blue-950/20">b5</td>
+                                            <td class="py-2 px-3 text-center font-extrabold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/10">b2</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Diccionario Modal Completo (Los 4 Sistemas de Origen) -->
+                            <div class="space-y-4 pt-2 border-t border-slate-200 dark:border-slate-700">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa-solid fa-list-ul text-blue-600 dark:text-blue-400"></i>
+                                    <strong class="text-sm text-slate-900 dark:text-white">Diccionario Modal por Escala de Origen (28 Modos)</strong>
+                                </div>
+
+                                <!-- 1. Sistema Escala Mayor -->
+                                <div>
+                                    <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-200 pb-1 mb-2 border-b border-slate-200 dark:border-slate-700">Sistema Escala Mayor</h5>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Jónico</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #01</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Dórico</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #02</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Frigio</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #03</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Lidio</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #04</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #05</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Eólico</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #06</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #07</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 2. Sistema Menor Armónica -->
+                                <div>
+                                    <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-200 pb-1 mb-2 border-b border-slate-200 dark:border-slate-700">Sistema Menor Armónica</h5>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Eólico ♮7</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #08</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio ♮6</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #09</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Jónico #5</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #10</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Dórico #4</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #11</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio b2 b6</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #12</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Lidio #2</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #13</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio b4 bb7</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #14</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">bb7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 3. Sistema Menor Melódica -->
+                                <div>
+                                    <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-200 pb-1 mb-2 border-b border-slate-200 dark:border-slate-700">Sistema Menor Melódica</h5>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Dórico ♮7</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #15</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Frigio ♮6</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #16</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Lidio #5</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #17</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio #4</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #18</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio b6</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #19</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio ♮2</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #20</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio Alt (Superlocrio)</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #21</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 4. Sistema Mayor Armónica -->
+                                <div>
+                                    <h5 class="text-xs font-extrabold text-slate-700 dark:text-slate-200 pb-1 mb-2 border-b border-slate-200 dark:border-slate-700">Sistema Mayor Armónica</h5>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Jónico b6</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #22</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio ♮2 ♮6 (Dórico b5)</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #23</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio b2 #2 b6 (Frigio b4)</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #24</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Dórico #4 ♮7 (Lidio b3)</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #25</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Mixolidio b2</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #26</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Lidio #2 #5</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #27</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">#5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">7</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/60">
+                                            <div class="flex justify-between items-center mb-1.5"><strong class="text-xs text-slate-800 dark:text-white">Locrio bb7</strong><span class="text-[9px] font-mono bg-slate-200 dark:bg-slate-700 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300">ID #28</span></div>
+                                            <div class="flex flex-wrap gap-1 text-[10px] font-bold text-blue-600 dark:text-blue-300">
+                                                <span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">1</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b2</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b3</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">4</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b5</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">b6</span><span class="px-1.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/40">bb7</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <h4 class="font-bold text-base text-blue-600 dark:text-blue-400 mb-2">Guía de Colores y Significados Armónicos</h4>
@@ -342,6 +663,15 @@
                             </div>
                             <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-purple-600 transition-colors">Origen</span>
                         </label>
+
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar Relación Escala-Acorde, Tensiones disponibles y Nota a evitar (de cuidado)">
+                            <div class="relative">
+                                <input type="checkbox" id="scaleTensionToggle" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-teal-600 transition-colors">Escala/T.</span>
+                        </label>
                         
                         <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal Master">
                             <div class="relative">
@@ -458,6 +788,9 @@
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar origen de Intercambio Modal">
                             <div class="relative"><input type="checkbox" id="modalOriginToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Origen</span>
+                        </label>
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar Relación Escala-Acorde, Tensiones y Nota de cuidado">
+                            <div class="relative"><input type="checkbox" id="scaleTensionToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Escala/T.</span>
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group">
                             <div class="relative"><input type="checkbox" id="globalTritoneToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Tritono</span>
@@ -1175,10 +1508,225 @@
 
             // === FUNCIÓN DOMINANTE ===
             'V7':       { roman: 'V7',       mode: 'Dom. · Mixolidio',   family: 'dominant',     badgeClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300' },
+            'V7sus4':   { roman: 'V7sus4',   mode: 'Dom. Sus4 · Mix.',   family: 'dominant',     badgeClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300' },
             'V7(b9)':   { roman: 'V7(b9)',   mode: 'Dom. · Menor Arm.',  family: 'dominant',     badgeClass: 'bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300' },
             'I7':       { roman: 'I7',       mode: 'Tónica Blues · Mix.',family: 'dominant',     badgeClass: 'bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-200 border-blue-300' },
-            'IV7':      { roman: 'IV7',      mode: 'Subdom. Blues · Lidio b7', family: 'dominant', badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' }
+            'IV7':      { roman: 'IV7',      mode: 'Subdom. · Mixolidio #4', family: 'dominant', badgeClass: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-200 border-indigo-300' }
         };
+
+        // Catálogo de Relación Escala-Acorde, Tensiones Disponibles y Nota de Cuidado (a evitar)
+        const scaleTensionCatalog = {
+            // === MAYORES (Xmaj7 / X6) ===
+            'Imaj7':    { scale: 'Jónica',          tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'I6':       { scale: 'Jónica',          tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'I':        { scale: 'Jónica',          tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'Imaj':     { scale: 'Jónica',          tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'IVmaj7':   { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'IV6':      { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'IV':       { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bIImaj7':  { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bIIImaj7': { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bIII6':    { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bVImaj7':  { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bVI6':     { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+            'bVIImaj7': { scale: 'Lidia',           tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-teal-50 text-teal-800 dark:bg-teal-950/70 dark:text-teal-200 border-teal-300' },
+
+            // === MENORES (Xm7 / Xm6) ===
+            'IIm7':     { scale: 'Dórica',          tensions: '9, 11 (13)',   avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IIm':      { scale: 'Dórica',          tensions: '9, 11',        avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IIm6':     { scale: 'Dórica',          tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IIIm7':    { scale: 'Frigia',          tensions: '11',           avoid: 'b9, b13', badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IIIm':     { scale: 'Frigia',          tensions: '11',           avoid: 'b9, b13', badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IVm7':     { scale: 'Dórica',          tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IVm':      { scale: 'Dórica',          tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'IVm6':     { scale: 'Dórica / Mel.',   tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'VIm7':     { scale: 'Eólica',          tensions: '9, 11',        avoid: 'b13',     badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'VIm':      { scale: 'Eólica',          tensions: '9, 11',        avoid: 'b13',     badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'VIm6':     { scale: 'Dórica',          tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'Im7':      { scale: 'Eólica / Dórica', tensions: '9, 11',        avoid: 'b13',     badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'Im':       { scale: 'Eólica / Dórica', tensions: '9, 11',        avoid: 'b13',     badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'Im6':      { scale: 'Dórica / Mel.',   tensions: '9, 11, 13',    avoid: '—',       badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'Vm7':      { scale: 'Dórica',          tensions: '9, 11',        avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'bVIIm7':   { scale: 'Dórica',          tensions: '9, 11',        avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'bIIIm7':   { scale: 'Dórica',          tensions: '9, 11',        avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+            'bVIm7':    { scale: 'Dórica',          tensions: '9, 11',        avoid: '13',      badgeClass: 'bg-cyan-50 text-cyan-800 dark:bg-cyan-950/70 dark:text-cyan-200 border-cyan-300' },
+
+            // === SEMIDISMINUIDOS Xm7(b5) (CON NOMBRES CORREGIDOS) ===
+            'VIIm7(b5)':{ scale: 'Locrio',          tensions: '11, b13',      avoid: 'b9',      badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300' },
+            'IIm7(b5)': { scale: 'Locrio ♮6',       tensions: '11, 13',       avoid: 'b9',      badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300' },
+            'VIm7(b5)': { scale: 'Locrio ♮2',       tensions: '9, 11, b13',   avoid: '—',       badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300' },
+            '#IVm7(b5)':{ scale: 'Locrio ♮2',       tensions: '9, 11, b13',   avoid: '—',       badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300' },
+            'IIIm7(b5)':{ scale: 'Locrio ♮6',       tensions: '11, 13',       avoid: 'b9',      badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300' },
+
+            // === DOMINANTES DE INTERCAMBIO MODAL Y BLUES (MIXOLIDIO #4) ===
+            'bVII7':    { scale: 'Mixolidio #4',    tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'bVI7':     { scale: 'Mixolidio #4',    tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'bII7':     { scale: 'Mixolidio #4',    tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'IV7':      { scale: 'Mixolidio #4',    tensions: '9, #11, 13',   avoid: '—',       badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'I7':       { scale: 'Mixolidia',       tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'V7':       { scale: 'Mixolidia',       tensions: '9, 13',        avoid: '11',      badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'V7sus4':   { scale: 'Mixolidia',       tensions: '9, 13',        avoid: '3',       badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' },
+            'V7(b9)':   { scale: 'Mixolidia b2 b6', tensions: 'b9, (#9), b13',avoid: '11',      badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300' }
+        };
+
+        function resolveChordScaleTension(rawChord, cleanChord, targetKey, measureId, overrideKey, nextCleanChord = null, originInfo = null) {
+            if (!cleanChord || cleanChord === "NC" || cleanChord === "-" || cleanChord === ":|") return null;
+
+            const isSubbed = rawChord.includes('_SUB');
+            const isDimmed = /_DIM(\d)?/.test(rawChord);
+            const isThirdSub = rawChord.includes('_THIRDSUB');
+            const isTritoneThirdSub = rawChord.includes('_TRITONETHIRDSUB');
+            const isSusSub = rawChord.includes('_SUSSUB') || cleanChord.includes('sus4') || cleanChord.includes('7sus');
+            const isActivelyMutated = !!activeChordMutations[overrideKey];
+
+            // 1. Si tiene mutación modal/diatónica activa
+            if (isActivelyMutated) {
+                const activeRom = activeChordMutations[overrideKey].activeRoman;
+                if (scaleTensionCatalog[activeRom]) return scaleTensionCatalog[activeRom];
+            }
+
+            // 2. Disminuidos (Xo7 / dim7 -> 7mo modo menor armónica: Locrio b4 bb7 / Tono-Semitono)
+            if (isDimmed || cleanChord.includes('dim') || cleanChord.includes('o7')) {
+                return {
+                    scale: 'Locrio b4 bb7 / Tono-St.',
+                    tensions: '7, b9, 11, b13',
+                    avoid: '—',
+                    badgeClass: 'bg-pink-50 text-pink-800 dark:bg-pink-950/70 dark:text-pink-200 border-pink-300'
+                };
+            }
+
+            // 3. Sustitución de 3ra o Tritono+3ra semidisminuida
+            if (isThirdSub || isTritoneThirdSub) {
+                return {
+                    scale: 'Locrio / Locrio ♮2',
+                    tensions: '11, b13',
+                    avoid: 'b9',
+                    badgeClass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-200 border-emerald-300'
+                };
+            }
+
+            // 4. Sustituto Tritonal (subV7 -> Mixolidio #4, o subV7sus4 -> Mixolidia / Frigia ♮6 con Ev:3)
+            if (isSubbed || (originInfo && originInfo.roman && originInfo.roman.startsWith('subV'))) {
+                if (isSusSub) {
+                    const romanLabel = originInfo ? originInfo.roman : convertToRoman(rawChord, targetKey, measureId);
+                    if (romanLabel.includes('/II')) {
+                        return {
+                            scale: 'Mixolidia b6 / Frigia ♮6',
+                            tensions: '9, b13',
+                            avoid: '3',
+                            badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                        };
+                    }
+                    if (romanLabel.includes('/III') || romanLabel.includes('/VI')) {
+                        return {
+                            scale: 'Mixolidia b2 b6 / Mix. b2',
+                            tensions: 'b9, b13',
+                            avoid: '3',
+                            badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                        };
+                    }
+                    return {
+                        scale: 'Mixolidia / Frigia ♮6',
+                        tensions: '9 (b9), 13',
+                        avoid: '3',
+                        badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                    };
+                }
+                return {
+                    scale: 'Mixolidio #4',
+                    tensions: '9, #11, 13',
+                    avoid: '—',
+                    badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                };
+            }
+
+            const baseRoman = getBaseRomanForSubstitutionLogic(cleanChord, targetKey, measureId).split('/')[0];
+
+            // 5. Semidisminuidos m7(b5) con nombres corregidos
+            if (cleanChord.includes('m7(b5)')) {
+                if (baseRoman === 'VIIm7(b5)') {
+                    return scaleTensionCatalog['VIIm7(b5)'];
+                }
+                if (baseRoman === 'VIm7(b5)' || baseRoman === '#IVm7(b5)') {
+                    return scaleTensionCatalog['VIm7(b5)']; // Locrio ♮2
+                }
+                return scaleTensionCatalog['IIm7(b5)']; // Locrio ♮6 (2do modo menor armónico)
+            }
+
+            // 6. Dominantes Secundarios, Primarios y 7sus4 según su función (conservando escala y cambiando Ev:11 -> Ev:3 en 7sus4)
+            if (isDominant(cleanChord) || isSusSub) {
+                const romanLabel = originInfo ? originInfo.roman : convertToRoman(rawChord, targetKey, measureId);
+                const avoidNote = isSusSub ? '3' : '11';
+
+                if (cleanChord.includes('b5') && !isSusSub) {
+                    return {
+                        scale: 'Mixolidio #4 / Alt.',
+                        tensions: '9, #11, 13',
+                        avoid: '—',
+                        badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                    };
+                }
+                // V7/II (ej. A7 o A7sus4 en Do mayor -> Escala Mixolidia b6, Tensiones: 9, b13, Evitar: 11 o 3)
+                if (romanLabel.includes('/II')) {
+                    return {
+                        scale: 'Mixolidia b6',
+                        tensions: '9, b13',
+                        avoid: avoidNote,
+                        badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                    };
+                }
+                // V7/III o V7/VI (ej. B7/B7sus4 o E7/E7sus4 -> Mixolidia b2 b6 / Frigia ♮6 / Mixolidia b2)
+                if (romanLabel.includes('/III') || romanLabel.includes('/VI') || cleanChord.includes('(b9)')) {
+                    return {
+                        scale: isSusSub ? 'Mixolidia b2 b6 / Frigia ♮6' : 'Mixolidia b2 b6',
+                        tensions: isSusSub ? 'b9, b13' : 'b9, (#9), b13',
+                        avoid: avoidNote,
+                        badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                    };
+                }
+                if (!isSusSub && (romanLabel === 'bVII7' || romanLabel === 'bVI7' || romanLabel === 'IV7' || baseRoman === 'bVII7' || baseRoman === 'bVI7')) {
+                    return scaleTensionCatalog['bVII7']; // Mixolidio #4
+                }
+                // Si el siguiente acorde es menor (ej. V7 o V7sus4 resolviendo a acorde menor)
+                if (nextCleanChord) {
+                    const nextMatch = nextCleanChord.match(/^([A-G][#b]*)(.*)$/);
+                    if (nextMatch) {
+                        const nextQual = nextMatch[2].split('/')[0];
+                        if (nextQual.startsWith('m') && !nextQual.startsWith('maj')) {
+                            return {
+                                scale: isSusSub ? 'Mixolidia b2 b6 / Mix. b6' : 'Mixolidia b2 b6',
+                                tensions: isSusSub ? 'b9, b13' : 'b9, (#9), b13',
+                                avoid: avoidNote,
+                                badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                            };
+                        }
+                    }
+                }
+                return {
+                    scale: 'Mixolidia',
+                    tensions: '9, 13',
+                    avoid: avoidNote,
+                    badgeClass: 'bg-amber-50 text-amber-800 dark:bg-amber-950/70 dark:text-amber-200 border-amber-300'
+                };
+            }
+
+            // 7. Consulta directa en el catálogo por grado romano
+            if (scaleTensionCatalog[baseRoman]) {
+                return scaleTensionCatalog[baseRoman];
+            }
+
+            // 8. Fallback por cualidad del acorde
+            if (cleanChord.includes('maj7') || cleanChord.includes('6')) {
+                return baseRoman.startsWith('I') && !baseRoman.startsWith('IV')
+                    ? scaleTensionCatalog['Imaj7']
+                    : scaleTensionCatalog['IVmaj7'];
+            }
+            if (cleanChord.includes('m7') || cleanChord.includes('m6') || cleanChord.endsWith('m')) {
+                return scaleTensionCatalog['IIm7'];
+            }
+
+            return scaleTensionCatalog['Imaj7'];
+        }
 
         // Resuelve dinámicamente el origen y función de cualquier acorde (Standards, Estudios y Personalizado)
         function resolveUniversalChordOrigin(rawChord, cleanChord, targetKey, measureId, overrideKey, nextCleanChord = null) {
@@ -1189,21 +1737,30 @@
             const isDimmed = !!dimMatch;
             const isThirdSub = rawChord.includes('_THIRDSUB');
             const isTritoneThirdSub = rawChord.includes('_TRITONETHIRDSUB');
-            const isActivelyMutated = !!activeChordMutations[overrideKey];
-
-            // 1. Si tiene mutación diatónica / modal activa, usar su grado exacto
-            if (isActivelyMutated) {
-                const activeRom = activeChordMutations[overrideKey].activeRoman;
-                if (modalOriginCatalog[activeRom]) return modalOriginCatalog[activeRom];
-            }
-
-            // 2. Sustituciones de Dominante activas (3ra, Tritono, Tritono-3ra, Disminuido e inversiones)
+            const isSusSub = rawChord.includes('_SUSSUB');
+            // 2. Sustituciones de Dominante activas (7sus4, 3ra, Tritono, Tritono 7sus4, Tritono-3ra, Disminuido e inversiones)
             const romanLabel = convertToRoman(rawChord, targetKey, measureId);
+            if (isSubbed && isSusSub) {
+                return {
+                    roman: romanLabel,
+                    mode: 'Sust. Tritonal 7sus4',
+                    family: 'tritone-sub',
+                    badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300'
+                };
+            }
+            if (isSusSub) {
+                return {
+                    roman: romanLabel,
+                    mode: romanLabel.includes('/') ? 'Dom. Sec. 7sus4' : 'Dom. 7sus4',
+                    family: 'dominant',
+                    badgeClass: 'bg-sky-100 text-sky-800 dark:bg-sky-900/60 dark:text-sky-200 border-sky-300'
+                };
+            }
             if (isThirdSub) {
                 const isDimQual = cleanChord.includes('dim') || cleanChord.includes('o7');
                 return {
                     roman: romanLabel,
-                    mode: isDimQual ? 'Sust. 3ra · VII°7' : 'Sust. 3ra · VIIm7(b5)',
+                    mode: isDimQual ? 'Sust. 3ra · Locrio b4 bb7' : 'Sust. 3ra · VIIm7(b5)',
                     family: 'third-sub',
                     badgeClass: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/60 dark:text-emerald-200 border-emerald-300'
                 };
@@ -1219,7 +1776,7 @@
             if (isSubbed) {
                 return {
                     roman: romanLabel,
-                    mode: 'Sust. Tritonal',
+                    mode: 'Sust. Tritonal · Mix. #4',
                     family: 'tritone-sub',
                     badgeClass: 'bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300'
                 };
@@ -1229,7 +1786,7 @@
                 const invText = invIdx > 0 ? ` (${invIdx}ª Inv.)` : '';
                 return {
                     roman: romanLabel,
-                    mode: `Sust. Dim.${invText}`,
+                    mode: `Sust. Dim.${invText} · Locrio b4 bb7`,
                     family: 'dim',
                     badgeClass: 'bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-200 border-pink-300'
                 };
@@ -1477,6 +2034,7 @@
                 params.set('requinto', requintoMode ? '1' : '0');
                 params.set('hidereal', hideRequintoReal ? '1' : '0');
                 params.set('origin', showModalOrigin ? '1' : '0');
+                params.set('scaletension', showScaleTension ? '1' : '0');
                 params.set('weber', romanMode ? '1' : '0');
                 params.set('tritone', globalTritone ? '1' : '0');
                 params.set('dim', globalDim ? '1' : '0');
@@ -1496,6 +2054,7 @@
                     requinto: requintoMode,
                     hideReal: hideRequintoReal,
                     origin: showModalOrigin,
+                    scaleTension: showScaleTension,
                     weber: romanMode,
                     tritone: globalTritone,
                     dim: globalDim,
@@ -1508,6 +2067,7 @@
                 safeSetStorage('opusLab_requintoMode', requintoMode ? '1' : '0');
                 safeSetStorage('opusLab_hideRequintoReal', hideRequintoReal ? '1' : '0');
                 safeSetStorage('opusLab_showModalOrigin', showModalOrigin ? '1' : '0');
+                safeSetStorage('opusLab_showScaleTension', showScaleTension ? '1' : '0');
 
                 if (progressionLibrary[progVal] && progressionLibrary[progVal].id === "custom") {
                     const customInput = document.getElementById('customProgInput')?.value || "";
@@ -1611,6 +2171,19 @@
                 }
                 if (document.getElementById('modalOriginToggle')) document.getElementById('modalOriginToggle').checked = showModalOrigin;
                 if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
+
+                let savedScaleTension = safeGetStorage('opusLab_showScaleTension');
+                if (params.has('scaletension')) {
+                    showScaleTension = params.get('scaletension') === '1';
+                } else if (savedStateObj && typeof savedStateObj.scaleTension === 'boolean') {
+                    showScaleTension = savedStateObj.scaleTension;
+                } else if (savedScaleTension !== null) {
+                    showScaleTension = savedScaleTension === '1';
+                } else {
+                    showScaleTension = false; // Apagado de forma predeterminada
+                }
+                if (document.getElementById('scaleTensionToggle')) document.getElementById('scaleTensionToggle').checked = showScaleTension;
+                if (document.getElementById('scaleTensionToggleMobile')) document.getElementById('scaleTensionToggleMobile').checked = showScaleTension;
 
                 let savedRequinto = safeGetStorage('opusLab_requintoMode');
                 if (params.has('requinto')) {
@@ -1807,13 +2380,14 @@
                         ? `<div style="margin-top: 6px; font-size: 15pt; color: #4f46e5; font-weight: bold;">Modo Requinto (La) Activo — Posición Principal (-5 st)${hideRequintoReal ? '' : ' + Sonido Real'}</div>` 
                         : '';
                     printHeader.innerHTML = `
-                        <h2 style="font-size: 32pt; font-weight: bold; font-family: sans-serif; color: #1e293b; margin-bottom: 10px; text-align: center;">
-                            OpusLab Lead Sheet: <span style="color: #2563eb;">${progName}</span>
-                        </h2>
-                        <div style="font-size: 18pt; color: #64748b; font-weight: normal; font-family: sans-serif; text-align: center;">
-                            (${hideRequintoReal && requintoMode ? `Tono Requinto: ${transposeForRequinto(keyName)}` : `Tono Real de Concierto: ${keyName}${requintoMode ? ` | Tono Requinto: ${transposeForRequinto(keyName)}` : ''}`})
-                            ${requintoBadge}
-                        </div>
+                    <button type="button" data-roman="bVIIm7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/60 dark:text-fuchsia-200 border-fuchsia-300 hover:scale-105 transition-transform">+ bVIIm7 (Frigio)</button>
+                    <button type="button" data-roman="bVIImaj7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200 border-amber-300 hover:scale-105 transition-transform">+ bVIImaj7 (Mixolidio)</button>
+                    <button type="button" data-roman="bVI7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-teal-100 text-teal-800 dark:bg-teal-900/60 dark:text-teal-200 border-teal-300 hover:scale-105 transition-transform">+ bVI7 (Locrio)</button>
+                    <button type="button" data-roman="V7" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300 hover:scale-105 transition-transform">+ V7 (Dominante)</button>
+                    <button type="button" data-roman="V7sus4" class="custom-origin-btn text-[9px] font-bold px-1.5 py-0.5 rounded-full border bg-orange-100 text-orange-800 dark:bg-orange-900/60 dark:text-orange-200 border-orange-300 hover:scale-105 transition-transform">+ V7sus4 (Dom. Sus4)</button>
+                </div>
+                <p class="text-[8px] sm:text-[9px] text-slate-500 mt-0.5 sm:mt-1 pl-1">Escribe los acordes separados por "|" o insértalos por su origen funcional arriba. También puedes hacer clic en cualquier acorde de la rejilla para rotar su función.</p>
+            </div>
                     `;
                     printHeader.classList.remove('hidden');
                     printHeader.style.setProperty('padding', '40px 20px', 'important');
@@ -1932,7 +2506,7 @@
         }
 
         const cualidades = {
-            "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10], "7": [0, 4, 7, 10], "7(b9)": [0, 4, 7, 10, 13], 
+            "maj7": [0, 4, 7, 11], "m7": [0, 3, 7, 10], "7": [0, 4, 7, 10], "7sus4": [0, 5, 7, 10], "7(sus4)": [0, 5, 7, 10], "sus4": [0, 5, 7], "7(b9)": [0, 4, 7, 10, 13], 
             "m7(b5)": [0, 3, 6, 10], "dim7": [0, 3, 6, 9], "o7": [0, 3, 6, 9], "maj": [0, 4, 7], 
             "m": [0, 3, 7], "6": [0, 4, 7, 9], "m6": [0, 3, 7, 9], "aug": [0, 4, 8]
         };
@@ -2063,7 +2637,7 @@
         }
 
         function getBaseRomanForSubstitutionLogic(chordStr, keyStr, measureId = -1) {
-            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
             const root = match[1]; let quality = match[2];
@@ -2109,7 +2683,7 @@
             const dimMatch = chordStr.match(/_DIM(\d)?/);
             const isDimmed = !!dimMatch;
             const isSubbed = chordStr.includes('_SUB');
-            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
+            let cleanStr = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '').replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '');
 
             const match = cleanStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return cleanStr;
@@ -2120,17 +2694,19 @@
             if (isSubbed) originalOffset = (stOffset + 6) % 12;
 
             if (progData && (progData.id === "blues" || progData.category?.includes("Blues"))) {
-                if (originalOffset === 0 && cleanQual.startsWith('7')) return isSubbed ? "subV7" : (isDimmed ? "VIIo7" : "I7");
-                if (originalOffset === 5 && cleanQual.startsWith('7')) return isSubbed ? "subV7/V" : (isDimmed ? "IIIo7" : "IV7");
-                if (originalOffset === 7 && cleanQual.startsWith('7')) return isSubbed ? "subV7/I" : (isDimmed ? "Vo7" : "V7");
+                let susTag = chordStr.includes('_SUSSUB') ? "sus4" : "";
+                if (originalOffset === 0 && cleanQual.startsWith('7')) return isSubbed ? `subV7${susTag}` : (isDimmed ? "VIIo7" : `I7${susTag}`);
+                if (originalOffset === 5 && cleanQual.startsWith('7')) return isSubbed ? `subV7${susTag}/V` : (isDimmed ? "IIIo7" : `IV7${susTag}`);
+                if (originalOffset === 7 && cleanQual.startsWith('7')) return isSubbed ? `subV7${susTag}/I` : (isDimmed ? "Vo7" : `V7${susTag}`);
             }
 
+            let susSuffix = chordStr.includes('_SUSSUB') ? "sus4" : "";
             if (chordStr.includes('_IIV')) return chordStr.includes('m7(b5)') ? "IIm7(b5)" : "IIm7";
-            if (chordStr.includes('_SEC2')) return isSubbed ? "subV7/II" : "V7/II";
-            if (chordStr.includes('_SEC3')) return isSubbed ? "subV7/III" : "V7/III";
-            if (chordStr.includes('_SEC4')) return isSubbed ? "subV7/IV" : "V7/IV";
-            if (chordStr.includes('_SEC5')) return isSubbed ? "subV7/V" : "V7/V";
-            if (chordStr.includes('_SEC6')) return isSubbed ? "subV7/VI" : "V7/VI";
+            if (chordStr.includes('_SEC2')) return isSubbed ? `subV7${susSuffix}/II` : `V7${susSuffix}/II`;
+            if (chordStr.includes('_SEC3')) return isSubbed ? `subV7${susSuffix}/III` : `V7${susSuffix}/III`;
+            if (chordStr.includes('_SEC4')) return isSubbed ? `subV7${susSuffix}/IV` : `V7${susSuffix}/IV`;
+            if (chordStr.includes('_SEC5')) return isSubbed ? `subV7${susSuffix}/V` : `V7${susSuffix}/V`;
+            if (chordStr.includes('_SEC6')) return isSubbed ? `subV7${susSuffix}/VI` : `V7${susSuffix}/VI`;
 
             let isDominantChord = (cleanQual.startsWith('7') || cleanQual.startsWith('9') || cleanQual.startsWith('13') || cleanQual.startsWith('dim') || cleanQual.startsWith('o')) 
                 && !cleanQual.includes('maj') && !cleanQual.includes('m');
@@ -2197,7 +2773,7 @@
 
         function computeNextVoicing(chordStr, prevMidiNotes) {
             if (!chordStr) return { midi: [], toneNames: [], bassNote: "C2" };
-            let cleanChord = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
+            let cleanChord = chordStr.replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_T\d|_V\d|_II\d|_SEC\d|_IIV|_END1|_END2/g, '');
             let rootMatch = cleanChord.match(/^([A-G][#b]*)/);
             if (!rootMatch) return { midi: [], toneNames: [], bassNote: "C2" };
             
@@ -2252,6 +2828,7 @@
         let requintoMode = false;
         let hideRequintoReal = false;
         let showModalOrigin = false;
+        let showScaleTension = false;
         let visualMeasures = []; 
         let audioTimeline = []; 
         let totalSteps = 0;
@@ -2355,7 +2932,7 @@
             if (chordStr === "NC" || chordStr === "-" || chordStr === ":|") return false;
             const match = chordStr.match(/^([A-G][#b]*)(.*)$/);
             if (!match) return false;
-            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT/g, '');
+            const mainQuality = match[2].split('/')[0].replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT/g, '');
             return (mainQuality.startsWith('7') || mainQuality.startsWith('9') || mainQuality.startsWith('13') || mainQuality.startsWith('dim') || mainQuality.startsWith('o')) 
                 && !mainQuality.includes('maj') && !mainQuality.includes('m');
         }
@@ -2367,6 +2944,22 @@
             return { clean, tags };
         }
 
+        function applySusSub(chordStr) {
+            let { clean, tags } = extractTags(chordStr);
+            let extraTags = "";
+            if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
+            const match = clean.match(/^([A-G][#b]*)(.*)$/);
+            if (!match) return chordStr;
+            const root = match[1];
+            let quality = match[2];
+            let slashPart = "";
+            if (quality.includes('/')) {
+                const qParts = quality.split('/');
+                slashPart = '/' + qParts[1];
+            }
+            return root + "7sus4" + slashPart + tags + extraTags + "_SUSSUB";
+        }
+
         function applyTritoneSub(chordStr) {
             let { clean, tags } = extractTags(chordStr);
             let extraTags = ""; if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
@@ -2375,6 +2968,15 @@
             const root = match[1]; let quality = match[2];
             if (quality.includes('/')) quality = quality.split('/')[0]; 
             return (tritoneRootMap[root] || root) + quality + tags + extraTags + "_SUB";
+        }
+
+        function applyTritoneSusSub(chordStr) {
+            let { clean, tags } = extractTags(chordStr);
+            let extraTags = ""; if (clean.includes('_BKT')) { extraTags += "_BKT"; clean = clean.replace('_BKT', ''); }
+            const match = clean.match(/^([A-G][#b]*)(.*)$/);
+            if (!match) return chordStr;
+            const root = match[1];
+            return (tritoneRootMap[root] || root) + "7sus4" + tags + extraTags + "_SUB_SUSSUB";
         }
 
         function applyDimSub(chordStr, inversionIndex = 0) { 
@@ -2657,7 +3259,7 @@
                     let chords = blockChords.map((c, cIdx) => {
                         let transposed = transposeChordName(c, stOffset, letterOffset);
                         let overrideKey = `${currentVisualIndex + mIdx}_${cIdx}`;
-                        let cleanOrigBase = transposed.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                        let cleanOrigBase = transposed.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '');
                         originalBaseChordsMap[overrideKey] = cleanOrigBase;
                         let mutationState = 'normal';
                         if (globalTritone) mutationState = 'tritone';
@@ -2689,8 +3291,10 @@
                                 transposed = romanToChord(activeRoman, currentKey, currentVisualIndex + mIdx);
                             }
                         } else if (isDominant(transposed)) {
-                            if (mutationState === 'thirdSub') transposed = applyThirdSub(transposed, nextChordStr);
+                            if (mutationState === 'sus4') transposed = applySusSub(transposed);
+                            else if (mutationState === 'thirdSub') transposed = applyThirdSub(transposed, nextChordStr);
                             else if (mutationState === 'tritone') transposed = applyTritoneSub(transposed);
+                            else if (mutationState === 'tritoneSus4') transposed = applyTritoneSusSub(transposed);
                             else if (mutationState === 'tritoneThirdSub') transposed = applyTritoneThirdSub(transposed, nextChordStr);
                             else if (mutationState.startsWith('dim')) {
                                 let dimIdx = parseInt(mutationState.replace('dim', '')) || 0;
@@ -2860,7 +3464,8 @@
                     let color = "text-slate-800 dark:text-slate-100"; 
                     let isSubbed = c.includes('_SUB'); let isDimmed = c.includes('_DIM');
                     let isThirdSub = c.includes('_THIRDSUB'); let isTritoneThirdSub = c.includes('_TRITONETHIRDSUB');
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                    let isSusSub = c.includes('_SUSSUB');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '');
                     let isDom = isDominant(cleanC);
 
                     let interactiveClass = ""; let tooltip = "";
@@ -2874,24 +3479,26 @@
                         nextCleanChord = visualMeasures[index + 1].chords[0];
                     }
                     if (nextCleanChord) {
-                        nextCleanChord = nextCleanChord.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                        nextCleanChord = nextCleanChord.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '');
                     }
 
                     let baseRomanTest = getBaseRomanForSubstitutionLogic(cleanC, targetKey, vMeasureId).split('/')[0];
                     let isActivelyMutated = !!activeChordMutations[overrideKey];
                     let modalOriginInfo = resolveUniversalChordOrigin(c, cleanC, targetKey, vMeasureId, overrideKey, nextCleanChord);
+                    let scaleTensionInfo = resolveChordScaleTension(c, cleanC, targetKey, vMeasureId, overrideKey, nextCleanChord, modalOriginInfo);
                     // Si es un acorde como bVII7 o bVI7 que forma parte del catálogo de Intercambio Modal, permitir también mutarlo como subdominante modal
                     let canDiatonicOrModalSub = !!diatonicSubstitutions[baseRomanTest] && (!isDom || baseRomanTest === 'bVII7' || baseRomanTest === 'bVI7');
 
                     let reqChord = transposeForRequinto(cleanC);
                     let subInfo = requintoMode ? ` [Requinto: ${reqChord} | Real: ${cleanC}]` : ` [${cleanC}]`;
                     let originTooltipText = modalOriginInfo ? ` — Origen: ${modalOriginInfo.roman} (${modalOriginInfo.mode})` : '';
+                    let scaleTooltipText = scaleTensionInfo ? ` | Escala: ${scaleTensionInfo.scale} · T: ${scaleTensionInfo.tensions} · Evitar: ${scaleTensionInfo.avoid}` : '';
                     let origBaseChord = originalBaseChordsMap[overrideKey];
                     let origBaseNote = (origBaseChord && origBaseChord !== cleanC) ? ` (Acorde base original: ${origBaseChord})` : '';
 
                     if (isActivelyMutated) {
                         interactiveClass = "cursor-pointer interactive-chord is-diatonic-sub";
-                        tooltip = `title="Clic para cambiar Función / Intercambio Modal${originTooltipText}${subInfo}${origBaseNote}"`;
+                        tooltip = `title="Clic para cambiar Función / Intercambio Modal${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                         if (modalOriginInfo && modalOriginInfo.family === 'mixolydian') {
                             color = "text-amber-600 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed";
                         } else if (modalOriginInfo && modalOriginInfo.family === 'locrian') {
@@ -2903,24 +3510,28 @@
                         }
                     } else if (canDiatonicOrModalSub) {
                         interactiveClass = "cursor-pointer interactive-chord is-diatonic-sub";
-                        tooltip = `title="Clic para sustitución Funcional (Tónica / Subdominante / Intercambio Modal)${originTooltipText}${subInfo}${origBaseNote}"`;
+                        tooltip = `title="Clic para sustitución Funcional (Tónica / Subdominante / Intercambio Modal)${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                         if (modalOriginInfo && (modalOriginInfo.family === 'aeolian' || modalOriginInfo.family === 'phrygian' || modalOriginInfo.family === 'mixolydian' || modalOriginInfo.family === 'locrian')) {
                             color = "text-purple-700 dark:text-purple-300 hover:text-purple-500 dark:hover:text-purple-400 transition-colors";
                         } else {
                             color = "text-indigo-700 dark:text-indigo-300 hover:text-indigo-500 dark:hover:text-indigo-400 transition-colors";
                         }
+                    } else if (isSusSub) {
+                        color = "text-sky-600 dark:text-sky-400 font-bold border-b-[1.5px] md:border-b-2 border-sky-500 border-dashed is-sussub is-dominant";
+                        interactiveClass = "cursor-pointer hover:text-sky-500 dark:hover:text-sky-300 transition-colors interactive-chord is-dominant";
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (isThirdSub || isTritoneThirdSub) {
                         color = "text-emerald-500 dark:text-emerald-400 font-bold border-b-[1.5px] md:border-b-2 border-emerald-500 border-dashed is-thirdsub is-dominant";
                         interactiveClass = "cursor-pointer hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (isSubbed) {
                         color = "text-amber-500 dark:text-amber-400 font-bold border-b-[1.5px] md:border-b-2 border-amber-500 border-dashed is-subbed is-dominant";
                         interactiveClass = "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (isDimmed) {
                         color = "text-pink-500 dark:text-pink-400 font-bold border-b-[1.5px] md:border-b-2 border-pink-500 border-dashed is-dimmed is-dominant";
                         interactiveClass = "cursor-pointer hover:text-pink-500 dark:hover:text-pink-400 transition-colors interactive-chord is-dominant";
-                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`;
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`;
                     } else if (c.includes('_T1')) {
                         color = "text-blue-500 font-black"; 
                     } else if (c.includes('_T2')) {
@@ -2930,23 +3541,33 @@
                     } else if (isDom) {
                         color += " is-dominant";
                         interactiveClass = "cursor-pointer hover:text-amber-500 dark:hover:text-amber-400 transition-colors interactive-chord is-dominant"; 
-                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${subInfo}${origBaseNote}"`; 
+                        tooltip = `title="Clic para mutar acorde dominante${originTooltipText}${scaleTooltipText}${subInfo}${origBaseNote}"`; 
                     }
 
-                    // Si el interruptor "Origen" está activo, se muestra la etiqueta en TODAS las funciones armónicas
+                    // Píldora de Origen Armónico y Píldora de Relación Escala-Acorde / Tensiones / Nota de cuidado (independientes o combinadas)
                     let shouldRenderOriginBadge = showModalOrigin && !!modalOriginInfo;
                     let originBadgeHTML = shouldRenderOriginBadge
-                        ? `<span class="text-[0.32em] font-bold px-1 py-[1px] rounded-full border ${modalOriginInfo.badgeClass} tracking-tight font-sans mt-0.5 leading-none whitespace-nowrap shadow-sm">${modalOriginInfo.roman} (${modalOriginInfo.mode})</span>`
+                        ? `<span class="text-[0.31em] font-bold px-1 py-[1px] rounded-full border ${modalOriginInfo.badgeClass} tracking-tight font-sans mt-0.5 leading-none whitespace-nowrap shadow-sm">${modalOriginInfo.roman} (${modalOriginInfo.mode})</span>`
                         : '';
+
+                    let shouldRenderScaleBadge = showScaleTension && !!scaleTensionInfo;
+                    let avoidLabel = (scaleTensionInfo && scaleTensionInfo.avoid && scaleTensionInfo.avoid !== '—')
+                        ? ` · <span class="text-rose-600 dark:text-rose-400 font-extrabold">Ev:${scaleTensionInfo.avoid}</span>`
+                        : '';
+                    let scaleBadgeHTML = shouldRenderScaleBadge
+                        ? `<span class="text-[0.29em] font-bold px-1 py-[1px] rounded-full border ${scaleTensionInfo.badgeClass} tracking-tight font-sans mt-0.5 leading-none whitespace-nowrap shadow-sm">${scaleTensionInfo.scale} · T:${scaleTensionInfo.tensions}${avoidLabel}</span>`
+                        : '';
+
+                    let combinedBadgesHTML = `${originBadgeHTML}${scaleBadgeHTML}`;
                     
                     if (requintoMode && cleanC !== "NC" && cleanC !== "-" && cleanC !== ":|") {
                         let mainDisplay = romanMode ? textStr : reqChord;
                         if (hideRequintoReal) {
                             let singleDisplay = romanMode ? `${textStr} (${reqChord})` : reqChord;
-                            if (originBadgeHTML) {
+                            if (combinedBadgesHTML) {
                                 return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
                                     <span>${singleDisplay}</span>
-                                    ${originBadgeHTML}
+                                    ${combinedBadgesHTML}
                                 </span>`;
                             }
                             return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass}" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>${singleDisplay}</span>`;
@@ -2955,14 +3576,14 @@
                         return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
                             <span>${mainDisplay}</span>
                             <span class="text-[0.42em] font-semibold text-slate-400 dark:text-slate-400 tracking-tight font-sans mt-0.5 opacity-95">${secondaryDisplay}</span>
-                            ${originBadgeHTML}
+                            ${combinedBadgesHTML}
                         </span>`;
                     }
                     
-                    if (originBadgeHTML) {
+                    if (combinedBadgesHTML) {
                         return `<span class="chord-text font-bold ${color} pointer-events-auto ${interactiveClass} inline-flex flex-col items-center justify-center leading-none py-0.5" data-mid="${vMeasureId}" data-cid="${chordIdx}" ${tooltip}>
                             <span>${textStr}</span>
-                            ${originBadgeHTML}
+                            ${combinedBadgesHTML}
                         </span>`;
                     }
 
@@ -2970,7 +3591,7 @@
                 };
 
                 let renderedTexts = vMeasure.chords.map((c, i) => {
-                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                    let cleanC = c.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '');
                     if (romanMode) return convertToRoman(c, targetKey, vMeasure.id);
                     return requintoMode ? transposeForRequinto(cleanC) : cleanC;
                 });
@@ -3482,7 +4103,16 @@
             if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
             renderGrid();
             updateURLState();
-            showToast(showModalOrigin ? "Origen de Intercambio Modal visible" : "Origen de Intercambio Modal oculto", "info");
+            showToast(showModalOrigin ? "Origen Armónico visible" : "Origen Armónico oculto", "info");
+        }));
+
+        ['scaleTensionToggle', 'scaleTensionToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            showScaleTension = e.target.checked;
+            if (document.getElementById('scaleTensionToggle')) document.getElementById('scaleTensionToggle').checked = showScaleTension;
+            if (document.getElementById('scaleTensionToggleMobile')) document.getElementById('scaleTensionToggleMobile').checked = showScaleTension;
+            renderGrid();
+            updateURLState();
+            showToast(showScaleTension ? "Relación Escala-Acorde, Tensiones y Nota de cuidado visible" : "Relación Escala-Acorde oculta", "info");
         }));
 
         ['requintoToggle', 'requintoToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
@@ -3653,9 +4283,11 @@
 
                     let current = mutationOverrides[overrideKey] || (globalTritone ? 'tritone' : (globalDim ? 'dim0' : 'normal'));
                     
-                    if (current === 'normal') mutationOverrides[overrideKey] = 'thirdSub';
+                    if (current === 'normal') mutationOverrides[overrideKey] = 'sus4';
+                    else if (current === 'sus4') mutationOverrides[overrideKey] = 'thirdSub';
                     else if (current === 'thirdSub') mutationOverrides[overrideKey] = 'tritone';
-                    else if (current === 'tritone') mutationOverrides[overrideKey] = 'tritoneThirdSub';
+                    else if (current === 'tritone') mutationOverrides[overrideKey] = 'tritoneSus4';
+                    else if (current === 'tritoneSus4') mutationOverrides[overrideKey] = 'tritoneThirdSub';
                     else if (current === 'tritoneThirdSub') mutationOverrides[overrideKey] = 'dim0';
                     else if (current === 'dim' || current === 'dim0') mutationOverrides[overrideKey] = 'dim1';
                     else if (current === 'dim1') mutationOverrides[overrideKey] = 'dim2';
@@ -3666,7 +4298,7 @@
                     let updatedVm = visualMeasures.find(m => m.id == vMeasureId);
                     if (updatedVm && updatedVm.chords[chordIdx]) {
                         let rawMutated = updatedVm.chords[chordIdx];
-                        let newClean = rawMutated.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_BKT|_END1|_END2/g, '');
+                        let newClean = rawMutated.replace(/_T\d|_V\d|_II\d|_SEC\d|_IIV/g, '').replace(/_SUB|_DIM\d?|_THIRDSUB|_TRITONETHIRDSUB|_SUSSUB|_BKT|_END1|_END2/g, '');
                         const keySelectVal = document.getElementById('keySelect');
                         const keySelectMobileVal = document.getElementById('keySelectMobile');
                         const targetKey = (keySelectVal && keySelectVal.value) || (keySelectMobileVal && keySelectMobileVal.value) || "C";
