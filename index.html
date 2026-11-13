@@ -115,8 +115,14 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.3); }
 
+        #gridScrollContainer {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+            touch-action: pan-y;
+        }
+
         @media (max-width: 640px) {
-            .measure-box { min-height: 45px !important; padding: 1px; } 
+            .measure-box { min-height: 54px !important; padding: 2px; } 
             .section-label { font-size: 8px; padding: 1px 3px; }
             .measure-number { font-size: 7px; top: 2px; right: 4px; }
             .repeat-start::after, .repeat-end::after { font-size: 14px; left: 4px; right: 4px;}
@@ -210,7 +216,7 @@
         </div>
     </div>
 
-    <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col h-full sm:h-auto overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700" id="mainAppWrapper">
+    <div class="w-full sm:max-w-6xl mx-auto bg-white dark:bg-slate-800 sm:shadow-2xl sm:rounded-xl flex flex-col flex-1 min-h-0 h-full sm:h-[96dvh] overflow-hidden border-0 sm:border border-slate-200 dark:border-slate-700" id="mainAppWrapper">
         
         <!-- Header / Controles -->
         <div id="topControls" class="bg-slate-100 dark:bg-slate-800/80 p-1.5 border-b border-slate-200 dark:border-slate-700 flex flex-col relative z-20 shrink-0">
@@ -488,17 +494,17 @@
         </div>
 
         <!-- Contenedor del Gráfico Coltrane -->
-        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink min-h-[110px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
+        <div id="coltraneGraphicContainer" class="hidden px-1 py-1 w-full justify-center shrink-0 min-h-[110px] bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 overflow-hidden max-h-[170px] sm:max-h-[240px]">
             <div id="coltrane-graphic" class="w-full h-full flex justify-center items-center"></div>
         </div>
 
         <!-- Área Principal de Acordes -->
-        <div id="gridScrollContainer" class="flex-1 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth w-full">
+        <div id="gridScrollContainer" class="flex-1 min-h-0 overflow-y-auto custom-scrollbar relative bg-slate-50 dark:bg-slate-900 flex flex-col scroll-smooth w-full">
             
             <div id="printHeader" class="hidden w-full px-4 pt-8 pb-4 bg-white"></div>
             
-            <div id="pdfExportWrapper" class="w-full relative h-full">
-                <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full h-full p-1 sm:p-2 pb-2 w-full" style="font-size: 100%;"></div>
+            <div id="pdfExportWrapper" class="w-full relative h-auto flex-1">
+                <div id="chordGrid" class="grid grid-cols-4 gap-1 sm:gap-2 max-w-full min-h-full h-auto p-1 sm:p-2 pb-16 sm:pb-6 w-full" style="font-size: 100%;"></div>
             </div>
 
             <div id="printFooter" class="hidden w-full px-4 pt-4 pb-8 bg-white"></div>
@@ -2275,12 +2281,21 @@
             const totalRows = getActualGridRows();
             
             if (window.innerWidth <= 640) {
-                if (totalRows <= 2) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 90px))`; grid.style.alignContent = 'start'; } 
-                else if (totalRows <= 8) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`; grid.style.alignContent = 'stretch'; } 
-                else { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(45px, auto))`; grid.style.alignContent = 'start'; }
+                if (totalRows <= 2) {
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(70px, 95px))`;
+                    grid.style.alignContent = 'start';
+                } else {
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(56px, auto))`;
+                    grid.style.alignContent = 'start';
+                }
             } else {
-                if (totalRows <= 8) { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(0, 1fr))`; grid.style.alignContent = 'stretch'; } 
-                else { grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(65px, auto))`; grid.style.alignContent = 'start'; }
+                if (totalRows <= 6) {
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(75px, 1fr))`;
+                    grid.style.alignContent = 'stretch';
+                } else {
+                    grid.style.gridTemplateRows = `repeat(${totalRows}, minmax(72px, auto))`;
+                    grid.style.alignContent = 'start';
+                }
             }
         }
 
