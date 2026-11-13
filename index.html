@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Aproximación al Lead Sheet - Acordes y Progresiones</title>
     
     <!-- Tailwind CSS -->
@@ -118,7 +118,7 @@
         #gridScrollContainer {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: contain;
-            touch-action: pan-y;
+            touch-action: pan-x pan-y pinch-zoom;
         }
 
         @media (max-width: 640px) {
@@ -2771,6 +2771,11 @@
 
         ['sizeSlider', 'sizeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             let val = e.target.value;
+            applyCustomSizeValue(val);
+        }));
+
+        function applyCustomSizeValue(val) {
+            val = Math.max(50, Math.min(200, Math.round(val)));
             if(document.getElementById('sizeValue')) document.getElementById('sizeValue').textContent = `${val}%`; 
             if(document.getElementById('sizeValueMobile')) document.getElementById('sizeValueMobile').textContent = `${val}%`;
             syncSelects('sizeSlider', 'sizeSliderMobile', val);
@@ -2783,7 +2788,45 @@
                 const grid = document.getElementById('chordGrid');
                 if (grid) grid.style.fontSize = `${val}%`;
             }
-        }));
+        }
+
+        // Soporte de Pinch-to-Zoom con dos dedos sobre la rejilla de acordes en móviles
+        (function setupPinchZoom() {
+            const scrollContainer = document.getElementById('gridScrollContainer');
+            if (!scrollContainer) return;
+
+            let initialPinchDistance = null;
+            let initialSizeVal = 100;
+
+            function getTouchDistance(touches) {
+                const dx = touches[0].clientX - touches[1].clientX;
+                const dy = touches[0].clientY - touches[1].clientY;
+                return Math.hypot(dx, dy);
+            }
+
+            scrollContainer.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2) {
+                    initialPinchDistance = getTouchDistance(e.touches);
+                    const slider = document.getElementById('sizeSlider') || document.getElementById('sizeSliderMobile');
+                    initialSizeVal = slider ? parseFloat(slider.value) || 100 : 100;
+                }
+            }, { passive: true });
+
+            scrollContainer.addEventListener('touchmove', (e) => {
+                if (e.touches.length === 2 && initialPinchDistance) {
+                    const currentDistance = getTouchDistance(e.touches);
+                    const scale = currentDistance / initialPinchDistance;
+                    const newSize = initialSizeVal * scale;
+                    applyCustomSizeValue(newSize);
+                }
+            }, { passive: true });
+
+            scrollContainer.addEventListener('touchend', (e) => {
+                if (e.touches.length < 2) {
+                    initialPinchDistance = null;
+                }
+            }, { passive: true });
+        })();
 
         ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
 
