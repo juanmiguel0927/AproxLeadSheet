@@ -242,130 +242,154 @@
             </div>
             
             <!-- Controles Desktop -->
-            <div class="hidden sm:flex items-center gap-3 w-full flex-wrap lg:flex-nowrap justify-between">
-                <div class="flex flex-col flex-1 max-w-[200px]">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between w-full">
-                        <span>Progresión</span>
-                    </label>
-                    <select id="progressionSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
+            <div class="hidden sm:flex flex-col gap-1.5 w-full">
+                <!-- Fila 1: Selectores Principales con ancho completo para ver textos sin recortes -->
+                <div class="flex items-end gap-2.5 w-full">
+                    <div class="flex flex-col w-[240px] md:w-[270px] shrink-0">
+                        <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between w-full">
+                            <span>Estilo / Categoría</span>
+                        </label>
+                        <select id="categorySelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none shadow-sm font-medium"></select>
+                    </div>
+
+                    <div class="flex flex-col flex-1 min-w-[260px]">
+                        <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between w-full">
+                            <span>Tema / Progresión</span>
+                        </label>
+                        <select id="progressionSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none shadow-sm font-semibold"></select>
+                    </div>
+
+                    <div id="variationContainer" class="flex-col min-w-[130px] shrink-0">
+                        <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Versión</label>
+                        <select id="variationSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none font-bold text-center shadow-sm"></select>
+                    </div>
+
+                    <div class="flex flex-col w-16 shrink-0">
+                        <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Tono</label>
+                        <select id="keySelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none font-bold text-center shadow-sm"></select>
+                    </div>
+
+                    <div class="flex flex-col w-16 shrink-0">
+                        <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ciclos</label>
+                        <input type="number" id="loopInput" placeholder="∞" min="1" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 outline-none font-bold text-center shadow-sm">
+                    </div>
                 </div>
 
-                <div id="variationContainer" class="flex-col min-w-[120px]">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
-                    <select id="variationSelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
-                </div>
+                <!-- Fila 2: Sliders, Modos y Reproducción -->
+                <div class="flex items-center justify-between gap-3 w-full pt-1 border-t border-slate-200/70 dark:border-slate-700/70">
+                    <div class="flex items-center gap-4">
+                        <div class="flex flex-col w-28">
+                            <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                                <span>Tempo</span><span id="tempoValue" class="text-blue-600 font-bold">120</span>
+                            </label>
+                            <input type="range" id="tempoSlider" min="60" max="240" value="120" class="mt-0.5">
+                        </div>
 
-                <div class="flex flex-col w-14 shrink-0">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Tono</label>
-                    <select id="keySelect" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
-                </div>
+                        <div class="flex flex-col w-28">
+                            <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                                <span>Vol.</span><span id="volumeValue" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
+                            </label>
+                            <input type="range" id="volumeSlider" min="-30" max="0" value="-6" step="1" class="mt-0.5">
+                        </div>
+                        
+                        <div class="flex flex-col w-28">
+                            <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                                <span>Tam.</span><span id="sizeValue" class="text-blue-600 dark:text-blue-400 font-bold">100%</span>
+                            </label>
+                            <input type="range" id="sizeSlider" min="50" max="200" value="100" step="5" class="mt-0.5">
+                        </div>
+                    </div>
 
-                <div class="flex flex-col w-14 shrink-0">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ciclos</label>
-                    <input type="number" id="loopInput" placeholder="∞" min="1" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm">
-                </div>
+                    <div class="flex items-center gap-2.5 ml-auto">
+                        <div class="flex items-center gap-1">
+                            <label class="flex items-center gap-1 cursor-pointer group" title="Modo Requinto (Afinación en La: Transpone posiciones -5 semitonos / 4ta justa abajo)">
+                                <div class="relative">
+                                    <input type="checkbox" id="requintoToggle" class="sr-only">
+                                    <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                                </div>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-indigo-500 transition-colors">Requinto</span>
+                            </label>
+                            <button id="toggleRealChordBtn" class="hidden items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800 text-[9px] font-bold transition-colors border border-indigo-200 dark:border-indigo-700" title="Mostrar/Ocultar acorde real debajo de la posición de Requinto">
+                                <i class="fa-solid fa-eye text-[9px]" id="toggleRealChordIcon"></i>
+                                <span>Real</span>
+                            </button>
+                        </div>
 
-                <div class="flex flex-col w-20">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                        <span>Tempo</span><span id="tempoValue" class="text-blue-600 font-bold">120</span>
-                    </label>
-                    <input type="range" id="tempoSlider" min="60" max="240" value="120" class="mt-1">
-                </div>
-
-                <div class="flex flex-col w-20">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                        <span>Vol.</span><span id="volumeValue" class="text-blue-600 dark:text-blue-400 font-bold">-6 dB</span>
-                    </label>
-                    <input type="range" id="volumeSlider" min="-30" max="0" value="-6" step="1" class="mt-1">
-                </div>
-                
-                <div class="flex flex-col w-20">
-                    <label class="text-[10px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                        <span>Tam.</span><span id="sizeValue" class="text-blue-600 dark:text-blue-400 font-bold">100%</span>
-                    </label>
-                    <input type="range" id="sizeSlider" min="50" max="200" value="100" step="5" class="mt-1">
-                </div>
-
-                <div class="flex items-center gap-2 ml-auto">
-                    <div class="flex items-center gap-1">
-                        <label class="flex items-center gap-1 cursor-pointer group" title="Modo Requinto (Afinación en La: Transpone posiciones -5 semitonos / 4ta justa abajo)">
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Cifrado Funcional (Weber)">
                             <div class="relative">
-                                <input type="checkbox" id="requintoToggle" class="sr-only">
+                                <input type="checkbox" id="romanToggle" class="sr-only">
                                 <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
                                 <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                             </div>
-                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-indigo-500 transition-colors">Requinto</span>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
                         </label>
-                        <button id="toggleRealChordBtn" class="hidden items-center gap-1 px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-200 dark:hover:bg-indigo-800 text-[9px] font-bold transition-colors border border-indigo-200 dark:border-indigo-700" title="Mostrar/Ocultar acorde real debajo de la posición de Requinto">
-                            <i class="fa-solid fa-eye text-[9px]" id="toggleRealChordIcon"></i>
-                            <span>Real</span>
-                        </button>
-                    </div>
+                        
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal Master">
+                            <div class="relative">
+                                <input type="checkbox" id="globalTritoneToggle" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 transition-colors">Tritono</span>
+                        </label>
 
-                    <label class="flex items-center gap-1 cursor-pointer group" title="Cifrado Funcional (Weber)">
-                        <div class="relative">
-                            <input type="checkbox" id="romanToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                        <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Disminuido Master">
+                            <div class="relative">
+                                <input type="checkbox" id="globalDimToggle" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-pink-500 transition-colors">DIM</span>
+                        </label>
+
+                        <label id="iivToggleContainer" class="hidden items-center gap-1 cursor-pointer group" title="Relación II-V">
+                            <div class="relative">
+                                <input type="checkbox" id="relacionToggle" class="sr-only">
+                                <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
+                                <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+                            </div>
+                            <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 transition-colors">II-V</span>
+                        </label>
+
+                        <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-2 ml-1">
+                            <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Piano"><i class="fa-solid fa-keyboard"></i></button>
+                            <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Bajo"><i class="fa-solid fa-guitar"></i></button>
                         </div>
-                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-blue-500 transition-colors">Weber</span>
-                    </label>
-                    
-                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Tritonal Master">
-                        <div class="relative">
-                            <input type="checkbox" id="globalTritoneToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
+
+                        <div class="flex items-center gap-1 ml-1">
+                            <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 text-white h-8 w-8 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-blue-500/30"><i class="fa-solid fa-play text-xs ml-0.5"></i></button>
+                            <button id="stopBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-600 h-8 w-8 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-stop text-xs"></i></button>
                         </div>
-                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-amber-500 transition-colors">Tritono</span>
-                    </label>
-
-                    <label class="flex items-center gap-1 cursor-pointer group" title="Sustituto Disminuido Master">
-                        <div class="relative">
-                            <input type="checkbox" id="globalDimToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
-                        </div>
-                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-pink-500 transition-colors">DIM</span>
-                    </label>
-
-                    <label id="iivToggleContainer" class="hidden items-center gap-1 cursor-pointer group" title="Relación II-V">
-                        <div class="relative">
-                            <input type="checkbox" id="relacionToggle" class="sr-only">
-                            <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
-                            <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
-                        </div>
-                        <span class="text-[9px] text-slate-500 font-bold uppercase tracking-wider group-hover:text-emerald-500 transition-colors">II-V</span>
-                    </label>
-
-                    <div class="flex items-center gap-1 border-l border-slate-300 dark:border-slate-600 pl-2 ml-1">
-                        <button id="mutePianoBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Piano"><i class="fa-solid fa-keyboard"></i></button>
-                        <button id="muteBassBtn" class="mute-btn bg-blue-100 text-blue-700 hover:bg-blue-200 h-7 px-1.5 rounded font-bold text-[9px]" title="Silenciar Bajo"><i class="fa-solid fa-guitar"></i></button>
-                    </div>
-
-                    <div class="flex items-center gap-1 ml-1">
-                        <button id="playBtn" class="bg-blue-600 hover:bg-blue-500 text-white h-8 w-8 rounded-full flex items-center justify-center transition-colors shadow-lg shadow-blue-500/30"><i class="fa-solid fa-play text-xs ml-0.5"></i></button>
-                        <button id="stopBtn" class="bg-slate-200 hover:bg-slate-300 text-slate-600 h-8 w-8 rounded-full flex items-center justify-center transition-colors"><i class="fa-solid fa-stop text-xs"></i></button>
                     </div>
                 </div>
             </div>
 
             <!-- Controles Móviles -->
             <div class="sm:hidden controls-grid">
-                <div class="controls-full-width flex gap-1 items-end">
-                    <div class="flex-1">
+                <div class="controls-full-width flex gap-1.5 items-end">
+                    <div class="flex-1 min-w-0">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
-                            <span>Progresión</span>
+                            <span>Estilo / Categoría</span>
                         </label>
-                        <select id="progressionSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm"></select>
+                        <select id="categorySelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm font-medium"></select>
                     </div>
-                    <div id="variationContainerMobile" class="flex-col min-w-[90px]">
+                    <div id="variationContainerMobile" class="flex-col w-20 shrink-0">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Ver.</label>
                         <select id="variationSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
                     </div>
-                    <div class="flex-col w-12 shrink-0">
+                    <div class="flex-col w-14 shrink-0">
                         <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider">Tono</label>
                         <select id="keySelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none font-bold text-center shadow-sm"></select>
+                    </div>
+                </div>
+
+                <div class="controls-full-width flex w-full mt-0.5">
+                    <div class="w-full">
+                        <label class="text-[9px] text-slate-500 mb-0.5 font-bold uppercase tracking-wider flex justify-between">
+                            <span>Tema / Progresión</span>
+                        </label>
+                        <select id="progressionSelectMobile" class="bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-xs rounded-lg border border-slate-300 dark:border-slate-600 focus:ring-blue-500 focus:border-blue-500 block w-full p-1 outline-none shadow-sm font-semibold"></select>
                     </div>
                 </div>
 
@@ -483,26 +507,27 @@
 
     <script>
         const progressionLibrary = [
-            { id: "251-maj-all", name: "II-V-I Mayor (Todos los Tonos)", baseKey: "C", variations: [
+            // === ESTUDIOS Y FUNDAMENTOS ===
+            { id: "251-maj-all", category: "📚 Estudios y Fundamentos", name: "II-V-I Mayor (Todos los Tonos)", baseKey: "C", bpm: 120, variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7 | G7 | Cmaj7 | Cmaj7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Cm7 | F7 | Bbmaj7 | Bbmaj7 | Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Ebm7 | Ab7 | Dbmaj7 | Dbmaj7 | Abm7 | Db7 | Gbmaj7 | Gbmaj7 | C#m7 | F#7 | Bmaj7 | Bmaj7 | F#m7 | B7 | Emaj7 | Emaj7 | Bm7 | E7 | Amaj7 | Amaj7 | Em7 | A7 | Dmaj7 | Dmaj7 | Am7 | D7 | Gmaj7 | Gmaj7" } ]
             ]},
-            { id: "251-min-all", name: "II-V-I Menor (Todos los Tonos)", baseKey: "C", variations: [
+            { id: "251-min-all", category: "📚 Estudios y Fundamentos", name: "II-V-I Menor (Todos los Tonos)", baseKey: "C", bpm: 115, variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Dm7(b5) | G7 | Cm7 | Cm7 | Gm7(b5) | C7 | Fm7 | Fm7 | Cm7(b5) | F7 | Bbm7 | Bbm7 | Fm7(b5) | Bb7 | Ebm7 | Ebm7 | Bbm7(b5) | Eb7 | G#m7 | G#m7 | D#m7(b5) | G#7 | C#m7 | C#m7 | G#m7(b5) | C#7 | F#m7 | F#m7 | C#m7(b5) | F#7 | Bm7 | Bm7 | F#m7(b5) | B7 | Em7 | Em7 | Bm7(b5) | E7 | Am7 | Am7 | Em7(b5) | A7 | Dm7 | Dm7 | Am7(b5) | D7 | Gm7 | Gm7" } ]
             ]},
-            { id: "turnarounds", name: "Turnarounds (Ciclos)", baseKey: "C", variations: [
+            { id: "turnarounds", category: "📚 Estudios y Fundamentos", name: "Turnarounds (Ciclos)", baseKey: "C", bpm: 130, variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7 | Dm7 | G7" } ],
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Em7 | A7 | Dm7 | G7" } ],
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cm7 | Am7(b5) | Dm7(b5) | G7" } ]
             ]},
-            { id: "secondary-dominants", name: "Dominantes Secundarios", baseKey: "C", variations: [
+            { id: "secondary-dominants", category: "📚 Estudios y Fundamentos", name: "Dominantes Secundarios", baseKey: "C", bpm: 120, variations: [
                 [ { type: "A", name: "V7/II", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
                 [ { type: "A", name: "V7/III", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | B7_SEC3 | Em7 | A7_SEC2 | Dm7 | G7 | Cmaj7 | Cmaj7" } ],
                 [ { type: "A", name: "V7/IV", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | G7 | Cmaj7 | Cmaj7 | Dm7 | G7" } ],
                 [ { type: "A", name: "V7/V", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | D7_SEC5 | G7 | Cmaj7 | Cmaj7 | D7_SEC5 | Dm7 | G7" } ],
                 [ { type: "A", name: "V7/VI", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | E7_SEC6 | Am7 | G7 | Cmaj7 | E7_SEC6 | Dm7 | G7" } ]
             ]},
-            { id: "modal-interchange", name: "Intercambio Modal", baseKey: "C", variations: [
+            { id: "modal-interchange", category: "📚 Estudios y Fundamentos", name: "Intercambio Modal", baseKey: "C", bpm: 115, variations: [
                 [ { type: "#IVdim7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | F#dim7 | Cmaj7 | A7_SEC2 | Dm7 | G7" } ],
                 [ { type: "IVm7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm7 | Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "IVm6", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Fm6 | Cmaj7 | Am7 | Dm7 | G7" } ],
@@ -510,14 +535,14 @@
                 [ { type: "bVImaj7 a bVII7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Abmaj7 Bb7 | Cmaj7 | Am7 | Dm7 | G7" } ],
                 [ { type: "bIImaj7", color: "bg-white dark:bg-slate-800", repeat: true, data: "Cmaj7 | C7_SEC4 | Fmaj7 | Dbmaj7 | Cmaj7 | Am7 | Dm7 | G7" } ]
             ]},
-            { id: "blues", name: "Blues (12 Compases)", baseKey: "F", variations: [
+            { id: "blues", category: "📚 Estudios y Fundamentos", name: "Blues (12 Compases)", baseKey: "F", bpm: 132, variations: [
                 [ { type: "1 (Básico)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | F7 | C7" } ],
                 [ { type: "2", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
                 [ { type: "3 (Bebop)", color: "bg-white dark:bg-slate-800", repeat: false, data: "F7 | Bb7 | F7 Gm7 | G#dim7 F7/A | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" } ],
                 [ { type: "4", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fmaj7 | Em7(b5) A7(b9) | Dm7 G7 | Cm7 F7 | Bb7 | Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 | C7 | Fmaj7 Dm7 | Gm7 C7" } ],
                 [ { type: "5 (Menor)", color: "bg-white dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Fm7 | Fm7 | Bbm7 | Bbm7 | Fm7 | Fm7 | Gm7(b5) | C7(b9) | Fm7 | Gm7(b5) C7(b9)" } ]
             ]},
-            { id: "rhythm-changes", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", variations: [
+            { id: "rhythm-changes", category: "📚 Estudios y Fundamentos", name: "Rhythm Changes (32 Compases)", baseKey: "Bb", bpm: 195, variations: [
                 [ 
                     { name: "1 (Tradicional)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: ": Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7 F7_END1 :| | Bbmaj7_END2 | D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ebm7 | Cm7 F7 | Bbmaj7" }
                 ],
@@ -525,10 +550,517 @@
                     { name: "A (Bebop)", type: "A", color: "bg-blue-50 dark:bg-blue-900/20", repeat: false, data: ": Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7 F7_END1 :| | Bbmaj7_END2 | D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7 | Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Cm7 F7 | Bbmaj7" }
                 ]
             ]},
-            { id: "multitonic-coltrane", name: "Multitónica (Coltrane)", baseKey: "B", variations: [
+            { id: "multitonic-coltrane", category: "📚 Estudios y Fundamentos", name: "Multitónica / Giant Steps (Coltrane)", baseKey: "B", bpm: 220, variations: [
                 [ { type: "A", color: "bg-white dark:bg-slate-800", repeat: false, data: "Bmaj7_T1 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 Bb7_V3 | Ebmaj7_T3 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | Am7_II2 D7_V2 | Gmaj7_T2 | C#m7_II1 F#7_V1 | Bmaj7_T1 | Fm7_II3 Bb7_V3 | Ebmaj7_T3 | C#m7_II1 F#7_V1" } ]
             ]},
-            { id: "custom", name: "✎ Prog. Personalizada...", baseKey: "C", variations: [
+
+            // === 1. SWING & AMERICAN SONGBOOK ===
+            { id: "std-autumn-leaves", category: "🎷 1. Swing & American Songbook", name: "Autumn Leaves (G Menor)", baseKey: "Bb", bpm: 138, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | F7 | Bbmaj7 | Ebmaj7 | Am7(b5) | D7(b9) | Gm7 | Gm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7(b5) | D7(b9) | Gm7 | Gm7 | Cm7 | F7 | Bbmaj7 | Ebmaj7 | Am7(b5) | D7(b9) | Gm7 Gm7/F | Em7(b5) Eb7 | Am7(b5) | D7(b9) | Gm7 | Gm7" }
+            ]]},
+            { id: "std-all-the-things", category: "🎷 1. Swing & American Songbook", name: "All The Things You Are", baseKey: "Ab", bpm: 148, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Eb7 | Abmaj7 | Dbmaj7 | Dm7 G7 | Cmaj7 | Cmaj7" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Fm7 | Bb7 | Ebmaj7 | Abmaj7 | Am7 D7 | Gmaj7 | Gmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | D7 | Gmaj7 | Gmaj7 | F#m7 | B7 | Emaj7 | C7" },
+                { type: "A3", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fm7 | Bbm7 | Eb7 | Abmaj7 | Dbmaj7 | Dbm7 | Cm7 | Bdim7 | Bbm7 | Eb7 | Abmaj7 | Gm7(b5) C7(b9)" }
+            ]]},
+            { id: "std-all-of-me", category: "🎷 1. Swing & American Songbook", name: "All Of Me", baseKey: "C", bpm: 132, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 | Cmaj7 | E7 | E7 | A7 | A7 | Dm7 | Dm7 | E7 | E7 | Am7 | Am7 | D7 | D7 | Dm7 | G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cmaj7 | Cmaj7 | E7 | E7 | A7 | A7 | Dm7 | Dm7 | Fmaj7 | Fm6 | Em7 | A7 | Dm7 | G7 | C6 | Dm7 G7" }
+            ]]},
+            { id: "std-fly-me-to-the-moon", category: "🎷 1. Swing & American Songbook", name: "Fly Me To The Moon", baseKey: "C", bpm: 124, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7 | Dm7 | G7 | Cmaj7 C7 | Fmaj7 | Bm7(b5) | E7(b9) | Am7 A7 | Dm7 | G7 | Cmaj7 | Am7 | Dm7 | G7 | Cmaj7 | Bm7(b5) E7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | Dm7 | G7 | Cmaj7 C7 | Fmaj7 | Bm7(b5) | E7(b9) | Am7 A7 | Dm7 | G7 | Em7 | A7 | Dm7 | G7 | C6 | Bm7(b5) E7" }
+            ]]},
+            { id: "std-take-the-a-train", category: "🎷 1. Swing & American Songbook", name: "Take The 'A' Train", baseKey: "C", bpm: 164, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 | Cmaj7 | D7 | D7 | Dm7 | G7 | Cmaj7 | Dm7 G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fmaj7 | Fmaj7 | Fmaj7 | Fmaj7 | D7 | D7 | Dm7 | G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 | Cmaj7 | D7 | D7 | Dm7 | G7 | C6 | Dm7 G7" }
+            ]]},
+            { id: "std-there-will-never", category: "🎷 1. Swing & American Songbook", name: "There Will Never Be Another You", baseKey: "Eb", bpm: 162, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ebmaj7 | Dm7(b5) | G7(b9) | Cm7 | Cm7 | Bbm7 | Eb7 | Abmaj7 | Db7 | Ebmaj7 | Cm7 | F7 | F7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ebmaj7 | Dm7(b5) | G7(b9) | Cm7 | Cm7 | Bbm7 | Eb7 | Abmaj7 | Db7 | Ebmaj7 | Am7(b5) D7 | Ebmaj7 | Ab7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-stella", category: "🎷 1. Swing & American Songbook", name: "Stella By Starlight", baseKey: "Bb", bpm: 136, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Em7(b5) | A7(b9) | Cm7 | F7 | Fm7 | Bb7 | Ebmaj7 | Ab7 | Bbmaj7 | Em7(b5) A7(b9) | Dm7 | Bbm7 Eb7 | Fmaj7 | Em7(b5) A7 | Am7(b5) | D7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "G7(b9) | G7(b9) | Cm7 | Cm7 | Ab7 | Ab7 | Bbmaj7 | Bbmaj7 | Em7(b5) | A7(b9) | Dm7(b5) | G7(b9) | Cm7(b5) | F7(b9) | Bbmaj7 | Bbmaj7" }
+            ]]},
+            { id: "std-satin-doll", category: "🎷 1. Swing & American Songbook", name: "Satin Doll", baseKey: "C", bpm: 112, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 G7 | Dm7 G7 | Em7 A7 | Em7 A7 | Am7 D7 | Abm7 Db7 | Cmaj7 | Cmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | C7 | Fmaj7 | Fmaj7 | Am7 | D7 | G7 | G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 G7 | Dm7 G7 | Em7 A7 | Em7 A7 | Am7 D7 | Abm7 Db7 | Cmaj7 | Cmaj7" }
+            ]]},
+            { id: "std-sweet-georgia", category: "🎷 1. Swing & American Songbook", name: "Sweet Georgia Brown", baseKey: "Ab", bpm: 184, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "F7 | F7 | F7 | F7 | Bb7 | Bb7 | Bb7 | Bb7 | Eb7 | Eb7 | Eb7 | Eb7 | Abmaj7 | Abmaj7 | Em7(b5) | A7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "F7 | F7 | F7 | F7 | Bb7 | Bb7 | Bb7 | Bb7 | Fm7 | C7 | Fm7 | C7 | Ab6 | F7 | Bbm7 Eb7 | Ab6 C7" }
+            ]]},
+            { id: "std-summertime", category: "🎷 1. Swing & American Songbook", name: "Summertime", baseKey: "C", bpm: 98, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am6 | E7 | Am6 | E7 | Dm7 | F7 | Bm7(b5) | E7 | Am6 | E7 | Am6 | Em7(b5) A7 | Dm7 G7 | Cmaj7 Fmaj7 | Bm7(b5) E7 | Am6 E7" }
+            ]]},
+            { id: "std-on-green-dolphin", category: "🎷 1. Swing & American Songbook", name: "On Green Dolphin Street", baseKey: "Eb", bpm: 152, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ebmaj7 | Ebm7 | Ebm7 | F7 | F7 | Ebmaj7 | C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Abm7 | Db7 | Gbmaj7 | Fm7 Bb7" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ebmaj7 | Ebm7 | Ebm7 | F7 | F7 | Ebmaj7 | D7" },
+                { type: "C", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fm7 | Dm7(b5) G7 | Cm7 | Am7(b5) D7 | Gm7 C7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-just-friends", category: "🎷 1. Swing & American Songbook", name: "Just Friends", baseKey: "G", bpm: 156, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 | Cmaj7 | Cm7 | F7 | Gmaj7 | Gmaj7 | Bbm7 | Eb7 | Am7 | D7 | F#m7(b5) | B7 | Em7 | A7 | Am7 | D7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cmaj7 | Cmaj7 | Cm7 | F7 | Gmaj7 | Gmaj7 | Bbm7 | Eb7 | Am7 | D7 | F#m7(b5) B7 | Em7 | A7 | Am7 D7 | G6 | Dm7 G7" }
+            ]]},
+            { id: "std-days-of-wine", category: "🎷 1. Swing & American Songbook", name: "Days Of Wine And Roses", baseKey: "F", bpm: 132, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Eb7 | D7(b9) | D7(b9) | Gm7 | Gm7 | Bbm7 | Eb7 | Am7 | Dm7 | Gm7 | C7 | Em7(b5) | A7(b9) | Dm7 G7 | Gm7 C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fmaj7 | Eb7 | D7(b9) | D7(b9) | Gm7 | Gm7 | Bbm7 | Eb7 | Am7 D7 | Gm7 C7 | Am7 | Dm7 | Gm7 | C7 | F6 | Gm7 C7" }
+            ]]},
+            { id: "std-have-you-met", category: "🎷 1. Swing & American Songbook", name: "Have You Met Miss Jones?", baseKey: "F", bpm: 168, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | F#dim7 | Gm7 | C7 | Am7 | Dm7 | Gm7 | C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 | F7 | Bbmaj7 | Abm7 Db7 | Gbmaj7 | Em7 A7 | Dmaj7 | Abm7 Db7 | Gbmaj7 | Cm7 F7 | Bbmaj7 | Gm7 C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | F#dim7 | Gm7 | C7 | Am7 D7 | Gm7 C7 | F6 | Gm7 C7" }
+            ]]},
+            { id: "std-night-and-day", category: "🎷 1. Swing & American Songbook", name: "Night And Day", baseKey: "C", bpm: 146, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7(b5) | G7 | Cmaj7 | Cmaj7 | Dm7(b5) | G7 | Cmaj7 | Cmaj7 | F#m7(b5) | Fm7 | Em7 | Ebm7 | Dm7 | G7 | Cmaj7 | Cmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ebmaj7 | Cmaj7 | Cmaj7 | Ebmaj7 | Ebmaj7 | Cmaj7 | Cmaj7 | F#m7(b5) | Fm7 | Em7 | Ebm7 | Dm7 | G7 | Cmaj7 | Cmaj7" }
+            ]]},
+            { id: "std-it-could-happen", category: "🎷 1. Swing & American Songbook", name: "It Could Happen To You", baseKey: "Eb", bpm: 144, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Edim7 | Fm7 | F#dim7 | Ebmaj7/G | Abmaj7 | Gm7(b5) | C7(b9) | Fm7 | Db7 | Ebmaj7 | D7(b9) | Gm7 | C7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Edim7 | Fm7 | F#dim7 | Ebmaj7/G | Abmaj7 | Gm7(b5) | C7(b9) | Fm7 | Bbm7 Eb7 | Abmaj7 | Dm7(b5) G7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-alone-together", category: "🎷 1. Swing & American Songbook", name: "Alone Together", baseKey: "F", bpm: 126, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 | Em7(b5) A7(b9) | Dm7 | Em7(b5) A7(b9) | Dm7 | Am7(b5) D7(b9) | Gm7 | Gm7 | Bm7(b5) E7 | Am7 D7 | Gm7 | C7 | Fmaj7 | Em7(b5) A7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7(b5) | D7(b9) | Gm7 | Gm7 | Gm7(b5) | C7(b9) | Fmaj7 | Em7(b5) A7(b9)" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Em7(b5) A7(b9) | Dm7 | Am7(b5) D7(b9) | Gm7 | Bb7 | Em7(b5) A7 | Dm6" }
+            ]]},
+            { id: "std-softly-as-in", category: "🎷 1. Swing & American Songbook", name: "Softly, As In A Morning Sunrise", baseKey: "Eb", bpm: 158, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Dm7(b5) G7(b9) | Cm7 | Dm7(b5) G7(b9) | Cm7 | Dm7(b5) G7(b9) | Cm6 | Dm7(b5) G7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Cm7 | Fm7 | Bb7 | Ebmaj7 | Ab7 | Dm7(b5) | G7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Dm7(b5) G7(b9) | Cm7 | Dm7(b5) G7(b9) | Cm7 | Dm7(b5) G7(b9) | Cm6 | Dm7(b5) G7(b9)" }
+            ]]},
+            { id: "std-out-of-nowhere", category: "🎷 1. Swing & American Songbook", name: "Out Of Nowhere", baseKey: "G", bpm: 138, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gmaj7 | Gmaj7 | Bbm7 | Eb7 | Gmaj7 | Gmaj7 | Bm7 | E7 | Am7 | Am7 | Eb7 | Eb7 | Am7 | D7 | Bm7 E7 | Am7 D7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gmaj7 | Gmaj7 | Bbm7 | Eb7 | Gmaj7 | Gmaj7 | Bm7 | E7 | Am7 | F7 | Bm7(b5) | E7(b9) | Am7 | Cm6 D7 | G6 | Am7 D7" }
+            ]]},
+            { id: "std-bye-bye-blackbird", category: "🎷 1. Swing & American Songbook", name: "Bye Bye Blackbird", baseKey: "F", bpm: 128, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Gm7 C7 | Fmaj7 | Fmaj7 | Abdim7 | Gm7 | C7 | C7 | Gm7 | C7 | Gm7 | C7 | Gm7(b5) | C7(b9) | Fmaj7 | F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bm7(b5) | Bbm6 | Am7 | D7(b9) | Gm7 | D7(b9) | Gm7 | C7 | Fmaj7 | Gm7 C7 | Am7 | D7(b9) | Gm7 | C7 | F6 | Gm7 C7" }
+            ]]},
+
+            // === 2. BEBOP & HARD BOP ===
+            { id: "std-cherokee", category: "🎺 2. Bebop & Hard Bop", name: "Cherokee", baseKey: "Bb", bpm: 230, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bbmaj7 | Bbmaj7 | Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Ab7 | Ab7 | Bbmaj7 | Gm7 | C7 | C7 | Cm7 | F7 | Bbmaj7 | Cm7 F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "C#m7 | F#7 | Bmaj7 | Bmaj7 | Bm7 | E7 | Amaj7 | Amaj7 | Am7 | D7 | Gmaj7 | Gmaj7 | Gm7 | C7 | Cm7 | F7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 | Bbmaj7 | Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Ab7 | Ab7 | Bbmaj7 | Gm7 | C7 | C7 | Cm7 | F7 | Bbmaj7 | Cm7 F7" }
+            ]]},
+            { id: "std-confirmation", category: "🎺 2. Bebop & Hard Bop", name: "Confirmation (Charlie Parker)", baseKey: "F", bpm: 200, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | Em7(b5) A7 | Dm7 G7 | Cm7 F7 | Bb7 | Am7 D7 | G7 | Gm7 C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 | F7 | Bbmaj7 | Bbmaj7 | Ebm7 | Ab7 | Dbmaj7 | Gm7 C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Em7(b5) A7 | Dm7 G7 | Cm7 F7 | Bb7 | Am7 D7 | Gm7 C7 | Fmaj7" }
+            ]]},
+            { id: "std-anthropology", category: "🎺 2. Bebop & Hard Bop", name: "Anthropology / Oleo", baseKey: "Bb", bpm: 216, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 Ab7 | Dm7 G7 | Cm7 F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | D7 | Dm7 | G7 | Gm7 | C7 | Cm7 | F7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 Ab7 | Cm7 F7 | Bbmaj7" }
+            ]]},
+            { id: "std-ornithology", category: "🎺 2. Bebop & Hard Bop", name: "Ornithology / How High The Moon", baseKey: "G", bpm: 192, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gmaj7 | Gmaj7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Ebmaj7 | Am7(b5) D7 | Gm7 | Am7(b5) D7 | Bm7 E7 | Am7 D7 | Gmaj7 | Am7 D7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gmaj7 | Gmaj7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Ebmaj7 | Am7(b5) D7 | Gmaj7 | Bm7 E7 | Am7 | D7 | Gmaj7 | Am7 D7" }
+            ]]},
+            { id: "std-donna-lee", category: "🎺 2. Bebop & Hard Bop", name: "Donna Lee / Indiana", baseKey: "Ab", bpm: 210, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Abmaj7 | F7 | Bb7 | Bb7 | Bbm7 | Eb7 | Abmaj7 | Ebm7 Ab7 | Dbmaj7 | Gb7 | Abmaj7 | F7 | Bb7 | Bb7 | Bbm7 | Eb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Abmaj7 | F7 | Bb7 | Bb7 | Gm7(b5) | C7(b9) | Fm7 | C7(b9) | Fm7 | C7(b9) | Fm7 | Bdim7 | Cm7 F7 | Bbm7 Eb7 | Abmaj7 | Bbm7 Eb7" }
+            ]]},
+            { id: "std-groovin-high", category: "🎺 2. Bebop & Hard Bop", name: "Groovin' High / Whispering", baseKey: "Eb", bpm: 168, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ebmaj7 | Am7 | D7 | Ebmaj7 | Ebmaj7 | Gm7 | C7 | F7 | F7 | Fm7 | Bb7 | Gm7 C7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ebmaj7 | Am7 | D7 | Ebmaj7 | Ebmaj7 | Gm7 | C7 | F7 | F7 | Abmaj7 | Am7 D7 | Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-yardbird-suite", category: "🎺 2. Bebop & Hard Bop", name: "Yardbird Suite", baseKey: "C", bpm: 188, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 | Fm7 Bb7 | Cmaj7 Bb7 | A7 | Dm7 | G7 | Em7 A7 | Dm7 G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Em7 | F#m7(b5) B7 | Em7 A7 | Dm7 | F#m7(b5) | B7 | Em7 A7 | Dm7 G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 | Fm7 Bb7 | Cmaj7 Bb7 | A7 | Dm7 | G7 | Cmaj7 | Dm7 G7" }
+            ]]},
+            { id: "std-scrapple", category: "🎺 2. Bebop & Hard Bop", name: "Scrapple From The Apple", baseKey: "F", bpm: 186, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Gm7 | C7 | Gm7 | C7 | Fmaj7 Gm7 | Am7 D7 | Gm7 C7 | Fmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "A7 | A7 | D7 | D7 | G7 | G7 | C7 | C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gm7 | C7 | Gm7 | C7 | Fmaj7 Gm7 | Am7 D7 | Gm7 C7 | Fmaj7" }
+            ]]},
+            { id: "std-night-in-tunisia", category: "🎺 2. Bebop & Hard Bop", name: "A Night In Tunisia", baseKey: "F", bpm: 164, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Eb7 | Dm6 | Eb7 | Dm6 | Eb7 | Dm6 | Em7(b5) A7 | Dm6" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7(b5) | D7(b9) | Gm7 | Gm7 | Gm7(b5) | C7(b9) | Fmaj7 | Em7(b5) A7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Eb7 | Dm6 | Eb7 | Dm6 | Eb7 | Dm6 | Em7(b5) A7 | Dm6" }
+            ]]},
+            { id: "std-joy-spring", category: "🎺 2. Bebop & Hard Bop", name: "Joy Spring (Clifford Brown)", baseKey: "F", bpm: 172, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Gm7 C7 | Fmaj7 | Bm7 E7 | Amaj7 | Bm7 E7 | Amaj7 | Cm7 F7" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 | Gm7 C7 | Am7 | D7 | Abm7 | Db7 | Gbmaj7 | Gbm7 B7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gbmaj7 | Abm7 Db7 | Gbmaj7 | Cm7 F7 | Bbmaj7 | Cm7 F7 | Bbmaj7 | Gm7 C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Gm7 C7 | Am7 | D7 | Gm7 | C7 | Fmaj7 | Gm7 C7" }
+            ]]},
+            { id: "std-lady-bird", category: "🎺 2. Bebop & Hard Bop", name: "Lady Bird (Tadd Dameron)", baseKey: "C", bpm: 158, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 | Cmaj7 | Fm7 | Bb7 | Cmaj7 | Cmaj7 | Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Am7 | D7 | Dm7 | G7 | Cmaj7 Ebmaj7 | Abmaj7 Dbmaj7" }
+            ]]},
+            { id: "std-tune-up", category: "🎺 2. Bebop & Hard Bop", name: "Tune Up (Miles Davis)", baseKey: "D", bpm: 176, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Em7 | A7 | Dmaj7 | Dmaj7 | Dm7 | G7 | Cmaj7 | Cmaj7 | Cm7 | F7 | Bbmaj7 | Bbmaj7 | Em7 | F7 | Bbmaj7 | A7" }
+            ]]},
+            { id: "std-four", category: "🎺 2. Bebop & Hard Bop", name: "Four (Miles Davis)", baseKey: "Eb", bpm: 184, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ebmaj7 | Ebm7 | Ab7 | Fm7 | Fm7 | Abm7 | Db7 | Ebmaj7 | F#m7 B7 | Fm7 | Am7(b5) D7 | Gm7 | F#m7 B7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ebmaj7 | Ebm7 | Ab7 | Fm7 | Fm7 | Abm7 | Db7 | Ebmaj7 | F#m7 B7 | Fm7 | Am7(b5) D7 | Gm7 F#m7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-solar", category: "🎺 2. Bebop & Hard Bop", name: "Solar (Miles Davis)", baseKey: "Eb", bpm: 162, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm6 | Cm6 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Ebmaj7 | Ebm7 Ab7 | Dbmaj7 | Dm7(b5) G7(b9)" }
+            ]]},
+            { id: "std-nardis", category: "🎺 2. Bebop & Hard Bop", name: "Nardis (Miles Davis / Bill Evans)", baseKey: "G", bpm: 148, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Em7 | Fmaj7 | B7 | Cmaj7 | Am7 | Fmaj7 | Emaj7 | Em7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | Fmaj7 | Am7 | Fmaj7 | Dm7 | G7 | Cmaj7 | Fmaj7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Em7 | Fmaj7 | B7 | Cmaj7 | Am7 | Fmaj7 | Emaj7 | Em7" }
+            ]]},
+            { id: "std-whisper-not", category: "🎺 2. Bebop & Hard Bop", name: "Whisper Not (Benny Golson)", baseKey: "Eb", bpm: 116, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7/Bb | Am7(b5) D7(b9) | Gm7 | Cm7 F7 | Fm7 Bb7 | Em7(b5) | A7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Dm7(b5) G7 | Cm7 | Am7(b5) D7 | Gm7 | F#m7 B7 | Em7 A7 | Dm7(b5) | G7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Cm7/Bb | Am7(b5) D7(b9) | Gm7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 | Dm7(b5) G7" }
+            ]]},
+            { id: "std-along-came-betty", category: "🎺 2. Bebop & Hard Bop", name: "Along Came Betty (Benny Golson)", baseKey: "Ab", bpm: 112, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bbm7 | Bm7 E7 | Bbm7 | Bm7 E7 | Cm7 | C#m7 F#7 | Bmaj7 | Am7 D7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gmaj7 | Gm7 C7 | Fmaj7 | Em7 A7 | Dmaj7 | Dm7 G7 | Cmaj7 | Cm7 F7" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbm7 | Bm7 E7 | Bbm7 | Bm7 E7 | Cm7 F7 | Bbm7 Eb7 | Abmaj7 | Ebm7 Ab7 | Dbmaj7 | Dm7(b5) G7 | Cm7 F7 | Bbm7 Eb7 | Abmaj7 | Bbm7 Eb7" }
+            ]]},
+            { id: "std-moment-notice", category: "🎺 2. Bebop & Hard Bop", name: "Moment's Notice (John Coltrane)", baseKey: "Eb", bpm: 220, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Em7 A7 | Fm7 Bb7 | Ebmaj7 | Abm7 Db7 | Dm7 G7 | Ebm7 Ab7 | Dbmaj7 | Dm7 G7 | Cm7 | Bm7 E7 | Bbmaj7 | Abm7 Db7 | Gbmaj7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebm7 | Cm7(b5) F7 | Bbm7 | Gm7 C7 | Fm7 | Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-lazy-bird", category: "🎺 2. Bebop & Hard Bop", name: "Lazy Bird (John Coltrane)", baseKey: "G", bpm: 196, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Am7 | D7 | Cm7 | F7 | Gmaj7 | Abm7 Db7 | F#m7 B7 | Emaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bm7 | E7 | Amaj7 | Amaj7 | Ebm7 | Ab7 | Dbmaj7 | Am7 D7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7 | D7 | Cm7 | F7 | Gmaj7 | Abm7 Db7 | Am7 D7 | Gmaj7" }
+            ]]},
+            { id: "std-oleo", category: "🎺 2. Bebop & Hard Bop", name: "Moose The Mooche / Rhythm Changes", baseKey: "Bb", bpm: 205, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 Ab7 | Dm7 G7 | Cm7 F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "D7 | D7 | G7 | G7 | C7 | C7 | F7 | F7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 Gm7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Fm7 Bb7 | Ebmaj7 Ab7 | Cm7 F7 | Bbmaj7" }
+            ]]},
+
+            // === 3. BALADAS DE JAZZ ===
+            { id: "std-misty", category: "🌙 3. Baladas de Jazz", name: "Misty (Erroll Garner)", baseKey: "Eb", bpm: 68, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebmaj7 | Bbm7 Eb7 | Abmaj7 | Abm7 Db7 | Ebmaj7 Cm7 | Fm7 Bb7 | Gm7 C7 | Fm7 Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbm7 | Eb7 | Abmaj7 | Abmaj7 | Am7 | D7 | Fm7 | Bb7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Bbm7 Eb7 | Abmaj7 | Abm7 Db7 | Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-body-and-soul", category: "🌙 3. Baladas de Jazz", name: "Body And Soul", baseKey: "Db", bpm: 64, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebm7 Bb7 | Ebm7 D7 | Dbmaj7 Gb7 | Fm7 Edim7 | Ebm7 | Cm7(b5) F7 | Bbm7 Ebm7 | Ab7 Dbmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Em7 A7 | Dmaj7 | Dm7 G7 | Cmaj7 | Cm7 F7 | Bb7 Eb7 | Ab7 | Ab7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebm7 Bb7 | Ebm7 D7 | Dbmaj7 Gb7 | Fm7 Edim7 | Ebm7 | Cm7(b5) F7 | Bbm7 Eb7 | Ebm7 Ab7 | Dbmaj7" }
+            ]]},
+            { id: "std-my-funny-valentine", category: "🌙 3. Baladas de Jazz", name: "My Funny Valentine", baseKey: "Eb", bpm: 66, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm | Cm/B | Cm7/Bb | Cm6/A | Abmaj7 | Fm7 | Dm7(b5) | G7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7 | Ebmaj7 G7 | Cm7 Bbm7 Eb7 | Abmaj7 | Dm7(b5) G7" },
+                { type: "A2", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm | Cm/B | Cm7/Bb | Cm6/A | Abmaj7 | Dm7(b5) G7 | Cm7 Bbm7 Eb7 | Abmaj7 | Fm7 Bb7 | Ebmaj7 | Dm7(b5) G7" }
+            ]]},
+            { id: "std-round-midnight", category: "🌙 3. Baladas de Jazz", name: "'Round Midnight (Thelonious Monk)", baseKey: "Gb", bpm: 62, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebm7 | Cm7(b5) F7 | Bbm7 Eb7 | Abm7 Db7 | Gbmaj7 B7 | Fm7(b5) Bb7 | Ebm7 Ab7 | Fm7(b5) Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fm7(b5) Bb7 | Ebm7 Ab7 | Db7 | Gbmaj7 | Cm7(b5) F7 | Bm7 E7 | Fm7(b5) | Bb7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebm7 | Cm7(b5) F7 | Bbm7 Eb7 | Abm7 Db7 | Gbmaj7 B7 | Fm7(b5) Bb7 | Ebm6 | Fm7(b5) Bb7" }
+            ]]},
+            { id: "std-in-a-sentimental", category: "🌙 3. Baladas de Jazz", name: "In A Sentimental Mood (Duke Ellington)", baseKey: "F", bpm: 65, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm | Dm/C# | Dm7/C | Dm6/B | Gm | Gm/F# | Gm7/F | C7 | Fmaj7 | Dm7 | Gm7 C7 | Fmaj7 Em7(b5) A7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Dbmaj7 | Bbm7 | Ebm7 Ab7 | Dbmaj7 | Gm7 | C7 | Fmaj7 | Em7(b5) A7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm | Dm/C# | Dm7/C | Dm6/B | Gm | Gm/F# | Gm7/F | C7 | Fmaj7 | Gm7 C7 | F6 | Em7(b5) A7" }
+            ]]},
+            { id: "std-georgia", category: "🌙 3. Baladas de Jazz", name: "Georgia On My Mind", baseKey: "F", bpm: 72, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | E7 | Dm7 G7 | Cm7 F7 | Bbmaj7 | Bdim7 | Fmaj7/C D7 | Gm7 C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Dm7 Gm7 | Dm7 Bb7 | Dm7 Gm7 | Dm7 G7 | Dm7 Bdim7 | Em7(b5) A7 | Dm7 G7 | Gm7 C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | E7 | Dm7 G7 | Cm7 F7 | Bbmaj7 | Bdim7 | Fmaj7 D7 | Gm7 C7 | F6" }
+            ]]},
+            { id: "std-my-romance", category: "🌙 3. Baladas de Jazz", name: "My Romance", baseKey: "Bb", bpm: 92, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 C7 | Cm7 F7 | Bbmaj7 Dm7 | Dbm7 Cm7 | F7 | Cm7 F7 | Dm7 G7 | Cm7 F7 | Bbmaj7 Bb7 | Ebmaj7 Ab7 | Dm7 G7 | Cm7 F7 | Dm7 | G7 | Cm7 | F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbmaj7 C7 | Cm7 F7 | Bbmaj7 D7 | Gm7 C7 | Fmaj7 | Dm7 G7 | Cm7 | F7 | Bbmaj7 Bb7 | Ebmaj7 Edim7 | Bbmaj7/F G7 | Cm7 F7 | Bb6 | Cm7 F7" }
+            ]]},
+            { id: "std-what-is-this", category: "🌙 3. Baladas de Jazz", name: "What Is This Thing Called Love?", baseKey: "C", bpm: 155, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Gm7(b5) | C7(b9) | Fm6 | Fm6 | Dm7(b5) | G7(b9) | Cmaj7 | Cmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 | F7 | Bbmaj7 | Bbmaj7 | Ab7 | Ab7 | Dm7(b5) | G7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gm7(b5) | C7(b9) | Fm6 | Fm6 | Dm7(b5) | G7(b9) | Cmaj7 | Cmaj7" }
+            ]]},
+            { id: "std-angel-eyes", category: "🌙 3. Baladas de Jazz", name: "Angel Eyes (Matt Dennis)", baseKey: "Eb", bpm: 64, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Ab7 G7 | Cm7 | Ab7 G7 | Cm7 | Am7(b5) D7(b9) | Gm7 | Dm7(b5) G7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fm7 | Bb7 | Ebmaj7 | Cm7 | Am7(b5) | D7(b9) | Dm7(b5) | G7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Ab7 G7 | Cm7 | Ab7 G7 | Cm7 | Am7(b5) D7(b9) | Ab7 G7 | Cm6" }
+            ]]},
+            { id: "std-polka-dots", category: "🌙 3. Baladas de Jazz", name: "Polka Dots And Moonbeams", baseKey: "F", bpm: 66, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 Dm7 | Gm7 C7 | Fmaj7 Dm7 | Gm7 C7 | Am7 Dm7 | Gm7 C7 | Am7 D7 | Gm7 C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Amaj7 | F#m7 | Bm7 | E7 | Amaj7 | Dm7 G7 | Cmaj7 | Gm7 C7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 Dm7 | Gm7 C7 | Fmaj7 Dm7 | Gm7 C7 | Am7 Dm7 | Gm7 C7 | F6 | Gm7 C7" }
+            ]]},
+            { id: "std-lover-man", category: "🌙 3. Baladas de Jazz", name: "Lover Man (Billie Holiday)", baseKey: "F", bpm: 63, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 G7 | Dm7 G7 | Gm7 C7 | Gm7 C7 | Fmaj7 | Em7(b5) A7 | Dm7 G7 | Gm7 C7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 D7 | Gmaj7 | Am7 D7 | Gmaj7 | Gm7 C7 | Fmaj7 | Bm7(b5) E7 | Em7(b5) A7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 G7 | Dm7 G7 | Gm7 C7 | Gm7 C7 | Fmaj7 | Em7(b5) A7 | Dm7 C7 | F6" }
+            ]]},
+            { id: "std-darn-that-dream", category: "🌙 3. Baladas de Jazz", name: "Darn That Dream", baseKey: "G", bpm: 65, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Gmaj7 Bb7 | Am7 D7 | Bm7 E7 | Am7 F7 | Ebmaj7 D7 | Gm7 C7 | Am7(b5) | D7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 F7 | Bbmaj7 Gm7 | Cm7 F7 | Bbmaj7 | Bm7 E7 | Amaj7 F#m7 | Am7 | D7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gmaj7 Bb7 | Am7 D7 | Bm7 E7 | Am7 F7 | Ebmaj7 D7 | Bm7 E7 | Am7 D7 | G6" }
+            ]]},
+            { id: "std-laura", category: "🌙 3. Baladas de Jazz", name: "Laura (David Raksin)", baseKey: "C", bpm: 70, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7 | D7 | Gmaj7 | Gmaj7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Ebmaj7 | Cm7 | Am7(b5) | D7(b9) | Gmaj7 | E7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | D7 | Gmaj7 | Gmaj7 | Bm7(b5) | E7 | Am7 | D7 | Gmaj7 | F#m7(b5) B7 | Em7 | A7 | Dm7 | G7 | C6 | Bm7(b5) E7" }
+            ]]},
+            { id: "std-over-the-rainbow", category: "🌙 3. Baladas de Jazz", name: "Over The Rainbow", baseKey: "Eb", bpm: 68, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebmaj7 Cm7 | Gm7 Eb7 | Abmaj7 Db7 | Ebmaj7 C7 | Fm7 Bb7 | Gm7 C7 | Fm7 Bb7 | Ebmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Fm7 Bb7 | Gm7 C7 | Fm7 Bb7 | Ebmaj7 | F#dim7 | Fm7 | Bb7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 Cm7 | Gm7 Eb7 | Abmaj7 Db7 | Ebmaj7 C7 | Fm7 Bb7 | Gm7 C7 | Fm7 Bb7 | Eb6" }
+            ]]},
+            { id: "std-my-one-and-only", category: "🌙 3. Baladas de Jazz", name: "My One And Only Love", baseKey: "C", bpm: 66, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7 | Cm7(b5) F7 | Bm7(b5) E7 | Am7 D7 | Dm7 G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Em7 | A7 | Dm7 |Dm7 | Em7 | A7 | Dm7 | G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 Am7 | Dm7 G7 | Em7 A7 | Dm7 G7 | Cm7(b5) F7 | Bm7(b5) E7 | Am7 D7 | Dm7 G7 | C6" }
+            ]]},
+            { id: "std-naima", category: "🌙 3. Baladas de Jazz", name: "Naima (John Coltrane)", baseKey: "Ab", bpm: 60, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbm7/Eb | Ebm7/Eb | Amaj7/Eb Gmaj7/Eb | Abmaj7 | Bbm7/Eb | Ebm7/Eb | Amaj7/Eb Gmaj7/Eb | Abmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bmaj7/Bb | Bb7(b9) | Bmaj7/Bb | Bb7(b9) | Bm7/Bb | Bmaj7/Bb | Abmaj7/Bb | Emaj7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbm7/Eb | Ebm7/Eb | Amaj7/Eb Gmaj7/Eb | Abmaj7" }
+            ]]},
+            { id: "std-goodbye-pork-pie", category: "🌙 3. Baladas de Jazz", name: "Goodbye Pork Pie Hat (Charles Mingus)", baseKey: "F", bpm: 62, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 Db7 | Gbmaj7 B7 | Bb7 Db7 | Eb7 F7 | Bbm7 Gbmaj7 | Gm7 C7 | Dbmaj7 Gb7 | F7 Db7 | Gm7 | C7 | F7 Db7 | Gbmaj7 C7" }
+            ]]},
+            { id: "std-solitude", category: "🌙 3. Baladas de Jazz", name: "Solitude (Duke Ellington)", baseKey: "Eb", bpm: 65, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebmaj7 Edim7 | Fm7 Bb7 | Ebmaj7 G7 | Cm7 C7 | Fm7 | Fm7 Bb7 | Ebmaj7 | Fm7 Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbm7 Eb7 | Abmaj7 | Bbm7 Eb7 | Abmaj7 | Am7(b5) D7 | Gm7 C7 | Fm7 | Bb7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 Edim7 | Fm7 Bb7 | Ebmaj7 G7 | Cm7 C7 | Fm7 | Fm7 Bb7 | Eb6 | Fm7 Bb7" }
+            ]]},
+            { id: "std-tenderly", category: "🌙 3. Baladas de Jazz", name: "Tenderly", baseKey: "Eb", bpm: 74, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Ab7 | Ebm7 | Ab7 | Fm7 | Db7 | Ebmaj7 | Cm7 | Bm7 E7 | Bbm7 Eb7 | Abmaj7 | Abm6 | Gm7 | C7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ab7 | Ebm7 | Ab7 | Fm7 | Db7 | Ebmaj7 | Cm7 | Bm7 E7 | Bbm7 Eb7 | Abmaj7 | Dm7(b5) G7 | Cm7 A7 | Fm7 Bb7 | Eb6 | Fm7 Bb7" }
+            ]]},
+            { id: "std-when-i-fall-in-love", category: "🌙 3. Baladas de Jazz", name: "When I Fall In Love", baseKey: "Eb", bpm: 68, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 Gm7 | Gbm7 Fm7 | Bb7 | Dm7(b5) G7 | Cm7 | Abm6 | Ebmaj7 C7 | Fm7 | Am7(b5) D7 | Gm7 C7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 Cm7 | Fm7 Bb7 | Ebmaj7 Gm7 | Gbm7 Fm7 | Bb7 | Dm7(b5) G7 | Cm7 | Abm6 | Ebmaj7 Dm7(b5) G7 | Cm7 F7 | Fm7 Bb7 | Eb6 | Fm7 Bb7" }
+            ]]},
+
+            // === 4. BOSSA NOVA & LATIN JAZZ ===
+            { id: "std-girl-from-ipanema", category: "🌴 4. Bossa Nova & Latin Jazz", name: "The Girl From Ipanema (Garota de Ipanema)", baseKey: "F", bpm: 128, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | Fmaj7 | G7 | G7 | Gm7 | Gb7 | Fmaj7 | Gb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gbmaj7 | Gbmaj7 | B7 | B7 | F#m7 | F#m7 | D7 | D7 | Gm7 | Gm7 | Eb7 | Eb7 | Am7 | D7(b9) | Gm7 | C7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Fmaj7 | G7 | G7 | Gm7 | Gb7 | Fmaj7 | Gb7" }
+            ]]},
+            { id: "std-blue-bossa", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Blue Bossa (Kenny Dorham)", baseKey: "Eb", bpm: 138, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Cm7 | Fm7 | Fm7 | Dm7(b5) | G7(b9) | Cm7 | Cm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebm7 | Ab7 | Dbmaj7 | Dbmaj7 | Dm7(b5) | G7(b9) | Cm7 | Dm7(b5) G7(b9)" }
+            ]]},
+            { id: "std-black-orpheus", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Black Orpheus (Manhã de Carnaval)", baseKey: "C", bpm: 118, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7 | Bm7(b5) E7(b9) | Am7 | Bm7(b5) E7(b9) | Am7 | Dm7 G7 | Cmaj7 | C#dim7 | Dm7 | G7 | Cmaj7 | Fmaj7 | Bm7(b5) | E7(b9) | Am7 | Bm7(b5) E7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | Bm7(b5) E7(b9) | Am7 | Em7(b5) A7(b9) | Dm7 | Dm7 | Dm7 | Bm7(b5) E7(b9) | Am7 | Dm7 | Bm7(b5) | E7(b9) | Am6 | Bm7(b5) E7(b9)" }
+            ]]},
+            { id: "std-wave", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Wave (Antonio Carlos Jobim)", baseKey: "D", bpm: 132, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dmaj7 | Bbdim7 | Am7 | D7(b9) | Gmaj7 | Gm6 | F#7 | B7 | E7 | Bb7 A7 | Dmaj7 | Em7 A7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Ebmaj7 | Em7 A7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dmaj7 | Bbdim7 | Am7 | D7(b9) | Gmaj7 | Gm6 | F#7 | B7 | E7 | Bb7 A7 | Dmaj7 | Em7 A7" }
+            ]]},
+            { id: "std-corcovado", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Corcovado (Quiet Nights)", baseKey: "C", bpm: 116, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am6 | Am6 | Abdim7 | Abdim7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Em7 | Am7 | Dm7 | G7 | Em7 | A7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am6 | Am6 | Abdim7 | Abdim7 | Gm7 | C7 | Fmaj7 | Fmaj7 | Fm7 | Bb7 | Em7 | Am7 | Dm7 | G7 | C6 | B7" }
+            ]]},
+            { id: "std-recorda-me", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Recorda Me (Joe Henderson)", baseKey: "C", bpm: 162, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7 | Am7 | Am7 | Am7 | Cm7 | Cm7 | Cm7 | F7 | Bbmaj7 | Bbm7 Eb7 | Abmaj7 | Abm7 Db7 | Gbmaj7 | Gm7 C7 | Fmaj7 | E7" }
+            ]]},
+            { id: "std-ceora", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Ceora (Lee Morgan)", baseKey: "Ab", bpm: 126, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Abmaj7 | Bbm7 Eb7 | Cm7 | Fm7 | Bbm7 | Eb7 | Abmaj7 | Dm7 G7 | Cmaj7 | C#dim7 | Dm7 | G7 | Gm7(b5) | C7(b9) | Fm7 | Bbm7 Eb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Abmaj7 | Bbm7 Eb7 | Cm7 F7 | Bbm7 Eb7 | Cm7 F7 | Bbm7 | Ebm7 | Ab7 | Dbmaj7 | Dm7(b5) G7 | Cm7 | F7 | Bbm7 | Eb7 | Abmaj7 | Bbm7 Eb7" }
+            ]]},
+            { id: "std-desafinado", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Desafinado (Antonio Carlos Jobim)", baseKey: "F", bpm: 136, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Fmaj7 | Fmaj7 | G7(b9) | G7(b9) | Gm7 | C7 | Am7(b5) | D7(b9) | Gm7 | A7(b9) | D7 | D7(b9) | G7 | G7 | Gbmaj7 | Gbmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Amaj7 | Bbdim7 | Bm7 | E7 | Amaj7 | F#m7 | Bm7 | E7 | Cmaj7 | C#dim7 | Dm7 | G7 | Gm7 | C7 | F6 | Gm7 C7" }
+            ]]},
+            { id: "std-one-note-samba", category: "🌴 4. Bossa Nova & Latin Jazz", name: "One Note Samba (Samba de Uma Nota Só)", baseKey: "Bb", bpm: 144, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 | Db7 | Cm7 | B7 | Dm7 | Db7 | Cm7 | B7 | Fm7 | Bb7 | Ebmaj7 | Ab7 | Dm7 G7 | Db7 | Cm7 F7 | Bb6" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebm7 | Ab7 | Dbmaj7 | Dbmaj7 | Dm7 | G7 | Cmaj7 | Cm7 F7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Db7 | Cm7 | B7 | Dm7 | Db7 | Cm7 | B7 | Fm7 | Bb7 | Ebmaj7 | Ab7 | Dm7 G7 | Db7 | Cm7 F7 | Bb6" }
+            ]]},
+            { id: "std-how-insensitive", category: "🌴 4. Bossa Nova & Latin Jazz", name: "How Insensitive (Insensatez)", baseKey: "F", bpm: 114, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Dm7 | C#dim7 | C#dim7 | Cm6 | Cm6 | G7/B | G7/B | Bbmaj7 | Bbmaj7 | Ebmaj7 | Ebmaj7 | Em7(b5) | A7(b9) | Dm7 | B7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bm7 | E7 | Bbmaj7 | Bbmaj7 | Am7 | D7 | Gm7 | C7 | Fm7 | G7 | Cm7 | D7(b9) | Gm7 | A7(b9) | Dm6 | Em7(b5) A7" }
+            ]]},
+            { id: "std-meditation", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Meditation (Meditação)", baseKey: "C", bpm: 120, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 | Cmaj7 | B7 | B7 | Cmaj7 | Cmaj7 | Em7(b5) | A7(b9) | Dm7 | Fm6 | Em7 | A7(b9) | Dm7 | G7 | Cmaj7 | Dm7 G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fmaj7 | Fm6 | Em7 | A7(b9) | Dm7 | Dm7 | G7 | G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cmaj7 | Cmaj7 | B7 | B7 | Cmaj7 | Cmaj7 | Em7(b5) | A7(b9) | Dm7 | Fm6 | Em7 | A7(b9) | Dm7 | G7 | C6 | Dm7 G7" }
+            ]]},
+            { id: "std-triste", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Triste (Antonio Carlos Jobim)", baseKey: "Bb", bpm: 138, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bbmaj7 | Bbmaj7 | Gbmaj7 | Gbmaj7 | Bbmaj7 | D7(b9) | Gm7 | Em7(b5) A7 | Dm7 | E7 | Am7 | D7 | Gm7 | C7 | Cm7 | F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbmaj7 | Fm7 Bb7 | Ebmaj7 | Ab7 | Dm7 | G7 | Cm7 | F7 | Bbm7 | Bbm6 | Fmaj7/C | D7(b9) | Gm7 | C7 | Cm7 F7 | Bbmaj7" }
+            ]]},
+            { id: "std-agua-de-beber", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Água De Beber", baseKey: "C", bpm: 134, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Am7 | B7(b9) | Em7(b5) A7 | Dm7 A7 | Dm7 G7 | Cmaj7 | Dm7 B7(b9) | E7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | D7 | Am7 | D7 | Dm7 | G7 | Cmaj7 | Bm7(b5) E7 | Am7 | F7 | Dm7 | E7(b9) | Am7 | F7 E7 | Am6 | B7 E7" }
+            ]]},
+            { id: "std-chega-de-saudade", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Chega De Saudade (No More Blues)", baseKey: "F", bpm: 136, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Dm7/C | Bm7(b5) | E7(b9) | Am7 | Bb7 | A7 | A7 | Dm7 | E7(b9) | Gm7 | A7(b9) | Dm7 | Em7(b5) A7 | Dm7 | A7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Dmaj7 | D#dim7 | Em7 | A7 | Dmaj7 | Am7 D7 | Gmaj7 | Gm6 | F#m7 | B7 | Em7 | A7 | F#m7 | B7 | Em7 A7 | D6" }
+            ]]},
+            { id: "std-once-i-loved", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Once I Loved (O Amor Em Paz)", baseKey: "F", bpm: 122, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | G7 | Gm7 | C7 | Fmaj7 | F7 | Bbmaj7 | D7(b9) | Gm7 | C7 | Am7(b5) | D7(b9) | Gm7 | Bbm6 | Am7 | D7(b9)" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | C7 | Am7 | D7(b9) | Gm7 | C7 | Am7(b5) | D7(b9) | Gm7 | Bbm6 | Fmaj7 | E7 | Am7 | D7(b9) | Gm7 C7 | Dm6" }
+            ]]},
+            { id: "std-dindi", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Dindi (Antonio Carlos Jobim)", baseKey: "Eb", bpm: 108, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebmaj7 | Db7 | Ebmaj7 | Db7 | Ebmaj7 | Cm7 | Fm7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | C7 | Fm7 | Bb7 | Gm7 | C7 | Fm7 | Bb7 | Abmaj7 | Dm7(b5) G7 | Cm7 | F7 | Fm7 | Bb7 | Ebmaj7 | Bb7" }
+            ]]},
+            { id: "std-so-danco-samba", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Só Danço Samba", baseKey: "C", bpm: 146, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "C6 | C6 | D7 | D7 | Dm7 | G7 | C6 | G7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | C7 | Fmaj7 | Fmaj7 | D7 | D7 | Dm7 | G7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "C6 | C6 | D7 | D7 | Dm7 | G7 | C6 | G7" }
+            ]]},
+            { id: "std-afro-blue", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Afro Blue (Mongo Santamaría)", baseKey: "Eb", bpm: 148, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Dm7(b5) G7 | Cm7 | Dm7(b5) G7 | Bbmaj7 | Abmaj7 G7 | Cm7 | Cm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbmaj7 | Bbmaj7 | Abmaj7 G7 | Cm7 | Bbmaj7 | Bbmaj7 | Abmaj7 G7 | Cm7" }
+            ]]},
+            { id: "std-manteca", category: "🌴 4. Bossa Nova & Latin Jazz", name: "Manteca (Dizzy Gillespie)", baseKey: "Bb", bpm: 168, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bb7 | Ab7 | Bb7 | Ab7 | Bb7 | Ab7 | Cm7 F7 | Bb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Ebm7 | Ab7 | Dbmaj7 | Cm7 F7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Bb7 | Ab7 | Bb7 | Ab7 | Bb7 | Ab7 | Cm7 F7 | Bb7" }
+            ]]},
+            { id: "std-st-thomas", category: "🌴 4. Bossa Nova & Latin Jazz", name: "St. Thomas (Sonny Rollins)", baseKey: "C", bpm: 185, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "C6 | Em7(b5) A7 | Dm7 | G7 | C6 | Em7(b5) A7 | Dm7 G7 | C6 G7 | Em7(b5) | A7 | Dm7 | G7 | C6 F7 | Em7 A7 | Dm7 G7 | C6" }
+            ]]},
+
+            // === 5. JAZZ MODAL & POST-BOP ===
+            { id: "std-so-what", category: "🌀 5. Jazz Modal & Post-Bop", name: "So What / Impressions", baseKey: "C", bpm: 138, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebm7 | Ebm7 | Ebm7 | Ebm7 | Ebm7 | Ebm7 | Ebm7 | Ebm7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7" }
+            ]]},
+            { id: "std-maiden-voyage", category: "🌀 5. Jazz Modal & Post-Bop", name: "Maiden Voyage (Herbie Hancock)", baseKey: "C", bpm: 122, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Am7/D | Am7/D | Am7/D | Am7/D | Cm7/F | Cm7/F | Cm7/F | Cm7/F" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbm7/Eb | Bbm7/Eb | Bbm7/Eb | Bbm7/Eb | C#m7 | C#m7 | F#7 | F#7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Am7/D | Am7/D | Am7/D | Am7/D | Cm7/F | Cm7/F | Cm7/F | Cm7/F" }
+            ]]},
+            { id: "std-cantaloupe-island", category: "🌀 5. Jazz Modal & Post-Bop", name: "Cantaloupe Island (Herbie Hancock)", baseKey: "Ab", bpm: 112, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fm7 | Fm7 | Fm7 | Fm7 | Db7 | Db7 | Db7 | Db7 | Dm7 | Dm7 | Dm7 | Dm7 | Fm7 | Fm7 | Fm7 | Fm7" }
+            ]]},
+            { id: "std-footprints", category: "🌀 5. Jazz Modal & Post-Bop", name: "Footprints (Wayne Shorter)", baseKey: "Eb", bpm: 136, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Fm7 | Fm7 | Cm7 | Cm7 | F#m7(b5) B7 | E7 A7 | Cm7 | Cm7" }
+            ]]},
+            { id: "std-take-five", category: "🌀 5. Jazz Modal & Post-Bop", name: "Take Five (Dave Brubeck)", baseKey: "Gb", bpm: 170, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Ebm7 Bbm7 | Ebm7 Bbm7 | Ebm7 Bbm7 | Ebm7 Bbm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bmaj7 Abm7 | Bbm7 Ebm7 | Abm7 Db7 | Gbmaj7 | Bmaj7 Abm7 | Bbm7 Ebm7 | Abm7 | Fm7(b5) Bb7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebm7 Bbm7 | Ebm7 Bbm7 | Ebm7 Bbm7 | Ebm7 Bbm7" }
+            ]]},
+            { id: "std-milestones-new", category: "🌀 5. Jazz Modal & Post-Bop", name: "Milestones (New - Miles Davis)", baseKey: "F", bpm: 210, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Am7 | Am7 | Am7 | Am7 | Am7 | Am7 | Am7 | Am7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7 | Gm7" }
+            ]]},
+            { id: "std-flamenco-sketches", category: "🌀 5. Jazz Modal & Post-Bop", name: "Flamenco Sketches (Miles Davis)", baseKey: "C", bpm: 68, variations: [[
+                { type: "Modal", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cmaj7 | Cmaj7 | Cmaj7 | Cmaj7 | Abmaj7 | Abmaj7 | Abmaj7 | Abmaj7 | Bbmaj7 | Bbmaj7 | Bbmaj7 | Bbmaj7 | D7(b9) | D7(b9) | D7(b9) | D7(b9) | Gm7 | Gm7 | Gm7 | Gm7" }
+            ]]},
+            { id: "std-speak-no-evil", category: "🌀 5. Jazz Modal & Post-Bop", name: "Speak No Evil (Wayne Shorter)", baseKey: "Eb", bpm: 140, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Dbmaj7 | Cm7 | Dbmaj7 | Cm7 | Dbmaj7 | Bm7 E7 | Bbm7 A7 | Abmaj7 | Bm7 E7 | Cm7 | D7(b9) | Fm7 | Gb7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Bbm7 | Gb7 | Fm7 | E7 | Ebm7 | Gb7 | Dmaj7 | Dbm7 | Cmaj7 | B7 | Bbm7 | A7 | Abmaj7 | G7(b9)" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Cm7 | Dbmaj7 | Cm7 | Dbmaj7 | Cm7 | Dbmaj7 | Bm7 E7 | Bbm7 A7 | Abmaj7 | Bm7 E7 | Cm7 | D7(b9) | Ebmaj7 | Dbmaj7" }
+            ]]},
+            { id: "std-juju", category: "🌀 5. Jazz Modal & Post-Bop", name: "JuJu (Wayne Shorter)", baseKey: "B", bpm: 146, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "B7 | B7 | B7 | B7 | Bbmaj7 | Bbmaj7 | Emaj7 | Fmaj7 | Fm7 | Emaj7 | Dmaj7 | Dmaj7" }
+            ]]},
+            { id: "std-yes-or-no", category: "🌀 5. Jazz Modal & Post-Bop", name: "Yes Or No (Wayne Shorter)", baseKey: "D", bpm: 225, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dmaj7 | Ebmaj7 | Dmaj7 | Ebmaj7 | Am7 D7 | Gmaj7 | C#m7 F#7 | F#m7 B7 | Em7 | A7 | Dmaj7 | Ebmaj7 | Dmaj7 | Ebmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Em7 | Em7 | Fm7 | Bb7 | Ebmaj7 | Ebmaj7 | Am7 | D7 | Gmaj7 | Gmaj7 | Gm7 | C7 | Em7 | A7" }
+            ]]},
+            { id: "std-witch-hunt", category: "🌀 5. Jazz Modal & Post-Bop", name: "Witch Hunt (Wayne Shorter)", baseKey: "Eb", bpm: 132, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Ebmaj7 | Ebmaj7 | C7 | C7 | Fm7 | Fm7 | Gbmaj7 | Gbmaj7 | Dm7(b5) | G7(b9) | Cm7 | Cm7 | Abm7 | Db7 | Gbmaj7 | B7 | Dm7(b5) | G7(b9) | Cm7 | Cm7" }
+            ]]},
+            { id: "std-fee-fi-fo-fum", category: "🌀 5. Jazz Modal & Post-Bop", name: "Fee-Fi-Fo-Fum (Wayne Shorter)", baseKey: "Bb", bpm: 112, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Eb7 D7 | Gm7 F7 | Bb7 A7 | D7 | G7 | C7 | F7 | Bb7 | Gbmaj7 | Cm7 F7 | Bbmaj7 | Abm7 Db7 | Gbmaj7 | Gm7 C7 | Cm7 F7 | Bb7 | Abm7 Db7 | Gbmaj7 | Fm7 Bb7 | Ebmaj7 | Am7(b5) D7 | Gm7 | Cm7 F7 | Bb6" }
+            ]]},
+            { id: "std-dolphin-dance", category: "🌀 5. Jazz Modal & Post-Bop", name: "Dolphin Dance (Herbie Hancock)", baseKey: "Eb", bpm: 118, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Ebmaj7 | Bbm7 | Ebmaj7 | Cm7 F7 | Bmaj7 | Cm7 F7 | Bbmaj7 | Abm7 Db7 | Gbmaj7 | Fm7 Bb7 | Ebmaj7 | D7 | Gmaj7 | Gmaj7 | Fm7 | Fm7 | Dm7 | G7 | Cmaj7 | Cmaj7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 | F7/C | Dm7/C | Dbm7/C | Cm7 | Abmaj7 | F#m7 B7 | Emaj7 | Am7/D | B7/D | Gmaj7/D | B7/D | Am7/E | F#m7/E | Dmaj7/E | Bm7(b5) E7" }
+            ]]},
+            { id: "std-passion-dance", category: "🌀 5. Jazz Modal & Post-Bop", name: "Passion Dance (McCoy Tyner)", baseKey: "F", bpm: 224, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | F7 | F7 | F7 | F7 | F7 | F7 | F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Gm7 | Gm7 | Abmaj7 | Abmaj7 | Gm7 | Gm7 | Gbmaj7 | Gbmaj7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "F7 | F7 | F7 | F7 | F7 | F7 | F7 | F7" }
+            ]]},
+            { id: "std-contemplation", category: "🌀 5. Jazz Modal & Post-Bop", name: "Contemplation (McCoy Tyner)", baseKey: "Eb", bpm: 126, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Dbmaj7 | Dbmaj7 | Dm7(b5) G7 | Cm7 | Abmaj7 | Fm7 | Cm7 | Cm7" }
+            ]]},
+            { id: "std-little-sunflower", category: "🌀 5. Jazz Modal & Post-Bop", name: "Little Sunflower (Freddie Hubbard)", baseKey: "F", bpm: 124, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Ebmaj7 | Ebmaj7 | Ebmaj7 | Ebmaj7 | Dmaj7 | Dmaj7 | Dmaj7 | Dmaj7" },
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: false, data: "Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7 | Dm7" }
+            ]]},
+            { id: "std-red-clay", category: "🌀 5. Jazz Modal & Post-Bop", name: "Red Clay (Freddie Hubbard)", baseKey: "Eb", bpm: 118, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Bbm7 | Ab7 | Gm7 F7 | Cm7 | Bbm7 | Ab7 | Gm7 F7" },
+                { type: "B", color: "bg-amber-50/40 dark:bg-slate-800/90", repeat: false, data: "Cm7 F7 | Bbmaj7 | Ebmaj7 | Am7 D7 | Gmaj7 | C7 | Fmaj7 | Dm7(b5) G7" }
+            ]]},
+            { id: "std-inner-urge", category: "🌀 5. Jazz Modal & Post-Bop", name: "Inner Urge (Joe Henderson)", baseKey: "C", bpm: 188, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F#m7(b5) | F#m7(b5) | F#m7(b5) | F#m7(b5) | Fmaj7 | Fmaj7 | Fmaj7 | Fmaj7 | Ebmaj7 | Ebmaj7 | Dbmaj7 | Dbmaj7 | Bm7 E7 | Cmaj7 A7 | Bbmaj7 G7 | Emaj7 C#m7 | Dmaj7 B7 | Cmaj7 A7 | F#maj7 | Gmaj7 | Emaj7 | Fmaj7 | Dmaj7 | Cmaj7" }
+            ]]},
+            { id: "std-beatrice", category: "🌀 5. Jazz Modal & Post-Bop", name: "Beatrice (Sam Rivers)", baseKey: "F", bpm: 132, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | Gbmaj7 | Fmaj7 | Ebmaj7 | Dm7 | Ebmaj7 | Dm7 | Cm7 F7 | Bbmaj7 | Am7(b5) D7 | Gm7 | Gbmaj7 | Em7(b5) | A7(b9) | Dm7 | G7" }
+            ]]},
+            { id: "std-windows", category: "🌀 5. Jazz Modal & Post-Bop", name: "Windows (Chick Corea)", baseKey: "D", bpm: 164, variations: [[
+                { type: "A", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bm7 | Bm7 | G#m7(b5) | C#7(b9) | F#m7 | F#m7 | G7 | F#7 | Bm7 | Abm7 Db7 | Gbmaj7 | Fm7 Bb7 | Ebmaj7 | Em7 A7 | Dmaj7 | C#m7(b5) F#7" }
+            ]]},
+
+            // === 6. JAZZ BLUES & MINOR BLUES ===
+            { id: "std-billies-bounce", category: "🎸 6. Jazz Blues & Minor Blues", name: "Billie's Bounce / Now's The Time (F Blues)", baseKey: "F", bpm: 158, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bdim7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" }
+            ]]},
+            { id: "std-blue-monk", category: "🎸 6. Jazz Blues & Minor Blues", name: "Blue Monk / Tenor Madness (Bb Blues)", baseKey: "Bb", bpm: 112, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bb7 | Eb7 | Bb7 | Fm7 Bb7 | Eb7 | Edim7 | Bb7 | Dm7 G7 | Cm7 | F7 | Bb7 G7 | Cm7 F7" }
+            ]]},
+            { id: "std-au-privave", category: "🎸 6. Jazz Blues & Minor Blues", name: "Au Privave / Blues For Alice (Bird Blues)", baseKey: "F", bpm: 172, variations: [[
+                { type: "Bird Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fmaj7 | Em7(b5) A7(b9) | Dm7 G7 | Cm7 F7 | Bb7 | Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 | C7 | Fmaj7 Dm7 | Gm7 C7" }
+            ]]},
+            { id: "std-mr-pc", category: "🎸 6. Jazz Blues & Minor Blues", name: "Mr. P.C. / Equinox (Minor Blues)", baseKey: "Eb", bpm: 215, variations: [[
+                { type: "Minor Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Fm7 | Fm7 | Cm7 | Cm7 | Ab7 | G7 | Cm7 | Dm7(b5) G7" }
+            ]]},
+            { id: "std-c-jam-blues", category: "🎸 6. Jazz Blues & Minor Blues", name: "C Jam Blues (Duke Ellington)", baseKey: "C", bpm: 138, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "C7 | F7 | C7 | Gm7 C7 | F7 | F#dim7 | C7 | Em7 A7 | Dm7 | G7 | C7 A7 | Dm7 G7" }
+            ]]},
+            { id: "std-straight-no-chaser", category: "🎸 6. Jazz Blues & Minor Blues", name: "Straight, No Chaser (Thelonious Monk)", baseKey: "F", bpm: 148, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bb7 | F7 | D7 | Gm7 | C7 | F7 D7 | Gm7 C7" }
+            ]]},
+            { id: "std-bag-groove", category: "🎸 6. Jazz Blues & Minor Blues", name: "Bag's Groove (Milt Jackson)", baseKey: "F", bpm: 122, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bb7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" }
+            ]]},
+            { id: "std-sonnymoon-for-two", category: "🎸 6. Jazz Blues & Minor Blues", name: "Sonnymoon For Two (Sonny Rollins)", baseKey: "Bb", bpm: 128, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bb7 | Eb7 | Bb7 | Fm7 Bb7 | Eb7 | Edim7 | Bb7 | Dm7 G7 | Cm7 | F7 | Bb7 G7 | Cm7 F7" }
+            ]]},
+            { id: "std-freddie-freeloader", category: "🎸 6. Jazz Blues & Minor Blues", name: "Freddie Freeloader (Miles Davis)", baseKey: "Bb", bpm: 118, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Bb7 | Bb7 | Bb7 | Bb7 | Eb7 | Eb7 | Bb7 | Bb7 | F7 | Eb7 | Ab7 | Ab7" }
+            ]]},
+            { id: "std-all-blues", category: "🎸 6. Jazz Blues & Minor Blues", name: "All Blues (Miles Davis)", baseKey: "G", bpm: 136, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "G7 | G7 | G7 | G7 | C7 | C7 | G7 | G7 | D7 | Eb7 D7 | G7 | G7" }
+            ]]},
+            { id: "std-watermelon-man", category: "🎸 6. Jazz Blues & Minor Blues", name: "Watermelon Man (Herbie Hancock)", baseKey: "F", bpm: 116, variations: [[
+                { type: "Blues 16", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | F7 | F7 | F7 | Bb7 | Bb7 | F7 | F7 | C7 | Bb7 | C7 | Bb7 | C7 | Bb7 | F7 | F7" }
+            ]]},
+            { id: "std-chitlins-con-carne", category: "🎸 6. Jazz Blues & Minor Blues", name: "Chitlins Con Carne (Kenny Burrell)", baseKey: "Eb", bpm: 114, variations: [[
+                { type: "Minor Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Fm7 | Fm7 | Cm7 | Cm7 | Ab7 | G7 | Cm7 | G7" }
+            ]]},
+            { id: "std-stolen-moments", category: "🎸 6. Jazz Blues & Minor Blues", name: "Stolen Moments (Oliver Nelson)", baseKey: "Eb", bpm: 116, variations: [[
+                { type: "Blues 16", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Cm7 | Cm7 | Cm7 | Cm7 | Fm7 | Fm7 | Cm7 | Cm7 | Dm7 | D#dim7 | Em7 | Fm7 | Cm7 | Dm7(b5) G7 | Cm7 | Dm7(b5) G7" }
+            ]]},
+            { id: "std-birk-works", category: "🎸 6. Jazz Blues & Minor Blues", name: "Birk's Works (Dizzy Gillespie)", baseKey: "Ab", bpm: 142, variations: [[
+                { type: "Minor Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Fm7 | Gm7(b5) C7 | Fm7 | Cm7(b5) F7 | Bbm7 | Bbm7 | Fm7 | Abm7 Db7 | Gm7(b5) | C7(b9) | Fm7 Db7 | Gm7(b5) C7" }
+            ]]},
+            { id: "std-israel", category: "🎸 6. Jazz Blues & Minor Blues", name: "Israel (John Carisi / Bill Evans)", baseKey: "F", bpm: 148, variations: [[
+                { type: "Minor Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Dm7 | Dm7/C | Bm7(b5) E7 | Am7 D7 | Gm7 | C7 | Fmaj7 | Em7(b5) A7 | Dm7 | Bb7 | A7 | Dm6 Em7(b5) A7" }
+            ]]},
+            { id: "std-blue-train", category: "🎸 6. Jazz Blues & Minor Blues", name: "Blue Train (John Coltrane)", baseKey: "Eb", bpm: 144, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Eb7 | Ab7 | Eb7 | Bbm7 Eb7 | Ab7 | Adim7 | Eb7 | Gm7 C7 | Fm7 | Bb7 | Eb7 C7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-bessie-blues", category: "🎸 6. Jazz Blues & Minor Blues", name: "Bessie's Blues (John Coltrane)", baseKey: "Eb", bpm: 156, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Eb7 | Ab7 | Eb7 | Eb7 | Ab7 | Ab7 | Eb7 | Eb7 | Bb7 | Ab7 | Eb7 | Bb7" }
+            ]]},
+            { id: "std-sandu", category: "🎸 6. Jazz Blues & Minor Blues", name: "Sandu (Clifford Brown)", baseKey: "Eb", bpm: 152, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Eb7 | Ab7 | Eb7 | Bbm7 Eb7 | Ab7 | Adim7 | Eb7 | Gm7 C7 | Fm7 | Bb7 | Eb7 C7 | Fm7 Bb7" }
+            ]]},
+            { id: "std-cool-strutting", category: "🎸 6. Jazz Blues & Minor Blues", name: "Cool Struttin' (Sonny Clark)", baseKey: "F", bpm: 120, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "F7 | Bb7 | F7 | Cm7 F7 | Bb7 | Bb7 | F7 | Am7 D7 | Gm7 | C7 | F7 D7 | Gm7 C7" }
+            ]]},
+            { id: "std-things-aint-what", category: "🎸 6. Jazz Blues & Minor Blues", name: "Things Ain't What They Used To Be", baseKey: "Db", bpm: 146, variations: [[
+                { type: "Blues", color: "bg-blue-50/50 dark:bg-slate-800", repeat: true, data: "Db7 | Gb7 | Db7 | Abm7 Db7 | Gb7 | Gdim7 | Db7 | Fm7 Bb7 | Ebm7 | Ab7 | Db7 Bb7 | Ebm7 Ab7" }
+            ]]},
+
+            // === PERSONALIZADA ===
+            { id: "custom", category: "✎ Personalizada", name: "✎ Prog. Personalizada...", baseKey: "C", bpm: 120, variations: [
                 [ { type: "Libre", color: "bg-white dark:bg-slate-800", repeat: false, data: "Cmaj7 | Dm7 | G7 | Cmaj7" } ]
             ]}
         ];
@@ -594,13 +1126,21 @@
                 }
 
                 const params = new URLSearchParams(window.location.search);
-                if (params.has('prog')) syncSelects('progressionSelect', 'progressionSelectMobile', params.get('prog'));
+                if (params.has('prog')) {
+                    const progIdx = parseInt(params.get('prog'));
+                    if (!isNaN(progIdx) && progressionLibrary[progIdx]) {
+                        const targetCat = progressionLibrary[progIdx].category;
+                        syncSelects('categorySelect', 'categorySelectMobile', targetCat);
+                        populateProgressionsByCategory(targetCat, progIdx);
+                    }
+                }
                 if (params.has('var')) { initialVarToLoad = params.get('var'); }
                 if (params.has('key')) { syncSelects('keySelect', 'keySelectMobile', params.get('key')); manualKeyChange = true; }
                 if (params.has('tempo')) {
                     let t = params.get('tempo');
                     ['tempoSlider', 'tempoSliderMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = t; });
                     ['tempoValue', 'tempoValueMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t; });
+                    manualTempoOverride = true;
                 }
                 if (params.has('custom')) {
                     const dec = decodeURIComponent(params.get('custom'));
@@ -1206,6 +1746,7 @@
         let relacionIIVActive = false;
         let mutationOverrides = {}; 
         let manualKeyChange = false;
+        let manualTempoOverride = false;
         let isPianoMuted = false;
         let isBassMuted = false;
         let currentLoopCount = 0;
@@ -1520,8 +2061,23 @@
                 if (keySelectVal) keySelectVal.value = progData.baseKey;
                 if (keySelectMobileVal) keySelectMobileVal.value = progData.baseKey;
             }
+            if (!manualTempoOverride && !preserveState && progData.bpm) {
+                const targetBpm = progData.bpm;
+                ['tempoSlider', 'tempoSliderMobile'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = targetBpm;
+                });
+                ['tempoValue', 'tempoValueMobile'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = targetBpm;
+                });
+                if (audioInitialized && typeof Tone !== 'undefined') {
+                    Tone.Transport.bpm.value = targetBpm;
+                }
+            }
             if (!preserveState) {
-                manualKeyChange = false; 
+                manualKeyChange = false;
+                manualTempoOverride = false;
             }
 
             const currentKey = keySelectVal ? keySelectVal.value : (keySelectMobileVal ? keySelectMobileVal.value : "C");
@@ -2038,12 +2594,11 @@
                         if (event !== null) {
                             // Calcular la duración real en el instante de reproducción según el BPM actual
                             // Se deja un margen proporcional para que actúe el fadeout (release) sin cortarse antes de tiempo
-                            const fullSeconds = Tone.Time(event.durationNotation || "1m").toSeconds();
-                            const releaseMargin = Math.min(0.28, fullSeconds * 0.12);
-                            const sustainDuration = Math.max(0.1, fullSeconds - releaseMargin);
-
-                            if (!isPianoMuted) piano.triggerAttackRelease(event.notes, sustainDuration, time);
-                            if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, sustainDuration, time);
+                            let durNotation = event.durationNotation || "1m";
+                            let fullSeconds = Tone.Time(durNotation).toSeconds();
+                            let playDuration = Math.max(0.15, fullSeconds * 0.92);
+                            if (!isPianoMuted) piano.triggerAttackRelease(event.notes, playDuration, time);
+                            if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, playDuration, time);
                         }
                     }
                     step++;
@@ -2056,18 +2611,61 @@
             }
         }
 
+        const categorySelectEl = document.getElementById('categorySelect');
+        const categorySelectMobileEl = document.getElementById('categorySelectMobile');
         const progressionSelectEl = document.getElementById('progressionSelect'); 
         const progressionSelectMobileEl = document.getElementById('progressionSelectMobile');
         const keySelectEl = document.getElementById('keySelect'); 
         const keySelectMobileEl = document.getElementById('keySelectMobile');
         const htmlElement = document.documentElement;
 
+        const categoriesMap = {};
         progressionLibrary.forEach((prog, index) => {
-            const option = document.createElement('option'); option.value = index; option.textContent = prog.name;
-            if(progressionSelectEl) progressionSelectEl.appendChild(option);
-            const optM = document.createElement('option'); optM.value = index; optM.textContent = prog.name;
-            if(progressionSelectMobileEl) progressionSelectMobileEl.appendChild(optM);
+            const cat = prog.category || "General";
+            if (!categoriesMap[cat]) categoriesMap[cat] = [];
+            categoriesMap[cat].push({ prog, index });
         });
+
+        const categoryNames = Object.keys(categoriesMap);
+        categoryNames.forEach(catName => {
+            const opt = document.createElement('option');
+            opt.value = catName;
+            opt.textContent = catName;
+            if (categorySelectEl) categorySelectEl.appendChild(opt);
+
+            const optM = document.createElement('option');
+            optM.value = catName;
+            optM.textContent = catName;
+            if (categorySelectMobileEl) categorySelectMobileEl.appendChild(optM);
+        });
+
+        function populateProgressionsByCategory(catName, selectedProgIdx = null) {
+            const list = categoriesMap[catName] || categoriesMap[categoryNames[0]] || [];
+            if (progressionSelectEl) progressionSelectEl.innerHTML = '';
+            if (progressionSelectMobileEl) progressionSelectMobileEl.innerHTML = '';
+
+            list.forEach(({ prog, index }, itemIdx) => {
+                const numPrefix = prog.id === "custom" ? "" : `${itemIdx + 1}. `;
+                const labelText = `${numPrefix}${prog.name}${prog.bpm ? ` (${prog.bpm} BPM)` : ''}`;
+
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = labelText;
+                if (progressionSelectEl) progressionSelectEl.appendChild(option);
+
+                const optM = document.createElement('option');
+                optM.value = index;
+                optM.textContent = labelText;
+                if (progressionSelectMobileEl) progressionSelectMobileEl.appendChild(optM);
+            });
+
+            const targetVal = selectedProgIdx !== null ? selectedProgIdx : (list[0] ? list[0].index : 0);
+            if (progressionSelectEl) progressionSelectEl.value = targetVal;
+            if (progressionSelectMobileEl) progressionSelectMobileEl.value = targetVal;
+        }
+
+        // Inicializar con la primera categoría por defecto
+        populateProgressionsByCategory(categoryNames[0]);
 
         allKeys.forEach(key => {
             const option = document.createElement('option'); option.value = key; option.textContent = key;
@@ -2174,8 +2772,22 @@
 
         ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => syncSelects('loopInput', 'loopInputMobile', e.target.value) ));
 
+        ['categorySelect', 'categorySelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            const selectedCat = e.target.value;
+            syncSelects('categorySelect', 'categorySelectMobile', selectedCat);
+            populateProgressionsByCategory(selectedCat);
+            manualKeyChange = false;
+            manualTempoOverride = false;
+            const was = isPlaying;
+            stopProgression();
+            selectedStartMeasure = -1;
+            loadAndCompileProgression(false);
+            updateURLState();
+            if (was) setTimeout(() => playProgression(), 50);
+        }));
+
         ['progressionSelect', 'progressionSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
-            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if(was) setTimeout(() => playProgression(), 50);
+            syncSelects('progressionSelect', 'progressionSelectMobile', e.target.value); manualKeyChange = false; manualTempoOverride = false; const was = isPlaying; stopProgression(); selectedStartMeasure = -1; loadAndCompileProgression(false); updateURLState(); if(was) setTimeout(() => playProgression(), 50);
         }));
 
         ['variationSelect', 'variationSelectMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
