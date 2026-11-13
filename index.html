@@ -777,8 +777,7 @@
                 showToast("Error al generar la imagen", "error");
             }
         });
-
-        document.getElementById('midiBtn')?.addEventListener('click', () => {
+                document.getElementById('midiBtn')?.addEventListener('click', () => {
             try {
                 if (typeof Midi === 'undefined') { showToast("Librería MIDI no cargada.", "error"); return; }
                 if (!audioTimeline || audioTimeline.length === 0) { showToast("Genera una progresión primero.", "error"); return; }
@@ -794,10 +793,11 @@
                 audioTimeline.forEach((event, stepIdx) => {
                     if (event) {
                         let time = stepIdx * secondsPerStep;
-                        let durationSecs = typeof event.duration === 'number' ? event.duration : 
-                                          (event.duration === "1m" ? secondsPerStep * 8 : 
-                                          (event.duration === "2n" ? secondsPerStep * 4 : 
-                                          (event.duration === "4n" ? secondsPerStep * 2 : secondsPerStep * 2)));
+                        let durNotation = event.durationNotation || event.duration;
+                        let durationSecs = typeof durNotation === 'number' ? durNotation : 
+                                          (durNotation === "1m" ? secondsPerStep * 8 : 
+                                          (durNotation === "2n" ? secondsPerStep * 4 : 
+                                          (durNotation === "4n" ? secondsPerStep * 2 : secondsPerStep * 2)));
 
                         if(event.notes) { event.notes.forEach(noteName => { pianoTrack.addNote({ name: noteName, time: time, duration: durationSecs, velocity: 0.8 }); }); }
                         if(event.bass) { bassTrack.addNote({ name: event.bass, time: time, duration: durationSecs, velocity: 0.9 }); }
@@ -1633,11 +1633,10 @@
                     prevMidiNotes = notesData.midi; 
                     
                     let stepOffset = (chordIdx * 4); 
-                    let duration = chordsInMeasure === 2 ? "2n" : (chordsInMeasure === 4 ? "4n" : "1m");
-                    let trimDuration = Tone.Time(duration).toSeconds() - 0.05;
+                    let durationNotation = chordsInMeasure === 2 ? "2n" : (chordsInMeasure === 4 ? "4n" : "1m");
 
                     audioTimeline[measureStartStep + stepOffset] = {
-                        notes: notesData.toneNames, bass: notesData.bassNote, duration: trimDuration > 0 ? trimDuration : duration,
+                        notes: notesData.toneNames, bass: notesData.bassNote, durationNotation: durationNotation,
                         visualId: visualMap[measureIndex], svgNodeIds: specificNodeId ? [specificNodeId] : []
                     };
                     if (chordsInMeasure === 2 && chordIdx === 0) audioTimeline[measureStartStep + 4] = null;
@@ -1929,8 +1928,34 @@
                 const chorus = new Tone.Chorus({ frequency: 2, delayTime: 3.5, depth: 0.3 }).start();
                 const reverb = new Tone.Freeverb({ roomSize: 0.6, dampening: 4000 }); reverb.wet.value = 0.2;
                 
-                piano = new Tone.PolySynth(Tone.FMSynth, { harmonicity: 2, modulationIndex: 1.2, oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.6, release: 0.05 } });
-                bassSynth = new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.04, decay: 0.4, sustain: 0.3, release: 0.05 } });
+                piano = new Tone.PolySynth(Tone.FMSynth, {
+                    harmonicity: 2,
+                    modulationIndex: 1.2,
+                    oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.015,
+                        decay: 0.4,
+                        sustain: 0.85,
+                        release: 0.35,
+                        releaseCurve: "exponential"
+                    },
+                    modulationEnvelope: {
+                        attack: 0.01,
+                        decay: 0.5,
+                        sustain: 0.8,
+                        release: 0.35
+                    }
+                });
+                bassSynth = new Tone.Synth({
+                    oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.03,
+                        decay: 0.4,
+                        sustain: 0.8,
+                        release: 0.3,
+                        releaseCurve: "exponential"
+                    }
+                });
                 piano.chain(chorus, reverb, Tone.Destination); bassSynth.toDestination();
                 Tone.Destination.volume.value = parseFloat(document.getElementById('volumeSlider') ? document.getElementById('volumeSlider').value : -6);
 
@@ -1956,8 +1981,14 @@
                         if (event && event.svgNodeIds) Tone.Draw.schedule(() => highlightSvgNode(event.svgNodeIds), time);
                         else if (event !== null) Tone.Draw.schedule(() => highlightSvgNode([]), time);
                         if (event !== null) {
-                            if (!isPianoMuted) piano.triggerAttackRelease(event.notes, event.duration, time);
-                            if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, event.duration, time);
+                            // Calcular la duración real en el instante de reproducción según el BPM actual
+                            // Se deja un margen proporcional para que actúe el fadeout (release) sin cortarse antes de tiempo
+                            const fullSeconds = Tone.Time(event.durationNotation || "1m").toSeconds();
+                            const releaseMargin = Math.min(0.28, fullSeconds * 0.12);
+                            const sustainDuration = Math.max(0.1, fullSeconds - releaseMargin);
+
+                            if (!isPianoMuted) piano.triggerAttackRelease(event.notes, sustainDuration, time);
+                            if (!isBassMuted) bassSynth.triggerAttackRelease(event.bass, sustainDuration, time);
                         }
                     }
                     step++;
