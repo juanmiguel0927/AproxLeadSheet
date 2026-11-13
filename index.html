@@ -336,7 +336,7 @@
 
                         <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar el grado, función y origen armónico en todos los acordes">
                             <div class="relative">
-                                <input type="checkbox" id="modalOriginToggle" class="sr-only" checked>
+                                <input type="checkbox" id="modalOriginToggle" class="sr-only">
                                 <div class="toggle-track block bg-slate-300 w-7 h-4 rounded-full transition-colors dark:bg-slate-600"></div>
                                 <div class="toggle-dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition transform shadow-sm"></div>
                             </div>
@@ -457,7 +457,7 @@
                             <div class="relative"><input type="checkbox" id="romanToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Weber</span>
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group" title="Mostrar u ocultar origen de Intercambio Modal">
-                            <div class="relative"><input type="checkbox" id="modalOriginToggleMobile" class="sr-only" checked><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Origen</span>
+                            <div class="relative"><input type="checkbox" id="modalOriginToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Origen</span>
                         </label>
                         <label class="flex items-center gap-1 cursor-pointer group">
                             <div class="relative"><input type="checkbox" id="globalTritoneToggleMobile" class="sr-only"><div class="toggle-track block bg-slate-300 w-6 h-3.5 rounded-full dark:bg-slate-600"></div><div class="toggle-dot absolute left-[2px] top-[2px] bg-white w-2.5 h-2.5 rounded-full transition transform shadow-sm"></div></div><span class="text-[9px] text-slate-500 font-bold uppercase">Tritono</span>
@@ -1460,20 +1460,54 @@
             try {
                 const params = new URLSearchParams(window.location.search);
                 const progVal = document.getElementById('progressionSelect')?.value || 0;
+                const catVal = document.getElementById('categorySelect')?.value || '';
+                const keyVal = document.getElementById('keySelect')?.value || 'C';
+                const tempoVal = document.getElementById('tempoSlider')?.value || 120;
+                const volVal = document.getElementById('volumeSlider')?.value || -6;
+                const sizeVal = document.getElementById('sizeSlider')?.value || 100;
+                const loopVal = document.getElementById('loopInput')?.value || '';
+                const vSelect = document.getElementById('variationSelect');
+                const varVal = (vSelect && vSelect.value !== "") ? vSelect.value : '0';
+                const isDark = document.documentElement.classList.contains('dark');
                 
                 params.set('tool', 'leadsheet');
                 params.set('prog', progVal);
-                params.set('key', document.getElementById('keySelect')?.value || 'C');
-                params.set('tempo', document.getElementById('tempoSlider')?.value || 120);
+                params.set('key', keyVal);
+                params.set('tempo', tempoVal);
                 params.set('requinto', requintoMode ? '1' : '0');
                 params.set('hidereal', hideRequintoReal ? '1' : '0');
                 params.set('origin', showModalOrigin ? '1' : '0');
+                params.set('weber', romanMode ? '1' : '0');
+                params.set('tritone', globalTritone ? '1' : '0');
+                params.set('dim', globalDim ? '1' : '0');
+                params.set('iiv', relacionIIVActive ? '1' : '0');
+                params.set('var', varVal);
+
+                // Guardar la posición de todos los botones y controles disponibles en localStorage
+                const allControlsState = {
+                    cat: catVal,
+                    prog: progVal,
+                    var: varVal,
+                    key: keyVal,
+                    tempo: tempoVal,
+                    vol: volVal,
+                    size: sizeVal,
+                    loops: loopVal,
+                    requinto: requintoMode,
+                    hideReal: hideRequintoReal,
+                    origin: showModalOrigin,
+                    weber: romanMode,
+                    tritone: globalTritone,
+                    dim: globalDim,
+                    iiv: relacionIIVActive,
+                    mutePiano: isPianoMuted,
+                    muteBass: isBassMuted,
+                    dark: isDark
+                };
+                safeSetStorage('opusLab_allControlsState', JSON.stringify(allControlsState));
                 safeSetStorage('opusLab_requintoMode', requintoMode ? '1' : '0');
                 safeSetStorage('opusLab_hideRequintoReal', hideRequintoReal ? '1' : '0');
                 safeSetStorage('opusLab_showModalOrigin', showModalOrigin ? '1' : '0');
-                
-                const vSelect = document.getElementById('variationSelect');
-                if (vSelect && vSelect.value !== "") params.set('var', vSelect.value);
 
                 if (progressionLibrary[progVal] && progressionLibrary[progVal].id === "custom") {
                     const customInput = document.getElementById('customProgInput')?.value || "";
@@ -1496,23 +1530,66 @@
                     if(customProgInput) customProgInput.value = savedCustom;
                 }
 
-                const params = new URLSearchParams(window.location.search);
-                if (params.has('prog')) {
-                    const progIdx = parseInt(params.get('prog'));
-                    if (!isNaN(progIdx) && progressionLibrary[progIdx]) {
-                        const targetCat = progressionLibrary[progIdx].category;
-                        syncSelects('categorySelect', 'categorySelectMobile', targetCat);
-                        populateProgressionsByCategory(targetCat, progIdx);
-                    }
+                // Cargar estado integral guardado de todos los botones y controles
+                let savedStateObj = null;
+                const rawAllState = safeGetStorage('opusLab_allControlsState');
+                if (rawAllState) {
+                    try { savedStateObj = JSON.parse(rawAllState); } catch(err) { savedStateObj = null; }
                 }
-                if (params.has('var')) { initialVarToLoad = params.get('var'); }
-                if (params.has('key')) { syncSelects('keySelect', 'keySelectMobile', params.get('key')); manualKeyChange = true; }
-                if (params.has('tempo')) {
-                    let t = params.get('tempo');
+
+                const params = new URLSearchParams(window.location.search);
+
+                // 1. Progresión y Categoría
+                let targetProgIdx = null;
+                if (params.has('prog')) {
+                    targetProgIdx = parseInt(params.get('prog'));
+                } else if (savedStateObj && savedStateObj.prog !== undefined) {
+                    targetProgIdx = parseInt(savedStateObj.prog);
+                }
+                if (targetProgIdx !== null && !isNaN(targetProgIdx) && progressionLibrary[targetProgIdx]) {
+                    const targetCat = progressionLibrary[targetProgIdx].category;
+                    syncSelects('categorySelect', 'categorySelectMobile', targetCat);
+                    populateProgressionsByCategory(targetCat, targetProgIdx);
+                }
+
+                // 2. Variación
+                if (params.has('var')) {
+                    initialVarToLoad = params.get('var');
+                } else if (savedStateObj && savedStateObj.var !== undefined) {
+                    initialVarToLoad = savedStateObj.var;
+                }
+
+                // 3. Tono
+                if (params.has('key')) {
+                    syncSelects('keySelect', 'keySelectMobile', params.get('key'));
+                    manualKeyChange = true;
+                } else if (savedStateObj && savedStateObj.key) {
+                    syncSelects('keySelect', 'keySelectMobile', savedStateObj.key);
+                    manualKeyChange = true;
+                }
+
+                // 4. Tempo, Volumen, Tamaño y Ciclos
+                let t = params.has('tempo') ? params.get('tempo') : (savedStateObj?.tempo || null);
+                if (t !== null) {
                     ['tempoSlider', 'tempoSliderMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = t; });
                     ['tempoValue', 'tempoValueMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = t; });
                     manualTempoOverride = true;
                 }
+
+                if (savedStateObj && savedStateObj.vol !== undefined) {
+                    ['volumeSlider', 'volumeSliderMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = savedStateObj.vol; });
+                    ['volumeValue', 'volumeValueMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = `${savedStateObj.vol} dB`; });
+                }
+
+                if (savedStateObj && savedStateObj.size !== undefined) {
+                    ['sizeSlider', 'sizeSliderMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).value = savedStateObj.size; });
+                    ['sizeValue', 'sizeValueMobile'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).textContent = `${savedStateObj.size}%`; });
+                }
+
+                if (savedStateObj && savedStateObj.loops !== undefined) {
+                    syncSelects('loopInput', 'loopInputMobile', savedStateObj.loops);
+                }
+
                 if (params.has('custom')) {
                     const dec = decodeURIComponent(params.get('custom'));
                     const customProgInput = document.getElementById('customProgInput');
@@ -1521,9 +1598,25 @@
                     if(customProg) customProg.variations[0][0].data = dec;
                 }
 
+                // 5. Estado de todos los botones tipo interruptor (Origen apagado por defecto)
+                let savedOrigin = safeGetStorage('opusLab_showModalOrigin');
+                if (params.has('origin')) {
+                    showModalOrigin = params.get('origin') === '1';
+                } else if (savedStateObj && typeof savedStateObj.origin === 'boolean') {
+                    showModalOrigin = savedStateObj.origin;
+                } else if (savedOrigin !== null) {
+                    showModalOrigin = savedOrigin === '1';
+                } else {
+                    showModalOrigin = false; // Apagado de forma predeterminada
+                }
+                if (document.getElementById('modalOriginToggle')) document.getElementById('modalOriginToggle').checked = showModalOrigin;
+                if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
+
                 let savedRequinto = safeGetStorage('opusLab_requintoMode');
                 if (params.has('requinto')) {
                     requintoMode = params.get('requinto') === '1';
+                } else if (savedStateObj && typeof savedStateObj.requinto === 'boolean') {
+                    requintoMode = savedStateObj.requinto;
                 } else if (savedRequinto !== null) {
                     requintoMode = savedRequinto === '1';
                 }
@@ -1533,20 +1626,62 @@
                 let savedHideReal = safeGetStorage('opusLab_hideRequintoReal');
                 if (params.has('hidereal')) {
                     hideRequintoReal = params.get('hidereal') === '1';
+                } else if (savedStateObj && typeof savedStateObj.hideReal === 'boolean') {
+                    hideRequintoReal = savedStateObj.hideReal;
                 } else if (savedHideReal !== null) {
                     hideRequintoReal = savedHideReal === '1';
                 }
 
-                let savedOrigin = safeGetStorage('opusLab_showModalOrigin');
-                if (params.has('origin')) {
-                    showModalOrigin = params.get('origin') === '1';
-                } else if (savedOrigin !== null) {
-                    showModalOrigin = savedOrigin === '1';
-                } else {
-                    showModalOrigin = true;
+                if (params.has('weber')) {
+                    romanMode = params.get('weber') === '1';
+                } else if (savedStateObj && typeof savedStateObj.weber === 'boolean') {
+                    romanMode = savedStateObj.weber;
                 }
-                if (document.getElementById('modalOriginToggle')) document.getElementById('modalOriginToggle').checked = showModalOrigin;
-                if (document.getElementById('modalOriginToggleMobile')) document.getElementById('modalOriginToggleMobile').checked = showModalOrigin;
+                if (document.getElementById('romanToggle')) document.getElementById('romanToggle').checked = romanMode;
+                if (document.getElementById('romanToggleMobile')) document.getElementById('romanToggleMobile').checked = romanMode;
+
+                if (params.has('tritone')) {
+                    globalTritone = params.get('tritone') === '1';
+                } else if (savedStateObj && typeof savedStateObj.tritone === 'boolean') {
+                    globalTritone = savedStateObj.tritone;
+                }
+                if (document.getElementById('globalTritoneToggle')) document.getElementById('globalTritoneToggle').checked = globalTritone;
+                if (document.getElementById('globalTritoneToggleMobile')) document.getElementById('globalTritoneToggleMobile').checked = globalTritone;
+
+                if (params.has('dim')) {
+                    globalDim = params.get('dim') === '1';
+                } else if (savedStateObj && typeof savedStateObj.dim === 'boolean') {
+                    globalDim = savedStateObj.dim;
+                }
+                if (globalTritone && globalDim) globalDim = false;
+                if (document.getElementById('globalDimToggle')) document.getElementById('globalDimToggle').checked = globalDim;
+                if (document.getElementById('globalDimToggleMobile')) document.getElementById('globalDimToggleMobile').checked = globalDim;
+
+                if (params.has('iiv')) {
+                    relacionIIVActive = params.get('iiv') === '1';
+                } else if (savedStateObj && typeof savedStateObj.iiv === 'boolean') {
+                    relacionIIVActive = savedStateObj.iiv;
+                }
+                if (document.getElementById('relacionToggle')) document.getElementById('relacionToggle').checked = relacionIIVActive;
+                if (document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = relacionIIVActive;
+
+                // 6. Botones de Mute Piano / Bajo y Tema Oscuro
+                if (savedStateObj) {
+                    isPianoMuted = !!savedStateObj.mutePiano;
+                    isBassMuted = !!savedStateObj.muteBass;
+                    [document.getElementById('mutePianoBtn'), document.getElementById('mutePianoBtnMobile')].forEach(btn => {
+                        if (btn) btn.classList.toggle('muted', isPianoMuted);
+                    });
+                    [document.getElementById('muteBassBtn'), document.getElementById('muteBassBtnMobile')].forEach(btn => {
+                        if (btn) btn.classList.toggle('muted', isBassMuted);
+                    });
+                    if (savedStateObj.dark) {
+                        document.documentElement.classList.add('dark');
+                        document.querySelectorAll('#themeToggleBtn').forEach(btn => {
+                            if (btn) btn.innerHTML = '<i class="fa-solid fa-sun text-lg"></i>';
+                        });
+                    }
+                }
 
                 updateRequintoRealBtnUI();
             } catch(e) { console.warn("Error Restoring State"); }
@@ -2116,7 +2251,7 @@
         let romanMode = false;
         let requintoMode = false;
         let hideRequintoReal = false;
-        let showModalOrigin = true;
+        let showModalOrigin = false;
         let visualMeasures = []; 
         let audioTimeline = []; 
         let totalSteps = 0;
@@ -3118,6 +3253,7 @@
         function toggleTheme() { 
             htmlElement.classList.toggle('dark'); const isDark = htmlElement.classList.contains('dark');
             document.querySelectorAll('#themeToggleBtn').forEach(btn => { if(btn) btn.innerHTML = isDark ? '<i class="fa-solid fa-sun text-lg"></i>' : '<i class="fa-solid fa-moon text-lg"></i>'; });
+            updateURLState();
         }
         document.querySelectorAll('#themeToggleBtn').forEach(btn => btn.addEventListener('click', toggleTheme));
 
@@ -3175,6 +3311,7 @@
             const isMuted = type === 'piano' ? !isPianoMuted : !isBassMuted;
             if (type === 'piano') isPianoMuted = isMuted; else isBassMuted = isMuted;
             [document.getElementById(id1), document.getElementById(id2)].forEach(btn => { if (btn) { if (isMuted) btn.classList.add('muted'); else btn.classList.remove('muted'); } });
+            updateURLState();
         }
         ['mutePianoBtn', 'mutePianoBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', () => toggleMute('piano', 'mutePianoBtn', 'mutePianoBtnMobile')));
         ['muteBassBtn', 'muteBassBtnMobile'].forEach(id => document.getElementById(id)?.addEventListener('click', () => toggleMute('bass', 'muteBassBtn', 'muteBassBtnMobile')));
@@ -3193,11 +3330,18 @@
         ['volumeSlider', 'volumeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             document.getElementById('volumeValue').textContent = `${e.target.value} dB`; document.getElementById('volumeValueMobile').textContent = `${e.target.value} dB`;
             syncSelects('volumeSlider', 'volumeSliderMobile', e.target.value); if (audioInitialized) Tone.Destination.volume.value = parseFloat(e.target.value);
+            updateURLState();
         }));
 
         ['sizeSlider', 'sizeSliderMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
             let val = e.target.value;
             applyCustomSizeValue(val);
+            updateURLState();
+        }));
+
+        ['loopInput', 'loopInputMobile'].forEach(id => document.getElementById(id)?.addEventListener('input', (e) => {
+            syncSelects('loopInput', 'loopInputMobile', e.target.value);
+            updateURLState();
         }));
 
         function applyCustomSizeValue(val) {
@@ -3292,6 +3436,26 @@
             for (let key in mutationOverrides) { if (!activeChordMutations[key]) { delete mutationOverrides[key]; } }
             
             loadAndCompileProgression(true);
+            updateURLState();
+        }));
+
+        ['globalDimToggle', 'globalDimToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            globalDim = e.target.checked; 
+            if (globalDim) { globalTritone = false; ['globalTritoneToggle', 'globalTritoneToggleMobile'].forEach(i => { if(document.getElementById(i)) document.getElementById(i).checked = false; }); }
+            document.getElementById('globalDimToggle').checked = globalDim; document.getElementById('globalDimToggleMobile').checked = globalDim; 
+            
+            for (let key in mutationOverrides) { if (!activeChordMutations[key]) { delete mutationOverrides[key]; } }
+            
+            loadAndCompileProgression(true);
+            updateURLState();
+        }));
+
+        ['relacionToggle', 'relacionToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            relacionIIVActive = e.target.checked; document.getElementById('relacionToggle').checked = relacionIIVActive; if(document.getElementById('relacionToggleMobile')) document.getElementById('relacionToggleMobile').checked = relacionIIVActive; loadAndCompileProgression(true); updateURLState();
+        }));
+
+        ['romanToggle', 'romanToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
+            romanMode = e.target.checked; document.getElementById('romanToggle').checked = romanMode; document.getElementById('romanToggleMobile').checked = romanMode; renderGrid(); updateURLState();
         }));
 
         ['globalDimToggle', 'globalDimToggleMobile'].forEach(id => document.getElementById(id)?.addEventListener('change', (e) => {
