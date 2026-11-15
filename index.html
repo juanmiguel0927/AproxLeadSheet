@@ -36,8 +36,34 @@
             border-style: solid; border-width: 1px;
         }
         .measure-box:hover { border-color: #3b82f6 !important; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15); }
-        .measure-active { background-color: #eff6ff !important; border-color: #60a5fa !important; transform: scale(1.02); box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.2); z-index: 10; }
-        .dark .measure-active { background-color: #1e3a8a !important; border-color: #3b82f6 !important; }
+        .measure-active {
+            background-color: #d1fae5 !important;
+            border-color: #ef4444 !important;
+            border-width: 3px !important;
+            transform: scale(1.03);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.35), 0 10px 20px -3px rgba(239, 68, 68, 0.35) !important;
+            z-index: 15;
+        }
+        .dark .measure-active {
+            background-color: #064e3b !important;
+            border-color: #f87171 !important;
+            border-width: 3px !important;
+            box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.4), 0 0 22px rgba(248, 113, 113, 0.5) !important;
+        }
+        .measure-countin {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            border-width: 3px !important;
+            border-style: dashed !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.45) !important;
+            z-index: 15;
+        }
+        .dark .measure-countin {
+            background-color: #7f1d1d !important;
+            border-color: #f87171 !important;
+            border-width: 3px !important;
+            border-style: dashed !important;
+        }
 
         .repeat-start::before { content: ''; position: absolute; left: 4px; top: 15%; bottom: 15%; width: 4px; border-left: 3px solid #3b82f6; border-right: 1px solid #3b82f6; opacity: 0.8; }
         .repeat-start::after { content: ':'; font-weight: bold; font-size: 1.5em; line-height: 1; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #3b82f6; opacity: 0.8; font-family: serif; }
@@ -859,10 +885,11 @@
             </div>
             
             <div class="flex items-center gap-2 mx-2">
-                <div id="metronome-0" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
-                <div id="metronome-1" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
-                <div id="metronome-2" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
-                <div id="metronome-3" class="metronome-dot w-2 h-2 rounded-full bg-blue-200 dark:bg-slate-600"></div>
+                <span id="countInBadge" class="hidden px-2 py-0.5 rounded-full bg-red-600 text-white font-extrabold text-[10px] tracking-wider shadow animate-pulse">CONTEO: 1</span>
+                <div id="metronome-0" class="metronome-dot w-2.5 h-2.5 rounded-full bg-blue-200 dark:bg-slate-600"></div>
+                <div id="metronome-1" class="metronome-dot w-2.5 h-2.5 rounded-full bg-blue-200 dark:bg-slate-600"></div>
+                <div id="metronome-2" class="metronome-dot w-2.5 h-2.5 rounded-full bg-blue-200 dark:bg-slate-600"></div>
+                <div id="metronome-3" class="metronome-dot w-2.5 h-2.5 rounded-full bg-blue-200 dark:bg-slate-600"></div>
             </div>
 
             <span id="startMeasureIndicator" class="font-bold whitespace-nowrap bg-blue-100 dark:bg-blue-900 px-1.5 py-0.5 rounded text-[9px] sm:text-[10px]">Sel: Ninguno</span>
@@ -3692,7 +3719,7 @@
         }
 
         function highlightMeasure(visualId) {
-            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
+            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active', 'measure-countin'));
             const activeEl = document.getElementById(`measure-${visualId}`);
             if (activeEl) {
                 activeEl.classList.add('measure-active');
@@ -3707,6 +3734,25 @@
                     }
                 }
             }
+        }
+
+        function highlightCountInMeasure(visualId, beatNum) {
+            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active', 'measure-countin'));
+            const targetEl = document.getElementById(`measure-${visualId}`);
+            if (targetEl) {
+                targetEl.classList.add('measure-countin');
+            }
+            const badge = document.getElementById('countInBadge');
+            if (badge) {
+                badge.textContent = `CONTEO: ${beatNum}`;
+                badge.classList.remove('hidden');
+            }
+        }
+
+        function clearCountInUI() {
+            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-countin'));
+            const badge = document.getElementById('countInBadge');
+            if (badge) badge.classList.add('hidden');
         }
 
         function highlightSvgNode(nodeIdsArray) {
@@ -3727,7 +3773,7 @@
         }
         function resetMetronome() { document.querySelectorAll('.metronome-dot').forEach(dot => dot.classList.remove('active', 'active-beat1')); }
 
-        let piano, bassSynth; let isPlaying = false; let step = 0; let audioInitialized = false;
+        let piano, bassSynth, clickSynth; let isPlaying = false; let step = 0; let countInStepsRemaining = 0; let audioInitialized = false;
 
         async function initAudio() {
             if (audioInitialized) return; 
@@ -3764,10 +3810,42 @@
                         releaseCurve: "exponential"
                     }
                 });
-                piano.chain(chorus, reverb, Tone.Destination); bassSynth.toDestination();
+                clickSynth = new Tone.MembraneSynth({
+                    pitchDecay: 0.008,
+                    octaves: 2,
+                    oscillator: { type: "sine" },
+                    envelope: {
+                        attack: 0.001,
+                        decay: 0.06,
+                        sustain: 0,
+                        release: 0.03
+                    }
+                });
+                clickSynth.volume.value = 2;
+                piano.chain(chorus, reverb, Tone.Destination); bassSynth.toDestination(); clickSynth.toDestination();
                 Tone.Destination.volume.value = parseFloat(document.getElementById('volumeSlider') ? document.getElementById('volumeSlider').value : -6);
 
                 Tone.Transport.scheduleRepeat((time) => {
+                    // Fase de Conteo de Entrada (1 compás = 8 corcheas / 4 negras)
+                    if (countInStepsRemaining > 0) {
+                        const countStepIdx = 8 - countInStepsRemaining; // 0..7
+                        if (countStepIdx % 2 === 0) {
+                            const beatIdx = countStepIdx / 2; // 0, 1, 2, 3
+                            const notePitch = beatIdx === 0 ? "G5" : "C5";
+                            const velocity = beatIdx === 0 ? 0.95 : 0.65;
+                            if (clickSynth) clickSynth.triggerAttackRelease(notePitch, "32n", time, velocity);
+                            const startVisualId = (audioTimeline[step % totalSteps] && audioTimeline[step % totalSteps].visualId !== undefined)
+                                ? audioTimeline[step % totalSteps].visualId
+                                : (selectedStartMeasure !== -1 && visualMeasures[selectedStartMeasure] ? visualMeasures[selectedStartMeasure].id : 0);
+                            Tone.Draw.schedule(() => {
+                                updateMetronome(beatIdx);
+                                highlightCountInMeasure(startVisualId, beatIdx + 1);
+                            }, time);
+                        }
+                        countInStepsRemaining--;
+                        return;
+                    }
+
                     const currentStep = step % totalSteps; 
                     
                     if (step > 0 && currentStep === 0) {
@@ -3777,13 +3855,19 @@
                         let maxLoops = (loopVal === "" || parseInt(loopVal) <= 0) ? Infinity : parseInt(loopVal);
                         
                         if (currentLoopCount >= maxLoops) {
-                            Tone.Transport.pause(); isPlaying = false; updatePlayButtons(false); step = 0; currentLoopCount = 0; resetMetronome();
-                            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active')); highlightSvgNode([]);
+                            Tone.Transport.pause(); isPlaying = false; updatePlayButtons(false); step = 0; currentLoopCount = 0; resetMetronome(); clearCountInUI();
+                            document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active', 'measure-countin')); highlightSvgNode([]);
                             if (piano) piano.releaseAll(); if (bassSynth) bassSynth.triggerRelease(time); return; 
                         }
                     }
                     if (currentStep % 2 === 0) { let beatIdx = (currentStep % 8) / 2; Tone.Draw.schedule(() => updateMetronome(beatIdx), time); }
-                    if (currentStep % 8 === 0) { let cMe = audioTimeline[currentStep]; if (cMe) Tone.Draw.schedule(() => highlightMeasure(cMe.visualId), time); }
+                    if (currentStep % 8 === 0) {
+                        let cMe = audioTimeline[currentStep];
+                        if (cMe) Tone.Draw.schedule(() => {
+                            clearCountInUI();
+                            highlightMeasure(cMe.visualId);
+                        }, time);
+                    }
                     const event = audioTimeline[currentStep];
                     if (event !== undefined) {
                         if (event && event.svgNodeIds) Tone.Draw.schedule(() => highlightSvgNode(event.svgNodeIds), time);
@@ -3900,12 +3984,21 @@
                     for (let i = 0; i < startIdx; i++) { stepOffset += 8; }
                     
                     step = stepOffset; 
+                    countInStepsRemaining = 8; // 1 compás completo de conteo (4 pulsos) antes de sonar
                     Tone.Transport.position = 0; 
                     Tone.Transport.start(); 
                     isPlaying = true; 
                     updatePlayButtons(true); 
                 } 
-                else { Tone.Transport.pause(); isPlaying = false; if (piano && piano.releaseAll) piano.releaseAll(); if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now()); updatePlayButtons(false); }
+                else {
+                    Tone.Transport.pause();
+                    isPlaying = false;
+                    countInStepsRemaining = 0;
+                    clearCountInUI();
+                    if (piano && piano.releaseAll) piano.releaseAll();
+                    if (bassSynth && bassSynth.triggerRelease) bassSynth.triggerRelease(Tone.now());
+                    updatePlayButtons(false);
+                }
             } catch (e) { console.error("Play error:", e); }
         }
 
@@ -3913,6 +4006,8 @@
             try {
                 if (audioInitialized) { Tone.Transport.pause(); piano.releaseAll(); bassSynth.triggerRelease(Tone.now()); }
                 isPlaying = false; 
+                countInStepsRemaining = 0;
+                clearCountInUI();
                 
                 let startIdx = selectedStartMeasure !== -1 ? selectedStartMeasure : 0;
                 let stepOffset = 0;
@@ -3920,7 +4015,7 @@
                 step = stepOffset; 
                 
                 currentLoopCount = 0; resetMetronome();
-                document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active'));
+                document.querySelectorAll('.measure-box').forEach(el => el.classList.remove('measure-active', 'measure-countin'));
                 highlightSvgNode([]); updatePlayButtons(false);
             } catch (e) { console.error("Stop error:", e); }
         }
@@ -4334,4 +4429,4 @@
         });
     </script>
 </body>
-</html>
+                                                                                                                                    </html>
